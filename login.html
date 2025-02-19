@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #6b48ff, #6b48ff22);
+        }
+
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6b48ff;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 37px;
+            cursor: pointer;
+            color: #666;
+            user-select: none;
+        }
+
+        .password-toggle:hover {
+            color: #333;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #6b48ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #5a3cd9;
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .form-group.error input {
+            border-color: #dc3545;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Please login to continue</p>
+        </div>
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label for="identifier">Username or Email</label>
+                <input type="text" id="identifier" name="identifier" required>
+                <div class="error-message">Please enter a valid username or email</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <span class="password-toggle" id="passwordToggle">👁️</span>
+                <div class="error-message">Password must be at least 6 characters with uppercase, number, and special character</div>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const identifierInput = document.getElementById('identifier');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+
+        const validateEmail = (email) => {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        };
+
+        const validateUsername = (username) => {
+            return username.length >= 3 && /^[a-zA-Z0-9_]+$/.test(username);
+        };
+
+        const validateIdentifier = (identifier) => {
+            return validateEmail(identifier) || validateUsername(identifier);
+        };
+
+        const validatePassword = (password) => {
+            if (password.length < 6) return false;
+            if (!/[A-Z]/.test(password)) return false;
+            if (!/[0-9]/.test(password)) return false;
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+            return true;
+        };
+
+        const showError = (input, isValid) => {
+            const formGroup = input.parentElement;
+            if (!isValid) {
+                formGroup.classList.add('error');
+            } else {
+                formGroup.classList.remove('error');
+            }
+        };
+
+        passwordToggle.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.textContent = '👁️‍🗨️';
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.textContent = '👁️';
+            }
+        });
+
+        identifierInput.addEventListener('input', () => {
+            const isValid = validateIdentifier(identifierInput.value);
+            showError(identifierInput, isValid);
+        });
+
+        passwordInput.addEventListener('input', () => {
+            const isValid = validatePassword(passwordInput.value);
+            showError(passwordInput, isValid);
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const isIdentifierValid = validateIdentifier(identifierInput.value);
+            const isPasswordValid = validatePassword(passwordInput.value);
+
+            showError(identifierInput, isIdentifierValid);
+            showError(passwordInput, isPasswordValid);
+
+            if (isIdentifierValid && isPasswordValid) {
+                console.log('Form submitted:', {
+                    identifier: identifierInput.value,
+                    password: passwordInput.value
+                });
+            }
+        });
+    </script>
+</body>
+</html>
