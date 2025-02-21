@@ -311,7 +311,7 @@
             });
         });
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async(e) => {
             e.preventDefault();
 
             const fullNameValid = validateFullName(form.fullName.value);
@@ -336,6 +336,21 @@
 
             if (fullNameValid && usernameValid && emailValid && phoneValid && 
                 passwordValid && passwordsMatch && dobValid && genderValid && termsValid) {
+                   await fetch('http://localhost:8000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullName: form.fullName.value,
+                        username: form.username.value,
+                        email: form.email.value,
+                        phone: form.phone.value,
+                        dob: form.dob.value,
+                        gender: form.gender.value,
+                    }),
+                    });
+                    
                 console.log('Form submitted:', {
                     fullName: form.fullName.value,
                     username: form.username.value,
