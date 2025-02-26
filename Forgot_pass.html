@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgot Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            background: linear-gradient(#6b48ff, #6b48ff22);
+            transition: background-color 1s ease-in-out;
+        }
+
+        .forgot-password-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="forgot-password-container">
+        <h2>Forgot Password?</h2>
+        <p>Enter your email to receive a reset link</p>
+
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <button onclick="sendOTP()">Send OTP</button>
+
+        <div id="otp-section" class="hidden">
+            <input type="text" id="otp" placeholder="Enter OTP" />
+            <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+
+        <div id="new-password-section" class="hidden">
+            <input type="password" id="new-password" placeholder="Enter new password" />
+            <button onclick="resetPassword()">Reset Password</button>
+        </div>
+
+        <p>
+            <a href="login.html" style="text-decoration: none; color: black">Back to Login</a>
+        </p>
+    </div>
+
+    <script>
+        function sendOTP() {
+            let email = document.getElementById("email").value;
+
+            if (!email) {
+                alert("Please enter your email.");
+                return;
+            }
+
+            alert("OTP sent to " + email);
+            document.getElementById("otp-section").classList.remove("hidden");
+        }
+
+        function verifyOTP() {
+            let otp = document.getElementById("otp").value;
+
+            if (otp === "1234") {
+                alert("OTP Verified!");
+                document
+                    .getElementById("new-password-section")
+                    .classList.remove("hidden");
+            } else {
+                alert("Invalid OTP, try again.");
+            }
+        }
+
+        function resetPassword() {
+            let newPassword = document.getElementById("new-password").value;
+
+            if (newPassword.length < 6) {
+                alert("Password should be at least 6 characters.");
+                return;
+            }
+
+            alert("Password Reset Successful! Redirecting to login...");
+            window.location.href = "login.html";
+        }
+        function changeBackgroundColor() {
+            const colors = [
+                "#FF5733",
+                "#33FF57",
+                "#3357FF",
+                "#F3FF33",
+                "#FF33A1",
+                "#FF9800",
+                "#00BCD4",
+                "#8BC34A",
+                "#CDDC39",
+                "#E91E63",
+                "#4CAF50",
+                "#3F51B5",
+                "#009688",
+                "#673AB7",
+                "#607D8B",
+                "#2196F3",
+                "#9C27B0",
+                "#795548",
+                "#5D4037",
+                "#1E88E5",
+                "#D32F2F",
+                "#C2185B",
+                "#7B1FA2",
+                "#512DA8",
+                "#303F9F",
+                "#00796B",
+                "#1976D2",
+                "#388E3C",
+                "#FFA000",
+                "#F57C00",
+                "#FFCDD2",
+                "#F8BBD0",
+                "#E1BEE7",
+                "#C5CAE9",
+                "#B3E5FC",
+                "#C8E6C9",
+                "#FFECB3",
+                "#FFE0B2",
+                "#D7CCC8",
+                "#9E9E9E",
+            ];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.style.backgroundColor = randomColor;
+        }
+        setInterval(changeBackgroundColor, 1500);
+    </script>
+</body>
+
+</html>
