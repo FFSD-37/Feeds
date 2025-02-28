@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../css/login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-header">
+        <h1>Welcome Back</h1>
+        <p>Please login to continue</p>
+      </div>
+      <form id="loginForm" novalidate>
+        <div class="form-group toggle-group">
+          <div class="toggle-container">
+            <div class="toggle-switch">
+              <input type="checkbox" id="loginToggle" class="toggle-input" />
+              <label for="loginToggle" class="toggle-label">
+                <span class="toggle-option left">Username</span>
+                <span class="toggle-option right">Email</span>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="identifier" id="identifierLabel">
+            <%= loginType && loginType === 'Email' ? 'Email' : 'Username' %>
+          </label>
+          <input
+            type="text"
+            id="identifier"
+            name="identifier"
+            placeholder="Enter your <%= loginType && loginType === 'Email' ? 'email' : 'username' %>"
+            required
+          />
+          <div class="error-message" id="identifierError">
+            Please enter a valid <%= loginType && loginType === 'Email' ? 'email' : 'username' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+          <span class="password-toggle" id="passwordToggle">👁️</span>
+          <div class="error-message">
+            Password must be at least 6 characters with uppercase, number, and
+            special character
+          </div>
+        </div>
+        <div class="remember-forgot">
+          <div class="remember-me">
+            <input type="checkbox" id="rememberMe" />
+            <label for="rememberMe">Remember me</label>
+          </div>
+          <a href="forget-password" class="forgot-password">Forgot password?</a>
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+        <div class="signup-link">
+          Don't have an account? <a href="signup">Register</a>
+        </div>
+      </form>
+    </div>
+    <script src="../js/login.js"></script>
+    <script src="../js/background.js"></script>
+  </body>
+</html>
