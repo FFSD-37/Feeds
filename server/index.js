@@ -5,6 +5,8 @@ import connectToMongo from './Db/connection.js';
 dotenv.config();
 
 const app = express();
+app.set('view engine', 'ejs');
+app.set('views',__dirname+'../view');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
