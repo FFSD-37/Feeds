@@ -133,54 +133,44 @@ form.addEventListener("submit", (e) => {
   }
 });
 
-// const imagekit = new ImageKit({
-//   publicKey: "public_wnJ6iUhf4XCA3x6A/XV68fTEU4Y=",
-//   urlEndpoint: "https://ik.imagekit.io/FFSD0037/",
-// });
-
-async function handleUpload(e) {
-  e.preventDefault();
+async function getAuth() {
   console.log('imsgekit');
   
   let res=await fetch('/imagKitauth')
-  res=await res.json();
-  console.log(res);
+  return res;
 }
 
-imageupload.addEventListener('click',handleUpload);
-async function upload(data) {
-  const file = document.getElementById("file1");
-  const authenticationEndpoint = "https://your";
-  const authResponse = await fetch(authenticationEndpoint, {
-    method: "GET",
-    // You can also pass headers and validate the request source in the backend, or you can use headers for any other use case.
-    headers: {
-'Content-Type': 'application/json',
-      'Authorization': 'Bearer your-access-token',
-      'CustomHeader': 'CustomValue'
-    },
-  });
+imageupload.addEventListener('change',handleUpload);
+async function handleUpload() {
+  const authResponse=await getAuth();
 
-  if (!authResponse.ok) {
-    throw new Error("Failed to fetch auth details");
-  }
+  if (!authResponse.ok) throw new Error("Failed to fetch auth details");
 
   const authData = await authResponse.json();
+  var imagekit = new ImageKit({
+    publicKey: "public_wnJ6iUhf4XCA3x6A/XV68fTEU4Y=",
+    urlEndpoint: "https://ik.imagekit.io/FFSD0037/",
+  });
 
-  imagekit.upload({
-    file: file.files[0],
-    fileName: "abc.jpg",
-    tags: ["tag1"],
-    token: authData.token,
-    signature: authData.signature,
-    expire: authData.expire,
-  }, function(err, result) {
-    console.log(imagekit.url({
-      src: result.url,
-      transformation : [{ height: 300, width: 400}]
-    }));
-  })
-}
+  var file = document.getElementById("imageInput");
+    imagekit.upload({
+        file: file.files[0],
+        fileName: file.files[0].name || "sample-file.jpg",
+        tags: ["tag1"],
+        responseFields: "tags",
+        token: authData.token,
+        signature: authData.signature,
+        expire: authData.expire,
+    }, function (err, result) {
+        if (err) {
+            alert("Error in file upload. Check console logs for error response");
+            console.log(err);
+        } else {
+            alert("File uploaded. Check console logs for success response"+result.url);
+            console.log(result);
+        }
+    })
+  }
 
 function openOverlay() {
   event.preventDefault();
