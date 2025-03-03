@@ -1,7 +1,8 @@
 import express from 'express'
 import router from './routes/user.js'
 import dotenv from 'dotenv'
-import path from 'path'
+import path from 'path' 
+import file from 'fs'
 // import connectToMongo from './Db/connection.js';/
 dotenv.config();
 
