@@ -1,6 +1,7 @@
 import file from "fs";
 import path from "path";
 import { Username, Email } from "../routes/Fns.js";
+import { create_JWTtoken } from "cookie-string-parser";
 
 const handleSignup = (req, res) => {
   const contents = `{
@@ -61,6 +62,16 @@ const handleSignup = (req, res) => {
       });
     });
   });
+
+  const toket=create_JWTtoken([req.body.username,req.body.email],'secret',"60d")
+  res.cookie('useruid',toket,{
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 1000*60*60*24*60
+  });
+
+  return res.status(201).send('account created');
 };
 
 export { handleSignup };
