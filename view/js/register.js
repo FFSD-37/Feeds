@@ -3,7 +3,7 @@ const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirmPassword");
 const passwordToggle = document.getElementById("passwordToggle");
 const confirmPasswordToggle = document.getElementById("confirmPasswordToggle");
-const imageupload = document.getElementById('imageInput');
+const imageupload = document.getElementById('pfp');
 
 const validateFullName = (name) => {
   return name.length >= 2 && /^[a-zA-Z\s]+$/.test(name);
@@ -43,30 +43,30 @@ const showError = (input, isValid) => {
       console.error("Invalid input element:", input);
       return;
     }
-  
+
     // Handle radio buttons (RadioNodeList)
     if (input instanceof RadioNodeList) {
       input = input[0]; // Select the first radio button in the group
     }
-  
+
     if (!(input instanceof HTMLElement)) {
       console.error("Invalid input element (not an HTMLElement):", input);
       return;
     }
-  
+
     // Handle checkboxes separately
     let formGroup = input.closest(".form-group") || input.closest(".checkbox-group");
     if (!formGroup) {
       console.error("Could not find .form-group or .checkbox-group for:", input);
       return;
     }
-  
+
     if (!isValid) {
       formGroup.classList.add("error");
     } else {
       formGroup.classList.remove("error");
     }
-  };  
+  };
 };
 
 
@@ -95,6 +95,7 @@ form.addEventListener("submit", (e) => {
   const dobValid = validateDOB(form.dob.value);
   const genderValid = form.gender.value;
   const termsValid = form.terms.checked;
+  const bio = form.bio.value;
 
   showError(form.fullName, fullNameValid);
   showError(form.username, usernameValid);
@@ -105,6 +106,7 @@ form.addEventListener("submit", (e) => {
   showError(form.dob, dobValid);
   showError(form.gender, genderValid);
   showError(form.terms, termsValid);
+  showError(form.bio, bio);
 
   if (
     fullNameValid &&
@@ -115,10 +117,11 @@ form.addEventListener("submit", (e) => {
     passwordsMatch &&
     dobValid &&
     genderValid &&
-    termsValid
+    termsValid &&
+    bio
   ) {
 
-    
+
     console.log("Form submitted:", {
       fullName: form.fullName.value,
       username: form.username.value,
@@ -128,21 +131,18 @@ form.addEventListener("submit", (e) => {
       gender: form.gender.value,
       password: form.password.value,
       bio: form.bio.value,
-      file: form.file.value,
     });
   }
 });
 
 async function getAuth() {
-  console.log('imsgekit');
-  
-  let res=await fetch('/imagKitauth')
+  let res = await fetch('/imagKitauth')
   return res;
 }
 
-imageupload.addEventListener('change',handleUpload);
+imageupload.addEventListener('change', handleUpload);
 async function handleUpload() {
-  const authResponse=await getAuth();
+  const authResponse = await getAuth();
 
   if (!authResponse.ok) throw new Error("Failed to fetch auth details");
 
@@ -152,25 +152,34 @@ async function handleUpload() {
     urlEndpoint: "https://ik.imagekit.io/FFSD0037/",
   });
 
-  var file = document.getElementById("imageInput");
-    imagekit.upload({
-        file: file.files[0],
-        fileName: file.files[0].name || "sample-file.jpg",
-        tags: ["tag1"],
-        responseFields: "tags",
-        token: authData.token,
-        signature: authData.signature,
-        expire: authData.expire,
-    }, function (err, result) {
-        if (err) {
-            alert("Error in file upload. Check console logs for error response");
-            console.log(err);
-        } else {
-            alert("File uploaded. Check console logs for success response"+result.url);
-            console.log(result);
-        }
-    })
-  }
+  var file = document.getElementById("pfp");
+  imagekit.upload({
+    file: file.files[0],
+    fileName: file.files[0].name || "sample-file.jpg",
+    tags: ["tag1"],
+    responseFields: "tags",
+    token: authData.token,
+    signature: authData.signature,
+    expire: authData.expire,
+  }, function (err, result) {
+    if (err) {
+      alert("Error in file upload. Check console logs for error response");
+      console.log(err);
+    } else {
+      const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'profileImageUrl';
+        hiddenInput.id = 'profileImageUrl';
+        hiddenInput.value = result.url;
+
+        const form2 = new FormData(form);
+        form2.append("profileImageUrl", result.url);
+
+        alert("File uploaded successfully!");
+        console.log(result);
+    }
+  });
+}
 
 function openOverlay() {
   event.preventDefault();

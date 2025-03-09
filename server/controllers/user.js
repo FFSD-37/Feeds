@@ -4,6 +4,10 @@ import { Username, Email } from "../routes/Fns.js";
 import { create_JWTtoken } from "cookie-string-parser";
 
 const handleSignup = (req, res) => {
+  // Get profile picture URL from the hidden field or use empty string as default
+  const profilePictureUrl = req.body.profileImageUrl || "";
+  console.log(profilePictureUrl);
+  
   const contents = `{
       "fullName": "${req.body.fullName}",
       "username": "${req.body.username}",
@@ -11,10 +15,10 @@ const handleSignup = (req, res) => {
       "phone": "${req.body.phone}",
       "password": "${req.body.password}", 
       "dob": "${req.body.dob}",
-      "profilePicture": "${req.file ? req.file.filename : ""}",
+      "profilePicture": "${profilePictureUrl}",
       "bio": "${req.body.bio || ""}",
       "gender": "${req.body.gender}",
-      "termsAccepted": ${req.body.terms ? true : false}
+      "termsAccepted": ${req.body.terms ? false : true}
     }`;
 
   const pat = path.resolve(`routes/Users/${req.body.username}.json`);
@@ -46,32 +50,35 @@ const handleSignup = (req, res) => {
         }
 
         console.log("File written successfully!!");
-        res.status(200).render("Registration", { msg: "User registered successfully!" });
+        
+        // Create JWT token after successful file write
+        // const token = create_JWTtoken([req.body.username, req.body.email], 'secret', "60d");
+        
+        // // Set cookie
+        // res.cookie('useruid', token, {
+        //   httpOnly: true,
+        //   secure: true,
+        //   sameSite: 'none',
+        //   maxAge: 1000*60*60*24*60
+        // });
+
+        // Return success response
+        return res.status(201).send('account created');
       });
 
-      file.writeFile(path.resolve(`routes/usernames.txt`), req.body.username, (err) => {
+      file.appendFile(path.resolve(`routes/usernames.txt`), req.body.username, (err) => {
         if (err) {
           console.log("ERROR: ", err);
         }
       });
 
-      file.writeFile(path.resolve(`routes/Emails.txt`), req.body.email, (err) => {
+      file.append(path.resolve(`routes/Emails.txt`), req.body.email, (err) => {
         if (err) {
           console.log("ERROR: ", err);
         }
       });
     });
   });
-
-  const toket=create_JWTtoken([req.body.username,req.body.email],'secret',"60d")
-  res.cookie('useruid',toket,{
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    maxAge: 1000*60*60*24*60
-  });
-
-  return res.status(201).send('account created');
 };
 
 export { handleSignup };

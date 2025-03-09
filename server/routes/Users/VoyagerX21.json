@@ -3,10 +3,10 @@
       "username": "VoyagerX21",
       "email": "khakse2gaurav2003@gmail.com",
       "phone": "8527054595",
-      "password": "Khakse@123", 
+      "password": "dd@123", 
       "dob": "2003-05-21",
-      "profilePicture": "", 
-      "bio": "",
+      "profilePicture": "0",
+      "bio": "Be Kind",
       "gender": "male",
-      "termsAccepted": false
+      "termsAccepted": true
     }
