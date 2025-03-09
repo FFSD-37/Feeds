@@ -166,17 +166,9 @@ async function handleUpload() {
       alert("Error in file upload. Check console logs for error response");
       console.log(err);
     } else {
-      const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = 'profileImageUrl';
-        hiddenInput.id = 'profileImageUrl';
-        hiddenInput.value = result.url;
-
-        const form2 = new FormData(form);
-        form2.append("profileImageUrl", result.url);
-
-        alert("File uploaded successfully!");
-        console.log(result);
+      document.getElementById("profileImageUrl").value = result.url;
+      alert("File uploaded successfully!");
+      console.log(result);
     }
   });
 }

@@ -6,7 +6,7 @@ import { create_JWTtoken } from "cookie-string-parser";
 const handleSignup = (req, res) => {
   // Get profile picture URL from the hidden field or use empty string as default
   const profilePictureUrl = req.body.profileImageUrl || "";
-  console.log(profilePictureUrl);
+  console.log(req.body);
   
   const contents = `{
       "fullName": "${req.body.fullName}",
