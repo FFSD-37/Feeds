@@ -6,9 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const identifierError = document.getElementById('identifierError');
     const passwordToggle = document.getElementById('passwordToggle');
     const password = document.getElementById('password');
+    const toggle = document.getElementById('identifykro');
 
     loginToggle.addEventListener('change', function () {
-        if (this.checked) {
+        if (!this.checked) {
             identifierLabel.textContent = 'Email';
             identifier.type = 'email';
             identifier.placeholder = 'Enter your email address';
@@ -32,47 +33,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('loginForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        let valid = true;
-        const identifierGroup = identifier.parentElement;
-        const passwordGroup = password.parentElement;
-
-        if (loginToggle.checked) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(identifier.value)) {
-                identifierGroup.classList.add('error');
-                valid = false;
-            } else {
-                identifierGroup.classList.remove('error');
-            }
-        } else {
-            if (identifier.value.length < 3) {
-                identifierGroup.classList.add('error');
-                valid = false;
-            } else {
-                identifierGroup.classList.remove('error');
-            }
+        // e.preventDefault();
+        if(identifier.type == 'text'){
+            toggle.value = "username"
         }
-
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
-        if (!passwordRegex.test(password.value)) {
-            passwordGroup.classList.add('error');
-            valid = false;
-        } else {
-            passwordGroup.classList.remove('error');
-        }
-
-        if (valid) {
-            const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Logging in...';
-
-            setTimeout(() => {
-                alert('Login successful!');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Login';
-            }, 1500);
+        else{
+            toggle.value = "email";
         }
     });
 });

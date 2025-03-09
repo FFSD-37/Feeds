@@ -1,5 +1,5 @@
 import express from "express";
-import { handleSignup } from "../controllers/user.js";
+import { handleSignup, handleLogin } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 // import externals from './Fns.js';
 
@@ -8,12 +8,15 @@ const router = express.Router();
 router.get("/login", (req, res) => {
   res.render("login", {
     loginType: null,
+    msg: null,
   });
 });
 
 router.get("/signup", (req, res) => {
   res.render("Registration", {msg: ""});
 });
+
+router.post("/login", handleLogin);
 
 router.post("/signup", handleSignup);
 

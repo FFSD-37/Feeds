@@ -1,0 +1,273 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  display: flex;
+  background-color: #ffffff;
+  height: 100vh;
+  background: linear-gradient(#8199d1, #6b48ff22);
+  transition: background-color 1s ease-in-out;
+}
+
+.blur-background {
+  filter: blur(5px);
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.left-section {
+  width: 30%;
+  padding: 10px;
+  height: 100%;
+}
+
+.right-section {
+  width: 53%;
+  height: 100%;
+  overflow-y: auto;
+  padding-top: 10px;
+  padding-left: 10px;
+  border-left: 1px solid black;
+}
+
+.right-section::-webkit-scrollbar {
+  width: 3px;
+}
+
+.right-section::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border-radius: 3px;
+}
+
+h1 {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+h2 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center;
+  margin-top: 15%;
+}
+
+.reels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* Positive value for gaps */
+  justify-content: center;
+  width: 62%;
+  margin-left: 20%;
+}
+
+.reels-grid2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* Positive value for gaps */
+  justify-content: center;
+  width: 62%;
+  margin-left: 20%;
+  margin-bottom: 10%;
+}
+
+.reel {
+  height: 150px;
+  width: 100%; /* Increased from 80% to fill more space */
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  margin: 0; /* Clean margins */
+  justify-self: start; /* Align items to the left of their grid cell */
+}
+
+.reels-grid img {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.reels-grid2 img {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.post-content img {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.divider {
+  height: 2px;
+  background-color: #111010;
+  margin: 20px 0;
+}
+
+.divider2 {
+  height: 2px;
+  background-color: #111010;
+  margin: 10px 10px;
+  width: 70%;
+  margin-left: 15%;
+}
+
+.divider3 {
+  height: 1px;
+  background-color: #111010;
+  margin: 10px 10px;
+  width: 60%;
+  margin-left: 20%;
+  border: 2px dotted black;
+}
+
+.footer {
+  font-size: 12px;
+  color: #0c0c0c;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.footer a {
+  color: #090808;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.post {
+  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  width: 70%;
+}
+
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 10px;
+  border: 1px solid black;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.post-time {
+  font-size: 12px;
+  color: #100e0e;
+  margin-left: 6px;
+  font-weight: bold;
+}
+
+.post-options {
+  margin-left: auto;
+  color: black;
+}
+
+.post-content {
+  height: 550px;
+  width: 70%;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+}
+
+.post-actions {
+  display: flex;
+  align-items: top;
+  padding: 10px;
+  width: 70%;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  border-radius: 50%;
+}
+
+.last-action-icon {
+  width: 20px;
+  margin-left: auto;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.dropdown-menu {
+  width: 150px;
+  background-color: #aa8edf;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+
+.menu-item {
+  padding: 10px 0;
+  text-align: center;
+  border-bottom: 1px solid #131313;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #010101;
+  color: rgb(156, 165, 220);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.danger {
+  color: #ffffff;
+}
+
+.normal {
+  color: rgb(255, 255, 255);
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1); /* Slight dark overlay */
+  backdrop-filter: blur(4px); /* Apply blur */
+  display: none; /* Initially hidden */
+  z-index: 1000;
+}

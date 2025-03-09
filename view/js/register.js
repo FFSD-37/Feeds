@@ -163,11 +163,9 @@ async function handleUpload() {
     expire: authData.expire,
   }, function (err, result) {
     if (err) {
-      alert("Error in file upload. Check console logs for error response");
       console.log(err);
     } else {
       document.getElementById("profileImageUrl").value = result.url;
-      alert("File uploaded successfully!");
       console.log(result);
     }
   });

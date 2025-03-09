@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Page</title>
     <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+
   </head>
   <body>
     <div class="login-container">
@@ -12,7 +14,12 @@
         <h1>Welcome Back</h1>
         <p>Please login to continue</p>
       </div>
-      <form id="loginForm" novalidate>
+      <% if (msg) { %>
+        <div class="alert alert-danger" role="alert">
+          <%= msg %>
+        </div>
+      <% } %>
+      <form id="loginForm" method="POST" action="/login" novalidate>
         <div class="form-group toggle-group">
           <div class="toggle-container">
             <div class="toggle-switch">
@@ -27,19 +34,20 @@
         </div>
         <div class="form-group">
           <label for="identifier" id="identifierLabel">
-            <%= loginType && loginType === 'Email' ? 'Email' : 'Username' %>
+            <%= loginType && loginType === 'Username' ? 'Username' : 'Email' %>
           </label>
+          <input type="hidden" id="identifykro" name="identifykro"/>
           <input
             type="text"
             id="identifier"
             name="identifier"
-            placeholder="Enter your <%= loginType && loginType === 'Email' ? 'email' : 'username' %>"
+            placeholder="Enter your <%= loginType && loginType === 'Username' ? 'username' : 'email address' %>"
             required
           />
           <div class="error-message" id="identifierError">
-            Please enter a valid <%= loginType && loginType === 'Email' ? 'email' : 'username' %>
+            Please enter a valid <%= loginType && loginType === 'Username' ? 'Username' : 'Email' %>
           </div>
-        </div>
+        </div>    
         <div class="form-group">
           <label for="password">Password</label>
           <input
