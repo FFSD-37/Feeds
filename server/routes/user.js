@@ -1,5 +1,5 @@
 import express from "express";
-import { handleSignup, handleLogin } from "../controllers/user.js";
+import { handleSignup, handleLogin, sendotp, verifyotp, updatepass } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 // import externals from './Fns.js';
 
@@ -21,9 +21,15 @@ router.post("/login", handleLogin);
 router.post("/signup", handleSignup);
 
 router.get("/forget-password", (req, res) => {
-  res.render("Forgot_pass");
+  res.render("Forgot_pass", {msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES"});
 });
 
-router.get('/imagKitauth',handleimagKitauth)
+router.post("/sendotp", sendotp);
+
+router.post("/verifyotp", verifyotp);
+
+router.post("/updatepass", updatepass);
+
+router.get('/imagKitauth',handleimagKitauth);
 
 export default router;

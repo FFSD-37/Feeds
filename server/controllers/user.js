@@ -1,5 +1,6 @@
 import file from "fs";
 import path from "path";
+import nodemailer from 'nodemailer';
 import { Username, Email } from "../routes/Fns.js";
 // import { create_JWTtoken } from "cookie-string-parser"; // Uncomment when needed
 
@@ -24,7 +25,6 @@ const handleSignup = (req, res) => {
   const usernamesPath = path.resolve(`routes/usernames.txt`);
   const emailsPath = path.resolve(`routes/Emails.txt`);
 
-  // Check if username already exists
   Username(uname, (err, data) => {
     if (err) {
       console.error("ERROR:", err);
@@ -34,7 +34,6 @@ const handleSignup = (req, res) => {
       return res.render("Registration", { msg: "Username already taken" });
     }
 
-    // Check if email already exists
     Email(mail, (err2, data2) => {
       if (err2) {
         console.error("ERROR:", err2);
@@ -90,7 +89,6 @@ const handleSignup = (req, res) => {
 };
 
 const handleLogin = (req, res) => {
-  console.log(req.body);
   if (req.body.identifykro == 'username') {
     Username(req.body.identifier, (err, data) => {
       if (err) {
@@ -147,4 +145,128 @@ const handleLogin = (req, res) => {
   }
 };
 
-export { handleSignup, handleLogin };
+function generateOTP() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let otp = '';
+  for (let i = 0; i < 6; i++) {
+    otp += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return otp;
+}
+
+const sendotp = async (req, res) => {
+  const mail = req.body.email;
+  Email(mail, async (err2, data2) => {
+    if (err2) {
+      console.error("ERROR:", err2);
+      return res.status(500).render("Forgot_pass", { msg: "Internal Server Error" });
+    }
+
+    if (!data2) {
+      return res.render("Forgot_pass", { msg: "Email not registered" });
+    }
+
+    const otp = generateOTP();
+
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    let mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: mail,
+      subject: 'Your OTP Code',
+      text: `Your OTP for resetting the password is: ${otp}`
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
+        let jsonData = {};
+        if (!err && data) {
+          jsonData = JSON.parse(data);
+        }
+        jsonData[mail] = otp;
+        file.writeFile(path.resolve(`controllers/otps.json`), JSON.stringify(jsonData, null, 2), 'utf8', (writeErr) => {
+          if (writeErr) {
+            console.error('Error writing to file:', writeErr);
+          } else {
+            console.log(`OTP for ${mail} saved successfully.`);
+          }
+        });
+      })
+      return res.render("Forgot_pass", { msg: "OTP Sent successfully!!", otpsec: "YES", newpass: "NO", emailsec: "NO" });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ msg: "Failed to send OTP" });
+    }
+  });
+};
+
+const verifyotp = (req, res) => {
+  file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
+    let jsonData = {};
+    if (!err && data) {
+      jsonData = JSON.parse(data);
+    }
+    if (jsonData[req.body.foremail] == req.body.otp) {
+      return res.render("Forgot_pass", { msg: "OTP Verified", otpsec: "NO", newpass: "YES", emailsec: "NO" })
+    }
+    else {
+      return res.render("Forgot_pass", { msg: "Invalid OTP", otpsec: "YES", newpass: "NO", emailsec: "NO" })
+    }
+  })
+};
+
+const updatepass = (req, res) => {
+  if (req.body.new_password != req.body.new_password2) {
+    return res.render("Forgot_pass", { msg: "Password mismatch", otpsec: "NO", newpass: "YES", emailsec: "NO" })
+  }
+  else {
+    file.readFile(path.resolve(`routes/Users/rel.json`), 'utf8', (err, data) => {
+      let jsonData = {};
+      if (!err && data) {
+        jsonData = JSON.parse(data);
+      }
+      var unamee = jsonData[req.body.foremail];
+      file.readFile(path.resolve(`routes/Users/${unamee}.json`), 'utf8', (err, data) => {
+        let jsonData2 = {};
+        if (!err && data) {
+          jsonData2 = JSON.parse(data);
+        }
+        if (jsonData2.password == req.body.new_password){
+          return res.render("Forgot_pass", { msg: "Same password as before", otpsec: "NO", newpass: "YES", emailsec: "NO" })
+        }
+        jsonData2.password = req.body.new_password;
+        file.writeFile(path.resolve(`routes/Users/${unamee}.json`), JSON.stringify(jsonData2, null, 2), 'utf8', (writeErr) => {
+          if (writeErr) {
+            console.error('Error writing to file:', writeErr);
+          } else {
+            console.log(`password updated`);
+          }
+        });
+      });
+      file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
+        let jsonData = {};
+        if (!err && data){
+          jsonData = JSON.parse(data);
+        }
+        jsonData[req.body.foremail] = '';
+        file.writeFile(path.resolve(`controllers/otps.json`), JSON.stringify(jsonData, null, 2), 'utf8', (writeErr) => {
+          if (writeErr) {
+            console.error('Error writing to file:', writeErr);
+          } else {
+            console.log(`OTP erased successfully!!`);
+          }
+        });
+      });
+    });
+    return res.render("login", {msg: "Password Updated!!", loginType: null});
+  }
+};
+
+export { handleSignup, handleLogin, sendotp, verifyotp, updatepass };
