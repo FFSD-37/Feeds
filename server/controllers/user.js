@@ -15,7 +15,7 @@ const handleSignup = (req, res) => {
     profilePicture: req.body.profileImageUrl,
     bio: req.body.bio || "",
     gender: req.body.gender,
-    termsAccepted: !!req.body.terms, // Converts to boolean
+    termsAccepted: !req.body.terms, // Converts to boolean
   };
 
   const uname = req.body.username;
@@ -80,7 +80,7 @@ const handleSignup = (req, res) => {
             }
             console.log("Updated rel.json successfully!");
 
-            return res.status(200).render("Login", { loginType: null, msg: "Registered Successfully!!" });
+            return res.status(200).render("login", { loginType: null, msg: "Registered Successfully!!" });
           });
         });
       });

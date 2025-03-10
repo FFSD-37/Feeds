@@ -44,7 +44,6 @@ const showError = (input, isValid) => {
       return;
     }
 
-    // Handle radio buttons (RadioNodeList)
     if (input instanceof RadioNodeList) {
       input = input[0]; // Select the first radio button in the group
     }
@@ -54,7 +53,6 @@ const showError = (input, isValid) => {
       return;
     }
 
-    // Handle checkboxes separately
     let formGroup = input.closest(".form-group") || input.closest(".checkbox-group");
     if (!formGroup) {
       console.error("Could not find .form-group or .checkbox-group for:", input);
@@ -84,8 +82,6 @@ const showError = (input, isValid) => {
 });
 
 form.addEventListener("submit", (e) => {
-  // e.preventDefault();
-
   const fullNameValid = validateFullName(form.fullName.value);
   const usernameValid = validateUsername(form.username.value);
   const emailValid = validateEmail(form.email.value);
@@ -120,7 +116,6 @@ form.addEventListener("submit", (e) => {
     termsValid &&
     bio
   ) {
-
 
     console.log("Form submitted:", {
       fullName: form.fullName.value,
