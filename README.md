@@ -2,6 +2,8 @@
 It is a personalized social media platform
 Let's start the project from tomorrow
 
-Gaurav will make the global css and js by 3rd march, till now using seperate files only
-
-@ARNAV : USE EMBEDDED JAVASCRIPT FOR THE BACKEND PART PLEASE TILL THE FIRST REVIEW
+Step 1: clone the project
+Step 2: Open the terminal in /server
+Step 3: npm start
+Step 4: Since the home page is not added to the routes yet hence go to the localhost:3000/login
+Step 5: Try anything you want
