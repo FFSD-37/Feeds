@@ -12,10 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
       let isAlreadyOpen = menu.style.display === "block";
       menus.forEach((m) => (m.style.display = "none"));
 
-      // Toggle dropdown
       menu.style.display = isAlreadyOpen ? "none" : "block";
 
-      // Show/hide overlay
       overlay.style.display = isAlreadyOpen ? "none" : "block";
     });
     menu.querySelectorAll(".menu-item").forEach((item) => {

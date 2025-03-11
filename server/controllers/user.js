@@ -2,6 +2,7 @@ import file from "fs";
 import path from "path";
 import nodemailer from 'nodemailer';
 import { Username, Email } from "../routes/Fns.js";
+import { runInNewContext } from "vm";
 // import { create_JWTtoken } from "cookie-string-parser"; // Uncomment when needed
 
 const handleSignup = (req, res) => {
@@ -12,16 +13,16 @@ const handleSignup = (req, res) => {
     phone: req.body.phone,
     password: req.body.password,
     dob: req.body.dob,
-    profilePicture: req.body.profileImageUrl,
+    profilePicture: req.body.profileImageUrl ? req.body.profileImageUrl : process.env.DEFAULT_USER_IMG,
     bio: req.body.bio || "",
     gender: req.body.gender,
-    termsAccepted: !req.body.terms, // Converts to boolean
+    termsAccepted: !req.body.terms
   };
 
   const uname = req.body.username;
   const mail = req.body.email;
   const userFilePath = path.resolve(`routes/Users/${uname}.json`);
-  const relFilePath = path.resolve(`routes/Users/rel.json`);
+  const relFilePath = path.resolve(`routes/rel.json`);
   const usernamesPath = path.resolve(`routes/usernames.txt`);
   const emailsPath = path.resolve(`routes/Emails.txt`);
 
@@ -43,7 +44,6 @@ const handleSignup = (req, res) => {
         return res.render("Registration", { msg: "Email already taken" });
       }
 
-      // Step 1: Write user JSON file
       file.writeFile(userFilePath, JSON.stringify(userData, null, 2), (err) => {
         if (err) {
           console.error("ERROR:", err);
@@ -51,7 +51,6 @@ const handleSignup = (req, res) => {
         }
         console.log("User file written successfully!");
 
-        // Step 2: Append username and email to respective files
         file.appendFile(usernamesPath, uname + "\n", (err) => {
           if (err) console.error("ERROR:", err);
         });
@@ -59,7 +58,6 @@ const handleSignup = (req, res) => {
           if (err) console.error("ERROR:", err);
         });
 
-        // Step 3: Update email-to-username mapping in rel.json
         file.readFile(relFilePath, "utf8", (err, data) => {
           let jsonData = {};
 
@@ -80,7 +78,7 @@ const handleSignup = (req, res) => {
             }
             console.log("Updated rel.json successfully!");
 
-            return res.status(200).render("login", { loginType: null, msg: "Registered Successfully!!" });
+            return res.render("login", { loginType: null, msg: "Registered Successfully!!" });
           });
         });
       });
@@ -105,7 +103,8 @@ const handleLogin = (req, res) => {
           jsonData = JSON.parse(data);
         }
         if (jsonData['password'] === req.body.password) {
-          return res.render("home");
+          process.env.CURR_USER_IMG = jsonData['profilePicture'];
+          return res.render("home", { img: jsonData['profilePicture'] });
         }
         else {
           return res.render("login", { loginType: null, msg: "Invalid Username or password!!" });
@@ -122,7 +121,7 @@ const handleLogin = (req, res) => {
       if (!data2) {
         return res.render("login", { loginType: "Username", msg: "Email not registered" });
       }
-      file.readFile(path.resolve(`routes/Users/rel.json`), 'utf8', (err, data) => {
+      file.readFile(path.resolve(`routes/rel.json`), 'utf8', (err, data) => {
         let jsonData = {};
         if (!err && data) {
           jsonData = JSON.parse(data);
@@ -134,7 +133,8 @@ const handleLogin = (req, res) => {
             jsonData = JSON.parse(data);
           }
           if (jsonData.password === req.body.password) {
-            return res.render("home");
+            process.env.CURR_USER_IMG = jsonData['profilePicture'];
+            return res.render("home", { img: jsonData['profilePicture'] });
           }
           else {
             return res.render("login", { loginType: null, msg: "Invalid password!!" });
@@ -155,7 +155,7 @@ function generateOTP() {
 }
 
 const sendotp = async (req, res) => {
-  const mail = req.body.email;
+  var mail = req.body.email;
   Email(mail, async (err2, data2) => {
     if (err2) {
       console.error("ERROR:", err2);
@@ -166,7 +166,7 @@ const sendotp = async (req, res) => {
       return res.render("Forgot_pass", { msg: "Email not registered" });
     }
 
-    const otp = generateOTP();
+    var otp = generateOTP();
 
     let transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -207,19 +207,62 @@ const sendotp = async (req, res) => {
   });
 };
 
-const verifyotp = (req, res) => {
-  file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
-    let jsonData = {};
-    if (!err && data) {
-      jsonData = JSON.parse(data);
+const verifyotp = async (req, res) => {
+  const action = req.body.action;
+  if (action == "verify") {
+    file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
+      let jsonData = {};
+      if (!err && data) {
+        jsonData = JSON.parse(data);
+      }
+      if (jsonData[req.body.foremail] == req.body.otp) {
+        return res.render("Forgot_pass", { msg: "OTP Verified", otpsec: "NO", newpass: "YES", emailsec: "NO" })
+      }
+      else {
+        return res.render("Forgot_pass", { msg: "Invalid OTP", otpsec: "YES", newpass: "NO", emailsec: "NO" })
+      }
+    });
+  }
+  else {
+    console.log(req.body);
+    const mail = req.body.foremail;
+    const otp = generateOTP();
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+    let mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: mail,
+      subject: 'Your OTP Code',
+      text: `Your OTP for resetting the password is: ${otp}`
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
+        let jsonData = {};
+        if (!err && data) {
+          jsonData = JSON.parse(data);
+        }
+        jsonData[mail] = otp;
+        file.writeFile(path.resolve(`controllers/otps.json`), JSON.stringify(jsonData, null, 2), 'utf8', (writeErr) => {
+          if (writeErr) {
+            console.error('Error writing to file:', writeErr);
+          } else {
+            console.log(`OTP for ${mail} saved successfully.`);
+          }
+        });
+      })
+      return res.render("Forgot_pass", { msg: "OTP Sent successfully!!", otpsec: "YES", newpass: "NO", emailsec: "NO" });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ msg: "Failed to send OTP" });
     }
-    if (jsonData[req.body.foremail] == req.body.otp) {
-      return res.render("Forgot_pass", { msg: "OTP Verified", otpsec: "NO", newpass: "YES", emailsec: "NO" })
-    }
-    else {
-      return res.render("Forgot_pass", { msg: "Invalid OTP", otpsec: "YES", newpass: "NO", emailsec: "NO" })
-    }
-  })
+  }
 };
 
 const updatepass = (req, res) => {
@@ -227,7 +270,7 @@ const updatepass = (req, res) => {
     return res.render("Forgot_pass", { msg: "Password mismatch", otpsec: "NO", newpass: "YES", emailsec: "NO" })
   }
   else {
-    file.readFile(path.resolve(`routes/Users/rel.json`), 'utf8', (err, data) => {
+    file.readFile(path.resolve(`routes/rel.json`), 'utf8', (err, data) => {
       let jsonData = {};
       if (!err && data) {
         jsonData = JSON.parse(data);
@@ -238,7 +281,7 @@ const updatepass = (req, res) => {
         if (!err && data) {
           jsonData2 = JSON.parse(data);
         }
-        if (jsonData2.password == req.body.new_password){
+        if (jsonData2.password == req.body.new_password) {
           return res.render("Forgot_pass", { msg: "Same password as before", otpsec: "NO", newpass: "YES", emailsec: "NO" })
         }
         jsonData2.password = req.body.new_password;
@@ -252,7 +295,7 @@ const updatepass = (req, res) => {
       });
       file.readFile(path.resolve(`controllers/otps.json`), 'utf8', (err, data) => {
         let jsonData = {};
-        if (!err && data){
+        if (!err && data) {
           jsonData = JSON.parse(data);
         }
         jsonData[req.body.foremail] = '';
@@ -265,7 +308,7 @@ const updatepass = (req, res) => {
         });
       });
     });
-    return res.render("login", {msg: "Password Updated!!", loginType: null});
+    return res.render("login", { msg: "Password Updated!!", loginType: null });
   }
 };
 

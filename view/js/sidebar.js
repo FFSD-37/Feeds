@@ -9,16 +9,6 @@ function hideLogoutModal() {
   document.body.style.overflow = "";
 }
 
-function confirmLogout() {
-  const logoutBtn = document.querySelector(".logout-btn");
-  logoutBtn.innerHTML = "Logging out...";
-  logoutBtn.disabled = true;
-
-  setTimeout(() => {
-    window.location.href = "login.html";
-  }, 1000);
-}
-
 document.getElementById("logoutModal").addEventListener("click", (e) => {
   if (e.target === e.currentTarget) {
     hideLogoutModal();

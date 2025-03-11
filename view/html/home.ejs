@@ -326,7 +326,7 @@
             /></svg
           ><span class="tooltip">Reels</span></a
         >
-        <a href="games.html" class="icon-container"
+        <a href="/games" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -354,7 +354,7 @@
         >
         <li class="nav-item profile">
           <a href="profile.html">
-            <img src="Done/pfp.png" alt="Profile" />
+            <img src="<%- img %>" alt="Profile" />
           </a>
           <div class="profile-dropdown">
             <a href="profile.html">View Profile</a>
@@ -362,7 +362,7 @@
             <a href="daily_usage.html">See Daily Usage</a>
             <a href="manage_prof.html">Manage Profile</a>
             <a href="#" onclick="showLogoutModal(); return false;">Logout</a>
-            <a href="help.html">Help & Support</a>
+            <a href="/help">Help & Support</a>
           </div>
         </li>
       </div>
@@ -378,9 +378,11 @@
             <button class="cancel-btn" onclick="hideLogoutModal()">
               Cancel
             </button>
-            <button class="logout-btn" onclick="confirmLogout()">
+            <form id="logout" action="/logout" method="POST">
+            <button class="logout-btn" type="submit">
               Log Out
             </button>
+            </form>
           </div>
         </div>
       </div>

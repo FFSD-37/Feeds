@@ -43,3 +43,9 @@ button:hover {
 .hidden {
     display: none;
 }
+
+#verifyotp{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
