@@ -1,63 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forgot Password</title>
-    <link rel="stylesheet" href="../css/forgot-pass.css" />
-    <link rel="stylesheet" href="../css/alert.css" />
-  </head>
 
-  <body>
-    <div class="forgot-password-container">
-      <h2>Forgot Password?</h2>
-      <p>Enter registered email to receive a OTP</p>
-      <% if (msg) { %>
-      <div class="alert"><%- msg %></div>
-      <% } %> <% if (emailsec == 'YES') { %>
-      <form action="/sendotp" method="POST" id="sendotp">
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          name="email"
-          required
-        />
-        <button type="submit">Send OTP</button>
-      </form>
-      <% } %> <% if (otpsec == 'YES') { %>
-      <form action="/verifyotp" method="POST" id="verifyotp">
-        <input type="hidden" id="foremail" name="foremail" />
-        <input type="text" id="otp" name="otp" placeholder="Enter OTP" />
-        <button type="submit" name="action" value="resend" id="resend">Resend OTP</button>
-        <button type="submit" name="action" value="verify" id="verify">Verify OTP</button>
-      </form>
-      <% } %> <% if (newpass == 'YES') { %>
-      <form action="/updatepass" method="POST" id="updatepass">
-        <input type="hidden" id="foremail" name="foremail" />
-          <input
-            type="password"
-            id="new-password"
-            name="new_password"
-            placeholder="Enter new password"
-          />
-          <input
-            type="password"
-            id="new-password2"
-            name="new_password2"
-            placeholder="Confirm new password"
-          />
-          <button type="submit">Reset Password</button>
-      </form>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forgot Password</title>
+  <link rel="stylesheet" href="../css/forgot-pass.css" />
+  <link rel="stylesheet" href="../css/alert.css" />
+</head>
+
+<body>
+  <div class="forgot-password-container">
+    <h2>Forgot Password?</h2>
+    <p>Enter registered email to receive a OTP</p>
+    <% if (msg) { %>
+      <div class="alert" role="alert">
+        <div class="alert-tex"><%- msg %></div>
+        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+      </div>
       <% } %>
-      <p>
-        <a href="login" style="text-decoration: none; color: black"
-          >Back to Login</a
-        >
-      </p>
-    </div>
+        <% if (emailsec=='YES' ) { %>
+          <form action="/sendotp" method="POST" id="sendotp">
+            <input type="email" id="email" placeholder="Enter your email" name="email" required />
+            <button type="submit">Send OTP</button>
+          </form>
+          <% } %>
+            <% if (otpsec=='YES' ) { %>
+              <form action="/verifyotp" method="POST" id="verifyotp">
+                <input type="hidden" id="foremail" name="foremail" />
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP" />
+                <button type="submit" name="action" value="resend" id="resend">Resend OTP</button>
+                <button type="submit" name="action" value="verify" id="verify">Verify OTP</button>
+              </form>
+              <% } %>
+                <% if (newpass=='YES' ) { %>
+                  <form action="/updatepass" method="POST" id="updatepass">
+                    <input type="hidden" id="foremail" name="foremail" />
+                    <input type="password" id="new-password" name="new_password" placeholder="Enter new password" />
+                    <input type="password" id="new-password2" name="new_password2" placeholder="Confirm new password" />
+                    <button type="submit">Reset Password</button>
+                  </form>
+                  <% } %>
+                    <p>
+                      <a href="login" style="text-decoration: none; color: black">Back to Login</a>
+                    </p>
+  </div>
 
-    <script src="../js/forgot-pass.js"></script>
-    <script src="../js/background.js"></script>
-  </body>
+  <script src="../js/forgot-pass.js"></script>
+  <script src="../js/background.js"></script>
+</body>
+
 </html>
