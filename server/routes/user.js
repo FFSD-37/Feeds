@@ -1,5 +1,4 @@
 import express from "express";
-import file from 'fs';
 import { handleSignup, handleLogin, sendotp, verifyotp, updatepass } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 
@@ -10,11 +9,11 @@ router.get("/", (req, res) => {
 });
 
 router.get("/home", (req, res) => {
-  return res.render("home", {img: "https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_b8m7MLivq2.jpg" })
+  return res.render("home", {img: process.env.CURR_USER_IMG })
 });
 
 router.get("/payment", (req, res) => {
-  return res.render("payment");
+  return res.render("payment", {img: process.env.CURR_USER_IMG});
 })
 
 router.get("/games", (req, res) => {

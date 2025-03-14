@@ -2,8 +2,6 @@ import file from "fs";
 import path from "path";
 import nodemailer from 'nodemailer';
 import { Username, Email } from "../routes/Fns.js";
-import { runInNewContext } from "vm";
-// import { create_JWTtoken } from "cookie-string-parser"; // Uncomment when needed
 
 const handleSignup = (req, res) => {
   const userData = {
@@ -78,7 +76,7 @@ const handleSignup = (req, res) => {
             }
             console.log("Updated rel.json successfully!");
 
-            return res.render("login", { loginType: null, msg: "Registered Successfully!!" });
+            return res.render("login", { loginType: 'Email', msg: "Registered Successfully!!" });
           });
         });
       });
