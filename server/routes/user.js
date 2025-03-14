@@ -14,7 +14,15 @@ router.get("/home", (req, res) => {
 
 router.get("/payment", (req, res) => {
   return res.render("payment", {img: process.env.CURR_USER_IMG});
-})
+});
+
+router.get("/tandc", (req, res) => {
+  return res.render("tandc", {img: process.env.CURR_USER_IMG});
+});
+
+router.get("/contact", (req, res) => {
+  return res.render("contact", {img: process.env.CURR_USER_IMG});
+});
 
 router.get("/games", (req, res) => {
   return res.render("games");
