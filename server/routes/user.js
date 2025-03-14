@@ -13,6 +13,10 @@ router.get("/home", (req, res) => {
   return res.render("home", {img: "https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_b8m7MLivq2.jpg" })
 });
 
+router.get("/payment", (req, res) => {
+  return res.render("payment");
+})
+
 router.get("/games", (req, res) => {
   return res.render("games");
 })
