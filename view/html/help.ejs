@@ -1,26 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Help Center</title>
-    <link rel="stylesheet" href="../css/help.css" />
-    <link rel="stylesheet" href="../css/sidebar.css" />
-  </head>
-  <body>
-    <%- include('sidebar') %>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center</title>
+  <link rel="stylesheet" href="../css/help.css" />
+  <link rel="stylesheet" href="../css/sidebar.css" />
+</head>
+
+<body>
+  <%- include('sidebar') %>
     <div class="container">
       <h1>Help Center</h1>
       <div class="search-container">
-        <svg
-          class="search-icon"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
@@ -31,28 +26,19 @@
 
       <div class="contact-support">
         <p><strong>Can't find what you're looking for?</strong></p>
-        <button class="contact-btn">
-          <a href="contact.html" style="text-decoration: none; color:black;">
-            Contact Support</a
-          >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-            ></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-        </button>
+        <a href="/contact" style="text-decoration: none; color:black;">
+          <button class="contact-btn">
+            Contact Support
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </button></a>
       </div>
     </div>
     <script src="../js/background.js"></script>
     <script src="../js/help.js"></script>
-  </body>
+</body>
+
 </html>

@@ -8,9 +8,6 @@ const imagekit = new ImageKit({
 
 const handleimagKitauth=(req,res)=>{
     try {
-        // console.log(req.body);
-        
-        
     const authParams = imagekit.getAuthenticationParameters();
     return res.json(authParams);
     } catch (error) {

@@ -24,6 +24,10 @@ router.get("/contact", (req, res) => {
   return res.render("contact", {img: process.env.CURR_USER_IMG});
 });
 
+router.get("/connect", (req, res) => {
+  return res.render("connect", {img: process.env.CURR_USER_IMG})
+})
+
 router.get("/games", (req, res) => {
   return res.render("games");
 })
@@ -48,7 +52,7 @@ router.post("/login", handleLogin);
 router.post("/signup", handleSignup);
 
 router.get("/forget-password", (req, res) => {
-  res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES" });
+  res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
 });
 
 router.post("/logout", (req, res) => {
