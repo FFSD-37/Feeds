@@ -1,5 +1,3 @@
-import file from "fs";
-import path from "path";
 import nodemailer from 'nodemailer';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
