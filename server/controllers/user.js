@@ -3,12 +3,12 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 
 const dbPromise = open({
-  filename: './controllers/imdb.sqlite', // Path to database file
-  driver: sqlite3.Database // Use sqlite3 as the driver
+  filename: './controllers/imdb.sqlite',
+  driver: sqlite3.Database
 });
 
 async function setupDatabase() {
-  const db = await dbPromise; // Wait for the database connection
+  const db = await dbPromise;
   await db.exec(`
     CREATE TABLE IF NOT EXISTS otps (
       email TEXT PRIMARY KEY,
@@ -19,11 +19,10 @@ async function setupDatabase() {
   console.log("✅ Database & table setup complete!");
 }
 
-// Initialize the database on startup
 setupDatabase().catch(console.error);
 
 async function storeOtp(email, otp) {
-  const db = await dbPromise; // Ensure database is ready
+  const db = await dbPromise;
   await db.run(
     `INSERT INTO otps (email, otp) VALUES (?, ?)
     ON CONFLICT(email) DO UPDATE SET otp = excluded.otp, created_at = CURRENT_TIMESTAMP`,
@@ -45,15 +44,39 @@ let users = [
     "email": "khakse2gaurav2003@gmail.com",
     "phone": '8527054595',
     "password": "Khakse@123",
-    "dob": "21-05-2003",
-    "profilePicture": "",
+    "dob": "2003-05-21",
+    "profilePicture": "https://ik.imagekit.io/FFSD0037/WIN_20241229_22_47_54_Pro_1ajcB2M9r.jpg?updatedAt=1741976412981",
     "bio": "live once live fully",
     "gender": "male",
     "termsAccepted": true
+  },
+  {
+    "fullname": "Ayush",
+    "username": "bloomBoy",
+    "email": "2357ayush@gmail.com",
+    "phone": '9043125698',
+    "password": "yush@123",
+    "dob": "2005-09-20",
+    "profilePicture": "https://ik.imagekit.io/FFSD0037/FB_IMG_1694627814088_hFyTN6nXw.jpg?updatedAt=1741777451291",
+    "bio": "keep smiling",
+    "gender": "male",
+    "termsAccepted": true
+  },
+  {
+    "fullName": 'Atin Chowdhury',
+    "username": 'AtinUser',
+    "email": 'atin@gmail.com',
+    "phone": '8574961256',
+    "password": 'atin@123',
+    "dob": '2003-10-31',
+    "profilePicture": 'https://ik.imagekit.io/FFSD0037/OHR.EuropaMoon_EN-IN7952428847_UHD_3840_2160_Su1-MPj5k.jpg',
+    "bio": 'god is everything',
+    "gender": 'male',
+    "termsAccepted": true
   }
 ];
-let usernames = ['VoyagerX21'];
-let emails = ['khakse2gaurav2003@gmail.com'];
+let usernames = ['VoyagerX21', 'bloomBoy','AtinUser'];
+let emails = ['khakse2gaurav2003@gmail.com', '2357ayush@gmail.com','atin@gmail.com'];
 
 const handleSignup = (req, res) => {
   const userData = {

@@ -38,39 +38,48 @@ const validateDOB = (dob) => {
 };
 
 const showError = (input, isValid) => {
-  const showError = (input, isValid) => {
-    if (!input) {
-      console.error("Invalid input element:", input);
-      return;
-    }
+  if (!input) {
+    console.error("Invalid input element:", input);
+    return;
+  }
 
-    if (input instanceof RadioNodeList) {
-      input = input[0]; // Select the first radio button in the group
-    }
+  if (input instanceof RadioNodeList) {
+    input = input[0];
+  }
 
-    if (!(input instanceof HTMLElement)) {
-      console.error("Invalid input element (not an HTMLElement):", input);
-      return;
-    }
+  if (!(input instanceof HTMLElement)) {
+    console.error("Invalid input element (not an HTMLElement):", input);
+    return;
+  }
 
-    let formGroup = input.closest(".form-group") || input.closest(".checkbox-group");
-    if (!formGroup) {
-      console.error("Could not find .form-group or .checkbox-group for:", input);
-      return;
-    }
+  let formGroup = input.closest(".form-group") || input.closest(".checkbox-group");
+  if (!formGroup) {
+    console.error("Could not find .form-group or .checkbox-group for:", input);
+    return;
+  }
 
-    if (!isValid) {
-      formGroup.classList.add("error");
-    } else {
-      formGroup.classList.remove("error");
-    }
-  };
+  if (!isValid) {
+    formGroup.classList.add("error");
+  } else {
+    formGroup.classList.remove("error");
+  }
 };
 
+const showError2 = (input, isValid) => {
+  const errorele = input.closest(".checkbox-group").querySelector(".error-message");
 
-[passwordToggle, confirmPasswordToggle].forEach((toggle) => {
+  if (!isValid) {
+    errorele.style.display = "block";
+    input.classList.add("error");
+  } else {
+    errorele.style.display = "none";
+    input.classList.remove("error");
+  }
+};
+
+document.querySelectorAll(".password-toggle").forEach((toggle) => {
   toggle.addEventListener("click", () => {
-    const input = toggle.previousElementSibling;
+    const input = toggle.previousElementSibling.previousElementSibling;
     if (input.type === "password") {
       input.type = "text";
       toggle.textContent = "👁️‍🗨️";
@@ -82,6 +91,8 @@ const showError = (input, isValid) => {
 });
 
 form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
   const fullNameValid = validateFullName(form.fullName.value);
   const usernameValid = validateUsername(form.username.value);
   const emailValid = validateEmail(form.email.value);
@@ -89,9 +100,20 @@ form.addEventListener("submit", (e) => {
   const passwordValid = validatePassword(form.password.value);
   const passwordsMatch = form.password.value === form.confirmPassword.value;
   const dobValid = validateDOB(form.dob.value);
-  const genderValid = form.gender.value;
+  const genderValid = form.gender.value !== "";
   const termsValid = form.terms.checked;
-  const bio = form.bio.value;
+
+  console.log({
+    fullNameValid,
+    usernameValid,
+    emailValid,
+    phoneValid,
+    passwordValid,
+    passwordsMatch,
+    dobValid,
+    genderValid,
+    termsValid,
+  });
 
   showError(form.fullName, fullNameValid);
   showError(form.username, usernameValid);
@@ -101,10 +123,9 @@ form.addEventListener("submit", (e) => {
   showError(form.confirmPassword, passwordsMatch);
   showError(form.dob, dobValid);
   showError(form.gender, genderValid);
-  showError(form.terms, termsValid);
-  showError(form.bio, bio);
+  showError2(form.terms, termsValid);
 
-  if (
+  if (!(
     fullNameValid &&
     usernameValid &&
     emailValid &&
@@ -113,21 +134,13 @@ form.addEventListener("submit", (e) => {
     passwordsMatch &&
     dobValid &&
     genderValid &&
-    termsValid &&
-    bio
-  ) {
-
-    console.log("Form submitted:", {
-      fullName: form.fullName.value,
-      username: form.username.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      dob: form.dob.value,
-      gender: form.gender.value,
-      password: form.password.value,
-      bio: form.bio.value,
-    });
+    termsValid
+  )) {
+    console.log("Form validation failed. Not submitting.");
+    return;
   }
+
+  form.submit();
 });
 
 async function getAuth() {

@@ -30,8 +30,8 @@
             type="text"
             id="fullName"
             name="fullName"
-            required
             placeholder="Full name"
+            required
           />
           <div class="error-message">Please enter your full name</div>
         </div>
@@ -42,10 +42,10 @@
             type="text"
             id="username"
             name="username"
-            required
             placeholder="Fancy Username"
-            pattern="[A-Za-z]{1}[0-9a-zA-Z]{2, 18}"
+            pattern="[A-Za-z]{1}[0-9a-zA-Z]{2, 19}"
             title="Username must be 3-20 characters, letters and numbers only"
+            required
           />
           <div class="error-message">
             Username must be 3-20 characters, letters and numbers only
@@ -58,8 +58,8 @@
             type="email"
             id="email"
             name="email"
-            required
             placeholder="Email"
+            required
           />
           <div class="error-message">Please enter a valid email address</div>
         </div>
@@ -70,10 +70,10 @@
             type="tel"
             id="phone"
             name="phone"
-            required
             placeholder="Mobile number"
             pattern="[6-9]{1}[0-9]{9}"
             title="Number should of length 10 and cannot start with number less than 6"
+            required
           />
           <div class="error-message">Please enter a valid phone number</div>
         </div>
@@ -85,10 +85,10 @@
             id="password"
             name="password"
             placeholder="Password"
-            pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?&quot;:{}|<>]).{6,}$"
             title="Password must be at least 6 characters long, include one uppercase letter, one number, and one special character."
             required
           />
+          <div class="error-message">Password should be valid</div>
           <span class="password-toggle" id="passwordToggle">👁️</span>
         </div>
 
@@ -99,9 +99,9 @@
             id="confirmPassword"
             name="confirmPassword"
             placeholder="Password crosscheck"
-            oninput="this.setCustomValidity(this.value !== document.getElementById('password').value ? 'Passwords do not match!' : '')"
             required
           />
+          <div class="error-message">Password should match</div>
           <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
         </div>
 
