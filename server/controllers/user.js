@@ -248,7 +248,7 @@ const handleContact = (req, res) => {
     sub: req.body.subject,
     msg: req.body.message
   };
-  const pat = path.resolve(`routes/Responses/${req.body.subject}/${req.body.email}`);
+  const pat = path.resolve(`routes/Responses/${req.body.subject}/${req.body.email}.json`);
   fs.writeFile(pat, JSON.stringify(data, null, 2), (err) => {
     if (err){
       console.log("Error is writing file", err);
