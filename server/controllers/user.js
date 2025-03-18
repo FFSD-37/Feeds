@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import fs from 'fs';
+import path from 'path';
 
 const dbPromise = open({
   filename: './controllers/imdb.sqlite',
@@ -239,4 +241,22 @@ const updatepass = (req, res) => {
   }
 };
 
-export { handleSignup, handleLogin, sendotp, verifyotp, updatepass };
+const handleContact = (req, res) => {
+  const data = {
+    Name: req.body.name,
+    Email: req.body.email,
+    sub: req.body.subject,
+    msg: req.body.message
+  };
+  const pat = path.resolve(`routes/Responses/${req.body.subject}/${req.body.email}`);
+  fs.writeFile(pat, JSON.stringify(data, null, 2), (err) => {
+    if (err){
+      console.log("Error is writing file", err);
+    }
+    else{
+      return res.render("contact", {img: process.env.CURR_USER_IMG, msg: "Your response is noted, we'll get back to you soon."})
+    }
+  })
+}
+
+export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact };

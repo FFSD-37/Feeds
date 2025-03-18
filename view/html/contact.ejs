@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us</title>
     <link rel="stylesheet" href="../css/contact.css">
+    <link rel="stylesheet" href="../css/alert.css">
 </head>
 <body>
     <%- include('sidebar') %>
@@ -14,13 +15,20 @@
             <p class="subtitle">Have a question? We'd love to hear from you.</p>
         </div>
 
+        <% if (msg) { %>
+        <div class="alert" role="alert">
+          <div class="alert-text"><%= msg %></div>
+          <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+        </div>
+      <% } %>
+
         <div class="contact-info">
             <div class="info-card">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
                 <h3>Phone</h3>
-                <p>+91 8527054595</p>
+                <p>+91 8956741235</p>
                 <p>Mon-Fri 9am-6pm</p>
             </div> 
 
@@ -35,7 +43,7 @@
             </div>
         </div>
 
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" action="/contact" method="POST">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required>
@@ -63,9 +71,6 @@
             </div>
 
             <button type="submit">Send Message</button>
-            <div class="success-message" id="successMessage">
-                Thank you for your message! We'll get back to you soon.
-            </div>
         </form>
     </div>
     <script src="../js/contact.js"></script>

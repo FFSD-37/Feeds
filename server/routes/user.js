@@ -1,5 +1,5 @@
 import express from "express";
-import { handleSignup, handleLogin, sendotp, verifyotp, updatepass } from "../controllers/user.js";
+import { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 
 const router = express.Router();
@@ -21,7 +21,7 @@ router.get("/tandc", (req, res) => {
 });
 
 router.get("/contact", (req, res) => {
-  return res.render("contact", {img: process.env.CURR_USER_IMG});
+  return res.render("contact", {img: process.env.CURR_USER_IMG, msg: null});
 });
 
 router.get("/connect", (req, res) => {
@@ -50,6 +50,8 @@ router.get("/signup", (req, res) => {
 router.post("/login", handleLogin);
 
 router.post("/signup", handleSignup);
+
+router.post("/contact", handleContact);
 
 router.get("/forget-password", (req, res) => {
   res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
