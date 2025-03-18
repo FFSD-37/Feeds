@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Profile</title>
+    <link rel="stylesheet" href="../css/profile.css" />
+  </head>
+  <body>
+    <%- include('sidebar') %>
+    <div class="container">
+      <header class="profile-header">
+        <div class="profile-pic">
+          <img src="<%- img %>" alt="Profile Picture" />
+        </div>
+        <div class="profile-info">
+          <div class="profile-info-header">
+            <h2 class="username">__UserName___</h2>
+            <div class="settings" onclick="openSettings()">⚙️</div>
+          </div>
+          <div class="profile-stats">
+            <div class="stat"><span>0</span> posts</div>
+            <div class="stat"><span>386</span> followers</div>
+            <div class="stat"><span>422</span> following</div>
+          </div>
+          <div class="profile-info-header">
+            <button class="edit-profile">Edit Profile</button>
+            <button class="archive">Archive</button>
+          </div>
+          <div class="profile-bio">
+            Add a link to your website or other social media.<br />
+          </div>
+        </div>
+      </header>
+
+      <nav class="posts-nav">
+        <div
+          class="nav-item2 active"
+          data-tab="posts"
+          onclick="showTab('posts')"
+        >
+          📷 Posts
+        </div>
+        <div class="nav-item2" data-tab="saved" onclick="showTab('saved')">
+          🔖 Saved
+        </div>
+        <div class="nav-item2" data-tab="tagged" onclick="showTab('tagged')">
+          📌 Tagged
+        </div>
+      </nav>
+      <div id="posts" class="posts-grid">
+        <div class="post">
+          <img src="<%- img %>" alt="Post 1" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 2" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 3" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 4" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 5" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 6" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 7" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 8" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 9" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 5" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 6" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 7" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 8" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Post 9" />
+        </div>
+      </div>
+      <div id="saved" class="posts-grid hidden">
+        <div class="post">
+          <img src="<%- img %>" alt="Saved 1" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Saved 2" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Saved 3" />
+        </div>
+      </div>
+      <div id="tagged" class="posts-grid hidden">
+        <div class="post">
+          <img src="<%- img %>" alt="Tagged 1" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Tagged 2" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Tagged 3" />
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <a href="#"
+        ><a href="/contact" style="text-decoration: none; color: black"
+          >About</a
+        ></a
+      >
+      •
+      <a href="#"
+        ><a href="/help" style="text-decoration: none; color: black">Help</a></a
+      >
+      •
+      <a href="#"
+        ><a href="/tandc" style="text-decoration: none; color: black"
+          >Terms</a
+        ></a
+      >
+      •
+      <a href="#"
+        ><a
+          href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor/@13.5555453,80.0240735,17z/data=!3m1!4b1!4m6!3m5!1s0x3a4d773f1e0f8721:0xadb0842ffc2719e4!8m2!3d13.5555453!4d80.0266484!16s%2Fm%2F0wbmm91?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoASAFQAw%3D%3D"
+          style="text-decoration: none; color: black"
+          target="_blank"
+          >Locations</a
+        ></a
+      >
+      <p>
+        © 2025
+        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
+          >Feeds</a
+        >
+        from IIIT Sri-City
+      </p>
+    </div>
+    <script src="../js/profile.js"></script>
+    <script src="../js/background.js"></script>
+  </body>
+</html>

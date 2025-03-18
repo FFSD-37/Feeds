@@ -16,6 +16,10 @@ router.get("/payment", (req, res) => {
   return res.render("payment", {img: process.env.CURR_USER_IMG});
 });
 
+router.get("/profile", (req, res) => {
+  return res.render("profile", {img: process.env.CURR_USER_IMG});
+});
+
 router.get("/tandc", (req, res) => {
   return res.render("tandc", {img: process.env.CURR_USER_IMG});
 });
