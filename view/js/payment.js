@@ -31,7 +31,6 @@ document.getElementById("pay-btn").addEventListener("click", function () {
         currency: "INR",
         name: "ARNAV RANJAN",
         description: "Purchase Premium Membership",
-        /* "image": "logo.jpg", */
         handler: function (response) {
             alert(
                 "Payment Successful! Payment ID: " + response.razorpay_payment_id

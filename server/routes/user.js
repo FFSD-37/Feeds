@@ -32,6 +32,14 @@ router.get("/games", (req, res) => {
   return res.render("games");
 })
 
+router.get("/stories", (req, res) => {
+  return res.render("stories", {img: process.env.CURR_USER_IMG});
+})
+
+router.get("/reels", (req, res) => {
+  return res.render("reels", {img: process.env.CURR_USER_IMG});
+})
+
 router.get("/help", (req, res) => {
   return res.render("help", {img: process.env.CURR_USER_IMG});
 });

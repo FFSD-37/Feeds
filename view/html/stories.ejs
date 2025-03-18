@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Stories</title>
+    <link rel="stylesheet" href="../css/stories.css">
+</head>
+<body>
+    <%- include('sidebar') %>
+    <div class="stories-grid" id="stories-grid"></div>
+    
+    <div class="story-viewer" id="story-viewer">
+        <div class="close-story" onclick="closeStory()">✕</div>
+        
+        <div class="story-progress" id="story-progress-container"></div>
+        
+        <div class="story-header">
+            <div class="user-info" id="story-user-info">
+                <img src="/api/placeholder/64/64" alt="User profile" class="user-avatar-small" id="story-user-avatar">
+                <span class="username" id="story-username">username</span>
+                <span class="post-time">2h</span>
+            </div>
+            <div class="story-actions" onclick="toggleOptionsMenu()">⋮
+                <div class="options-menu" id="options-menu">
+                    <div class="option-item" onclick="handleMute()">Mute</div>
+                    <div class="option-item danger" onclick="handleReport()">Report</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="story-view" id="story-view-container"></div>
+        
+        <div class="navigation">
+            <div class="nav-left" onclick="previousStory()"></div>
+            <div class="nav-right" onclick="nextStory()"></div>
+        </div>
+        
+        <div class="story-interaction-bar">
+            <input type="text" class="message-input" placeholder="Send message" onkeypress="handleMessageSend(event)">
+            <div class="interaction-buttons">
+                <div class="interaction-button like-button" id="like-button" onclick="toggleLike()">♥</div>
+                <div class="interaction-button" onclick="shareStory()">↗</div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/stories.js"></script>
+    <script src="../js/background.js"></script>
+</body>
+</html>
