@@ -1,5 +1,27 @@
 import express from "express";
-import { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact } from "../controllers/user.js";
+import {
+  handleSignup,
+  handleLogin,
+  sendotp,
+  verifyotp,
+  updatepass,
+  handleContact,
+  handledelacc,
+  handlelogout,
+  handlegetHome,
+  handlegetpayment,
+  handlegetprofile,
+  handlegetterms,
+  handlegetcontact,
+  handlegetconnect,
+  handlegetgames,
+  handlegetstories,
+  handlegetdelacc,
+  handlegetreels,
+  handlegethelp,
+  handlegetsignup,
+  handlegetforgetpass,
+} from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 
 const router = express.Router();
@@ -8,45 +30,27 @@ router.get("/", (req, res) => {
   res.render("login", { loginType: null, msg: null });
 });
 
-router.get("/home", (req, res) => {
-  return res.render("home", {img: process.env.CURR_USER_IMG })
-});
+router.get("/home", handlegetHome);
 
-router.get("/payment", (req, res) => {
-  return res.render("payment", {img: process.env.CURR_USER_IMG});
-});
+router.get("/payment", handlegetpayment);
 
-router.get("/profile", (req, res) => {
-  return res.render("profile", {img: process.env.CURR_USER_IMG});
-});
+router.get("/profile", handlegetprofile);
 
-router.get("/tandc", (req, res) => {
-  return res.render("tandc", {img: process.env.CURR_USER_IMG});
-});
+router.get("/tandc", handlegetterms);
 
-router.get("/contact", (req, res) => {
-  return res.render("contact", {img: process.env.CURR_USER_IMG, msg: null});
-});
+router.get("/contact", handlegetcontact);
 
-router.get("/connect", (req, res) => {
-  return res.render("connect", {img: process.env.CURR_USER_IMG})
-})
+router.get("/connect", handlegetconnect);
 
-router.get("/games", (req, res) => {
-  return res.render("games");
-})
+router.get("/games", handlegetgames);
 
-router.get("/stories", (req, res) => {
-  return res.render("stories", {img: process.env.CURR_USER_IMG});
-})
+router.get("/stories", handlegetstories);
 
-router.get("/reels", (req, res) => {
-  return res.render("reels", {img: process.env.CURR_USER_IMG});
-})
+router.get("/delacc", handlegetdelacc);
 
-router.get("/help", (req, res) => {
-  return res.render("help", {img: process.env.CURR_USER_IMG});
-});
+router.get("/reels", handlegetreels);
+
+router.get("/help", handlegethelp);
 
 router.get("/login", (req, res) => {
   res.render("login", {
@@ -55,9 +59,7 @@ router.get("/login", (req, res) => {
   });
 });
 
-router.get("/signup", (req, res) => {
-  res.render("Registration", { msg: null });
-});
+router.get("/signup", handlegetsignup);
 
 router.post("/login", handleLogin);
 
@@ -65,14 +67,11 @@ router.post("/signup", handleSignup);
 
 router.post("/contact", handleContact);
 
-router.get("/forget-password", (req, res) => {
-  res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
-});
+router.post("/delacc", handledelacc);
 
-router.post("/logout", (req, res) => {
-  process.env.CURR_USER_IMG = '';
-  return res.render("login", { loginType: null, msg: null });
-})
+router.get("/forget-password", handlegetforgetpass);
+
+router.post("/logout", handlelogout);
 
 router.post("/sendotp", sendotp);
 
@@ -80,6 +79,6 @@ router.post("/verifyotp", verifyotp);
 
 router.post("/updatepass", updatepass);
 
-router.get('/imagKitauth', handleimagKitauth);
+router.get("/imagKitauth", handleimagKitauth);
 
 export default router;

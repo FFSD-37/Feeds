@@ -5,10 +5,6 @@ const understandCheckbox = document.getElementById('understand');
 const deleteButton = document.querySelector('.delete-btn');
 const passwordToggle = document.getElementById('passwordToggle');
 
-const validatePassword = (password) => {
-    return password.length >= 6;
-};
-
 const validateConfirmation = (text) => {
     return text === 'DELETE';
 };
@@ -23,14 +19,11 @@ const showError = (input, isValid) => {
 };
 
 const updateDeleteButton = () => {
-    const isPasswordValid = validatePassword(passwordInput.value);
     const isConfirmationValid = validateConfirmation(confirmationInput.value);
     const isCheckboxChecked = understandCheckbox.checked;
-
-    deleteButton.disabled = !(isPasswordValid && isConfirmationValid && isCheckboxChecked);
+    deleteButton.disabled = !(isConfirmationValid && isCheckboxChecked);
 };
 
-// Toggle password visibility
 passwordToggle.addEventListener('click', () => {
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
@@ -39,12 +32,6 @@ passwordToggle.addEventListener('click', () => {
         passwordInput.type = 'password';
         passwordToggle.textContent = '👁️';
     }
-});
-
-passwordInput.addEventListener('input', () => {
-    const isValid = validatePassword(passwordInput.value);
-    showError(passwordInput, isValid);
-    updateDeleteButton();
 });
 
 confirmationInput.addEventListener('input', () => {
@@ -56,11 +43,8 @@ confirmationInput.addEventListener('input', () => {
 understandCheckbox.addEventListener('change', updateDeleteButton);
 
 form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
     const isPasswordValid = validatePassword(passwordInput.value);
     const isConfirmationValid = validateConfirmation(confirmationInput.value);
-
     showError(passwordInput, isPasswordValid);
     showError(confirmationInput, isConfirmationValid);
 

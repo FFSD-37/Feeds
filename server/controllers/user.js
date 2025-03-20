@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-import fs from 'fs';
+import fs, { read } from 'fs';
 import path from 'path';
 
 const dbPromise = open({
@@ -41,44 +41,46 @@ async function getOtp(email) {
 
 let users = [
   {
-    "fullname": "Gourav Khakse",
-    "username": "VoyagerX21",
-    "email": "khakse2gaurav2003@gmail.com",
-    "phone": '8527054595',
-    "password": "Khakse@123",
-    "dob": "2003-05-21",
-    "profilePicture": "https://ik.imagekit.io/FFSD0037/WIN_20241229_22_47_54_Pro_1ajcB2M9r.jpg?updatedAt=1741976412981",
-    "bio": "live once live fully",
-    "gender": "male",
-    "termsAccepted": true
+    fullname: "Gourav Khakse",
+    username: "VoyagerX21",
+    email: "khakse2gaurav2003@gmail.com",
+    phone: '8527054595',
+    password: "Khakse@123",
+    dob: "2003-05-21",
+    profilePicture: "https://ik.imagekit.io/FFSD0037/WIN_20241229_22_47_54_Pro_1ajcB2M9r.jpg?updatedAt=1741976412981",
+    bio: "live once live fully",
+    gender: "male",
+    termsAccepted: true
   },
   {
-    "fullname": "Ayush",
-    "username": "bloomBoy",
-    "email": "2357ayush@gmail.com",
-    "phone": '9043125698',
-    "password": "yush@123",
-    "dob": "2005-09-20",
-    "profilePicture": "https://ik.imagekit.io/FFSD0037/FB_IMG_1694627814088_hFyTN6nXw.jpg?updatedAt=1741777451291",
-    "bio": "keep smiling",
-    "gender": "male",
-    "termsAccepted": true
+    fullname: "Ayush",
+    username: "bloomBoy",
+    email: "2357ayush@gmail.com",
+    phone: '9043125698',
+    password: "yush@123",
+    dob: "2005-09-20",
+    profilePicture: "https://ik.imagekit.io/FFSD0037/FB_IMG_1694627814088_hFyTN6nXw.jpg?updatedAt=1741777451291",
+    bio: "keep smiling",
+    gender: "male",
+    termsAccepted: true
   },
   {
-    "fullName": 'Atin Chowdhury',
-    "username": 'AtinUser',
-    "email": 'atin@gmail.com',
-    "phone": '8574961256',
-    "password": 'atin@123',
-    "dob": '2003-10-31',
-    "profilePicture": 'https://ik.imagekit.io/FFSD0037/OHR.EuropaMoon_EN-IN7952428847_UHD_3840_2160_Su1-MPj5k.jpg',
-    "bio": 'god is everything',
-    "gender": 'male',
-    "termsAccepted": true
+    fullName: 'Atin Chowdhury',
+    username: 'AtinUser',
+    email: 'atin@gmail.com',
+    phone: '8574961256',
+    password: 'atin@123',
+    dob: '2003-10-31',
+    profilePicture: 'https://ik.imagekit.io/FFSD0037/OHR.EuropaMoon_EN-IN7952428847_UHD_3840_2160_Su1-MPj5k.jpg',
+    bio: 'god is everything',
+    gender: 'male',
+    termsAccepted: true
   }
 ];
+
 let usernames = ['VoyagerX21', 'bloomBoy','AtinUser'];
 let emails = ['khakse2gaurav2003@gmail.com', '2357ayush@gmail.com','atin@gmail.com'];
+let curr;
 
 const handleSignup = (req, res) => {
   const userData = {
@@ -111,6 +113,19 @@ const handleSignup = (req, res) => {
   }
 };
 
+const handledelacc = (req, res) => {
+  if (users[curr].password === req.body.password){
+    usernames = usernames.filter(u => u != users[curr].username);
+    emails = emails.filter(e => e != users[curr].email);
+    users.splice(curr, 1);
+    curr = undefined;
+    return res.render("login", {loginType: "Email", msg: "User Deleted Successfully"});
+  }
+  else{
+    return res.render("delacc", {img: users[curr].profilePicture, msg: "Incorrect Password!!"});
+  }
+}
+
 const handleLogin = (req, res) => {
   if (req.body.identifykro == 'username') {
     const idx = usernames.indexOf(req.body.identifier);
@@ -120,8 +135,8 @@ const handleLogin = (req, res) => {
     if (users[idx].password !== req.body.password) {
       return res.render("login", { loginType: "Username", msg: "Incorrect password" });
     }
-    process.env.CURR_USER_IMG = users[idx].profilePicture;
-    return res.render("home", { img: process.env.CURR_USER_IMG });
+    curr = idx;
+    return res.render("home", { img: users[idx].profilePicture });
   }
   else {
     const idx = emails.indexOf(req.body.identifier);
@@ -131,8 +146,8 @@ const handleLogin = (req, res) => {
     if (users[idx].password != req.body.password) {
       return res.render("login", { loginType: "Email", msg: "Incorrect password" });
     }
-    process.env.CURR_USER_IMG = users[idx].profilePicture;
-    return res.render("home", { img: process.env.CURR_USER_IMG });
+    curr = idx;
+    return res.render("home", { img: users[idx].profilePicture });
   }
 };
 
@@ -241,6 +256,11 @@ const updatepass = (req, res) => {
   }
 };
 
+const handlelogout = (req, res) => {
+  curr = undefined;
+  return res.render("login", { loginType: null, msg: null });
+}
+
 const handleContact = (req, res) => {
   const data = {
     Name: req.body.name,
@@ -254,9 +274,126 @@ const handleContact = (req, res) => {
       console.log("Error is writing file", err);
     }
     else{
-      return res.render("contact", {img: process.env.CURR_USER_IMG, msg: "Your response is noted, we'll get back to you soon."})
+      return res.render("contact", {img: users[idx].profilePicture, msg: "Your response is noted, we'll get back to you soon."})
     }
   })
 }
 
-export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact };
+const handlegetHome = (req, res) => {
+  if (curr != undefined){
+    return res.render("home", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetpayment = (req, res) => {
+  if (curr != undefined){
+    return res.render("payment", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetprofile = (req, res) => {
+  if (curr != undefined){
+    return res.render("profile", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetterms = (req, res) => {
+  if (curr != undefined){
+    return res.render("tandc", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetcontact = (req, res) => {
+  if (curr != undefined){
+    return res.render("contact", {img: users[curr].profilePicture, msg: null});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetconnect = (req, res) => {
+  if (curr != undefined){
+    return res.render("connect", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetgames = (req, res) => {
+  if (curr != undefined){
+    return res.render("games", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetstories = (req, res) => {
+  if (curr != undefined){
+    return res.render("stories", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetdelacc = (req, res) => {
+  if (curr != undefined){
+    return res.render("delacc", {img: users[curr].profilePicture, msg: null});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetreels = (req, res) => {
+  if (curr != undefined){
+    return res.render("reels", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegethelp = (req, res) => {
+  if (curr != undefined){
+    return res.render("help", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetsignup = (req, res) => {
+  if (curr != undefined){
+    return res.render("Registration", {img: users[curr].profilePicture});
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+const handlegetforgetpass = (req, res) => {
+  if (curr != undefined){
+    res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
+  }
+  else{
+    return res.render("login", {loginType: null, msg: "First Login"});
+  }
+}
+
+export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames };
