@@ -1,4 +1,5 @@
 import express from "express";
+import nodemailer from 'nodemailer';
 import {
   handleSignup,
   handleLogin,
@@ -21,6 +22,10 @@ import {
   handlegethelp,
   handlegetsignup,
   handlegetforgetpass,
+  handlegetadmin,
+  handleadminlogin,
+  handlefpadmin,
+  adminPassUpdate
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 
@@ -59,6 +64,8 @@ router.get("/login", (req, res) => {
   });
 });
 
+router.get("/admin", handlegetadmin)
+
 router.get("/signup", handlegetsignup);
 
 router.post("/login", handleLogin);
@@ -66,6 +73,8 @@ router.post("/login", handleLogin);
 router.post("/signup", handleSignup);
 
 router.post("/contact", handleContact);
+
+router.post("/adminLogin", handleadminlogin);
 
 router.post("/delacc", handledelacc);
 
@@ -80,5 +89,9 @@ router.post("/verifyotp", verifyotp);
 router.post("/updatepass", updatepass);
 
 router.get("/imagKitauth", handleimagKitauth);
+
+router.get("/fpadmin", handlefpadmin);
+
+router.post("/updatepassadmin", adminPassUpdate);
 
 export default router;

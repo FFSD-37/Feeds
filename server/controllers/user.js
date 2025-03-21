@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-import fs, { read } from 'fs';
+import fs from 'fs';
 import path from 'path';
 
 const dbPromise = open({
@@ -78,8 +78,8 @@ let users = [
   }
 ];
 
-let usernames = ['VoyagerX21', 'bloomBoy','AtinUser'];
-let emails = ['khakse2gaurav2003@gmail.com', '2357ayush@gmail.com','atin@gmail.com'];
+let usernames = ['VoyagerX21', 'bloomBoy', 'AtinUser'];
+let emails = ['khakse2gaurav2003@gmail.com', '2357ayush@gmail.com', 'atin@gmail.com'];
 let curr;
 
 const handleSignup = (req, res) => {
@@ -114,15 +114,15 @@ const handleSignup = (req, res) => {
 };
 
 const handledelacc = (req, res) => {
-  if (users[curr].password === req.body.password){
+  if (users[curr].password === req.body.password) {
     usernames = usernames.filter(u => u != users[curr].username);
     emails = emails.filter(e => e != users[curr].email);
     users.splice(curr, 1);
     curr = undefined;
-    return res.render("login", {loginType: "Email", msg: "User Deleted Successfully"});
+    return res.render("login", { loginType: "Email", msg: "User Deleted Successfully" });
   }
-  else{
-    return res.render("delacc", {img: users[curr].profilePicture, msg: "Incorrect Password!!"});
+  else {
+    return res.render("delacc", { img: users[curr].profilePicture, msg: "Incorrect Password!!" });
   }
 }
 
@@ -198,7 +198,7 @@ const verifyotp = async (req, res) => {
     getOtp(req.body.foremail)
       .then((otp) => {
         if (otp) {
-          if (otp == req.body.otp) {
+          if (otp === req.body.otp) {
             return res.render("Forgot_pass", { msg: "OTP Verified", otpsec: "NO", newpass: "YES", emailsec: "NO", title: "Forgot Password" })
           }
           else {
@@ -212,7 +212,6 @@ const verifyotp = async (req, res) => {
       .catch((err) => console.error("Error:", err));
   }
   else {
-    console.log(req.body);
     const mail = req.body.foremail;
     const otp = generateOTP();
     let transporter = nodemailer.createTransport({
@@ -239,6 +238,54 @@ const verifyotp = async (req, res) => {
     }
   }
 };
+
+const handlefpadmin = async (req, res) => {
+  const otp2 = generateOTP();
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+  let mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.adminEmail,
+    subject: 'Your OTP Code',
+    text: `Your OTP for resetting the password is: ${otp2}`
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    storeOtp(process.env.adminEmail, otp2);
+    return res.render("fpadmin", { msg: "OTP Sent successfully!!" });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return res.status(500).json({ msg: "Failed to send OTP" });
+  }
+}
+
+const adminPassUpdate = (req, res) => {
+  if (req.body.password === req.body.password1) {
+    getOtp(process.env.adminEmail)
+      .then((otp) => {
+        if (otp) {
+          if (otp === req.body.otp) {
+            process.env.adminPass = req.body.password;
+            return res.render("admin", {msg: "Password Updated Successfully"})
+          }
+          else {
+            return res.render("fpadmin", {msg: "Invalid OTP"});
+          }
+        }
+      })
+  }
+  else {
+    return res.render("fpadmin", { msg: "Password Mismatched" });
+  }
+}
 
 const updatepass = (req, res) => {
   if (req.body.new_password != req.body.new_password2) {
@@ -270,130 +317,139 @@ const handleContact = (req, res) => {
   };
   const pat = path.resolve(`routes/Responses/${req.body.subject}/${req.body.email}.json`);
   fs.writeFile(pat, JSON.stringify(data, null, 2), (err) => {
-    if (err){
+    if (err) {
       console.log("Error is writing file", err);
     }
-    else{
-      return res.render("contact", {img: users[idx].profilePicture, msg: "Your response is noted, we'll get back to you soon."})
+    else {
+      return res.render("contact", { img: users[curr].profilePicture, msg: "Your response is noted, we'll get back to you soon." })
     }
   })
 }
 
-const handlegetHome = (req, res) => {
-  if (curr != undefined){
-    return res.render("home", {img: users[curr].profilePicture});
+const handleadminlogin = (req, res) => {
+  if (req.body.username === process.env.adminUsername && req.body.password === process.env.adminPass) {
+    return res.render("adminPortal");
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("admin", { msg: "Incorrect Credentials" });
+  }
+}
+
+const handlegetHome = (req, res) => {
+  if (curr != undefined) {
+    return res.render("home", { img: users[curr].profilePicture });
+  }
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetpayment = (req, res) => {
-  if (curr != undefined){
-    return res.render("payment", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("payment", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetprofile = (req, res) => {
-  if (curr != undefined){
-    return res.render("profile", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("profile", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetterms = (req, res) => {
-  if (curr != undefined){
-    return res.render("tandc", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("tandc", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetcontact = (req, res) => {
-  if (curr != undefined){
-    return res.render("contact", {img: users[curr].profilePicture, msg: null});
+  if (curr != undefined) {
+    return res.render("contact", { img: users[curr].profilePicture, msg: null });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetconnect = (req, res) => {
-  if (curr != undefined){
-    return res.render("connect", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("connect", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetgames = (req, res) => {
-  if (curr != undefined){
-    return res.render("games", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("games", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetstories = (req, res) => {
-  if (curr != undefined){
-    return res.render("stories", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("stories", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetdelacc = (req, res) => {
-  if (curr != undefined){
-    return res.render("delacc", {img: users[curr].profilePicture, msg: null});
+  if (curr != undefined) {
+    return res.render("delacc", { img: users[curr].profilePicture, msg: null });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
+const handlegetadmin = (req, res) => {
+  curr = undefined;
+  return res.render("admin", { msg: null });
+}
+
 const handlegetreels = (req, res) => {
-  if (curr != undefined){
-    return res.render("reels", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("reels", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegethelp = (req, res) => {
-  if (curr != undefined){
-    return res.render("help", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("help", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetsignup = (req, res) => {
-  if (curr != undefined){
-    return res.render("Registration", {img: users[curr].profilePicture});
+  if (curr != undefined) {
+    return res.render("Registration", { img: users[curr].profilePicture });
   }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
+  else {
+    return res.render("login", { loginType: null, msg: "First Login" });
   }
 }
 
 const handlegetforgetpass = (req, res) => {
-  if (curr != undefined){
-    res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
-  }
-  else{
-    return res.render("login", {loginType: null, msg: "First Login"});
-  }
+  res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
 }
 
-export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames };
+export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate };

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Portal</title>
+    <link rel="stylesheet" href="../css/fpadmin.css" />
+    <link rel="stylesheet" href="../css/alert.css" />
+  </head>
+  <body>
+    <form
+      class="login-container"
+      action="/updatepassadmin"
+      method="POST"
+    >
+      <h2>UPDATE PASS</h2>
+      <% if (msg) { %>
+      <div class="alert" role="alert">
+        <span class="alert-text"><%= msg %></span>
+        <span
+          class="close-btn"
+          onclick="this.parentElement.style.display='none'"
+          >&times;</span
+        >
+      </div>
+      <% } %>
+      <div class="input-group">
+        <input type="text" id="otp" name="otp" placeholder="OTP" required />
+      </div>
+      <div class="input-group">
+        <input
+          type="text"
+          id="password"
+          name="password"
+          placeholder="New Password"
+          required
+        />
+      </div>
+      <div class="input-group">
+        <input
+          type="text"
+          id="password1"
+          name="password1"
+          placeholder="Confirm Password"
+          required
+        />
+      </div>
+      <a href="/admin" class="forgot-password">Back to Login</a>
+      <button type="submit">VERIFY</button>
+    </form>
+  </body>
+</html>
