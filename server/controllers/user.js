@@ -440,12 +440,7 @@ const handlegethelp = (req, res) => {
 }
 
 const handlegetsignup = (req, res) => {
-  if (curr != undefined) {
-    return res.render("Registration", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+  return res.render("Registration", { msg: null });
 }
 
 const handlegetforgetpass = (req, res) => {

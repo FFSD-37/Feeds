@@ -153,7 +153,7 @@
           <label>
             <input type="checkbox" id="terms" required />
             I agree to the
-            <a href="#" onclick="openOverlay()">Terms & Conditions</a>
+            <a href="#" onclick="openOverlay(event)">Terms & Conditions</a>
           </label>
           <div class="error-message">You must agree to the terms</div>
         </div>
@@ -162,7 +162,7 @@
       </form>
     </div>
     <div class="overlay" id="overlay">
-      <button class="close-btn" onclick="closeOverlay()">X</button>
+      <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('show-overlay')">X</button>
       <h1>Terms & Conditions</h1>
       <div class="content">
         <h2>1. Introduction</h2>
