@@ -11,13 +11,8 @@ const isAuthuser = (req, res, next) => {
         }
         req.userDetails=isAuth;
         next();
-    }else{
-        res.cookie("uuid", "", { maxAge: 1 });
-        if(req.url==="/login" || req.url==="/signup" || req.url==="/forgetpass" || req.url==='/'){
-            return next();
-        }
-        return res.redirect("/login");
     }
+    else throw new Error('Invalid User');
     }catch(e){
         res.cookie("uuid", "", { maxAge: 1 });
         if(req.url==="/login" || req.url==="/signup" || req.url==="/forgetpass" || req.url==='/'){
