@@ -28,45 +28,46 @@ import {
   adminPassUpdate
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
+import { isAuthuser } from "../middleware/isAuthuser.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/",isAuthuser, (req, res) => {
   res.render("login", { loginType: null, msg: null });
 });
 
-router.get("/home", handlegetHome);
+router.get("/home",isAuthuser, handlegetHome);
 
-router.get("/payment", handlegetpayment);
+router.get("/payment",isAuthuser, handlegetpayment);
 
-router.get("/profile", handlegetprofile);
+router.get("/profile",isAuthuser, handlegetprofile);
 
-router.get("/tandc", handlegetterms);
+router.get("/tandc",isAuthuser, handlegetterms);
 
-router.get("/contact", handlegetcontact);
+router.get("/contact",isAuthuser, handlegetcontact);
 
-router.get("/connect", handlegetconnect);
+router.get("/connect",isAuthuser, handlegetconnect);
 
-router.get("/games", handlegetgames);
+router.get("/games",isAuthuser, handlegetgames);
 
-router.get("/stories", handlegetstories);
+router.get("/stories",isAuthuser, handlegetstories);
 
-router.get("/delacc", handlegetdelacc);
+router.get("/delacc",isAuthuser, handlegetdelacc);
 
-router.get("/reels", handlegetreels);
+router.get("/reels",isAuthuser, handlegetreels);
 
-router.get("/help", handlegethelp);
+router.get("/help",isAuthuser, handlegethelp);
 
-router.get("/login", (req, res) => {
+router.get("/login",isAuthuser, (req, res) => {
   res.render("login", {
     loginType: null,
     msg: null,
   });
 });
 
-router.get("/admin", handlegetadmin)
+router.get("/admin",isAuthuser, handlegetadmin);
 
-router.get("/signup", handlegetsignup);
+router.get("/signup",isAuthuser, handlegetsignup);
 
 router.post("/login", handleLogin);
 

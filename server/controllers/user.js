@@ -3,6 +3,7 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import fs from 'fs';
 import path from 'path';
+import { create_JWTtoken } from 'cookie-string-parser';
 
 const dbPromise = open({
   filename: './controllers/imdb.sqlite',
@@ -108,7 +109,9 @@ const handleSignup = (req, res) => {
       users.push(userData);
       usernames.push(uname);
       emails.push(em);
-      return res.render("login", { loginType: 'Email', msg: "Registered Successfully!!" });
+      const token = create_JWTtoken([userData.username,userData.email,userData.profilePicture],process.env.USER_SECRET,'30d');
+      res.cookie('uuid',token,{httpOnly:true});
+      return res.redirect("/home");
     }
   }
 };
@@ -122,7 +125,7 @@ const handledelacc = (req, res) => {
     return res.render("login", { loginType: "Email", msg: "User Deleted Successfully" });
   }
   else {
-    return res.render("delacc", { img: users[curr].profilePicture, msg: "Incorrect Password!!" });
+    return res.render("delacc", { img: data[2], msg: "Incorrect Password!!" });
   }
 }
 
@@ -136,6 +139,8 @@ const handleLogin = (req, res) => {
       return res.render("login", { loginType: "Username", msg: "Incorrect password" });
     }
     curr = idx;
+    const token = create_JWTtoken([users[idx].username,users[idx].email,users[idx].profilePicture],process.env.USER_SECRET,'30d');
+    res.cookie('uuid',token,{httpOnly:true});
     return res.render("home", { img: users[idx].profilePicture });
   }
   else {
@@ -147,6 +152,8 @@ const handleLogin = (req, res) => {
       return res.render("login", { loginType: "Email", msg: "Incorrect password" });
     }
     curr = idx;
+    const token = create_JWTtoken([users[idx].username,users[idx].email,users[idx].profilePicture],process.env.USER_SECRET,'30d');
+    res.cookie('uuid',token,{httpOnly:true});
     return res.render("home", { img: users[idx].profilePicture });
   }
 };
@@ -321,7 +328,7 @@ const handleContact = (req, res) => {
       console.log("Error is writing file", err);
     }
     else {
-      return res.render("contact", { img: users[curr].profilePicture, msg: "Your response is noted, we'll get back to you soon." })
+      return res.render("contact", { img: data[2], msg: "Your response is noted, we'll get back to you soon." })
     }
   })
 }
@@ -336,84 +343,49 @@ const handleadminlogin = (req, res) => {
 }
 
 const handlegetHome = (req, res) => {
-  if (curr != undefined) {
-    return res.render("home", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+  const {data}=req.userDetails;
+  
+    return res.render("home", { img:data[2]});
 }
 
 const handlegetpayment = (req, res) => {
-  if (curr != undefined) {
-    return res.render("payment", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+  const {data}=req.userDetails;
+    return res.render("payment", { img: data[2] });
 }
 
 const handlegetprofile = (req, res) => {
-  if (curr != undefined) {
-    return res.render("profile", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("profile", { img: data[2] });
 }
 
 const handlegetterms = (req, res) => {
-  if (curr != undefined) {
-    return res.render("tandc", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("tandc", { img: data[2] });
 }
 
 const handlegetcontact = (req, res) => {
-  if (curr != undefined) {
-    return res.render("contact", { img: users[curr].profilePicture, msg: null });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("contact", { img: data[2], msg: null });
 }
 
 const handlegetconnect = (req, res) => {
-  if (curr != undefined) {
-    return res.render("connect", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("connect", { img: data[2] });
 }
 
 const handlegetgames = (req, res) => {
-  if (curr != undefined) {
-    return res.render("games", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("games", { img: data[2] });
 }
 
 const handlegetstories = (req, res) => {
-  if (curr != undefined) {
-    return res.render("stories", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("stories", { img: data[2] });
 }
 
 const handlegetdelacc = (req, res) => {
-  if (curr != undefined) {
-    return res.render("delacc", { img: users[curr].profilePicture, msg: null });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("delacc", { img: data[2], msg: null });
 }
 
 const handlegetadmin = (req, res) => {
@@ -422,21 +394,13 @@ const handlegetadmin = (req, res) => {
 }
 
 const handlegetreels = (req, res) => {
-  if (curr != undefined) {
-    return res.render("reels", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("reels", { img: data[2] });
 }
 
 const handlegethelp = (req, res) => {
-  if (curr != undefined) {
-    return res.render("help", { img: users[curr].profilePicture });
-  }
-  else {
-    return res.render("login", { loginType: null, msg: "First Login" });
-  }
+    const {data}=req.userDetails;
+    return res.render("help", { img: data[2] });
 }
 
 const handlegetsignup = (req, res) => {
