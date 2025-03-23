@@ -11,7 +11,7 @@
     <div id="overlay"></div>
     <div class="container">
       <div class="left-section">
-        <h2>Suggested Reels</h2>
+        <h2><a href="/reels" style="text-decoration: none; color: black;">Suggested Reels</a></h2>
         <div class="divider3"></div>
         <div class="reels-grid">
           <div class="reel"><img src="Done/reel.jpg" /></div>
@@ -86,7 +86,27 @@
               >
             </div>
             <div class="dropdown-menu" id="socialDropdown">
-              <div class="menu-item danger">Report</div>
+              <div class="menu-item danger" onclick="openReportModal()">Report</div>
+              <div id="report-modal" class="modal-overlay">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <span>Report</span>
+                    <button class="close-btn" onclick="closeReportModal()">&times;</button>
+                  </div>
+                  <p class="modal-title">Why are you reporting this post?</p>
+                  
+                  <ul class="report-options">
+                    <li onclick="selectReason('I just don\'t like it')">I just don't like it <span>&#8250;</span></li>
+                    <li onclick="selectReason('Bullying or unwanted contact')">Bullying or unwanted contact <span>&#8250;</span></li>
+                    <li onclick="selectReason('Suicide, self-injury or eating disorders')">Suicide, self-injury or eating disorders <span>&#8250;</span></li>
+                    <li onclick="selectReason('Violence, hate or exploitation')">Violence, hate or exploitation <span>&#8250;</span></li>
+                    <li onclick="selectReason('Selling or promoting restricted items')">Selling or promoting restricted items <span>&#8250;</span></li>
+                    <li onclick="selectReason('Nudity or sexual activity')">Nudity or sexual activity <span>&#8250;</span></li>
+                    <li onclick="selectReason('Scam, fraud or spam')">Scam, fraud or spam <span>&#8250;</span></li>
+                    <li onclick="selectReason('False information')">False information <span>&#8250;</span></li>
+                  </ul>
+                </div>
+              </div>
               <div class="menu-item normal">Add to favorites</div>
               <div class="menu-item normal">Go to post</div>
               <div class="menu-item normal">Share to...</div>

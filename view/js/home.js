@@ -29,3 +29,18 @@ document.addEventListener("DOMContentLoaded", function () {
     overlay.style.display = "none";
   });
 });
+
+function openReportModal(e) {
+  e.preventDefault()
+  document.getElementById("report-modal").classList.add("show");
+}
+
+function closeReportModal(e) {
+  e.preventDefault();
+  document.getElementById("report-modal").classList.remove("show");
+}
+
+function selectReason(reason) {
+  alert("You selected: " + reason);
+  closeReportModal();
+}

@@ -185,11 +185,5 @@ function openOverlay() {
 }
 
 function closeOverlay(event) {
-  const overlay = document.getElementById("overlay");
-  const overlayContent = document.querySelector(".overlay-content");
-  if (event.target === overlay) {
-    overlay.classList.remove("show-overlay");
-  }
+  document.getElementById("overlay").classList.remove("show-overlay");
 }
-
-document.getElementById("overlay").addEventListener("click", closeOverlay);
