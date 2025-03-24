@@ -411,4 +411,9 @@ const handlegetforgetpass = (req, res) => {
   res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
 }
 
-export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate };
+const handlegeteditprofile = (req, res) => {
+  const {data}=req.userDetails;
+  res.render("edit_profile", {img: data[2]});
+}
+
+export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile };

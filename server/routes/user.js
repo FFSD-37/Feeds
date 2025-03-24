@@ -25,7 +25,8 @@ import {
   handlegetadmin,
   handleadminlogin,
   handlefpadmin,
-  adminPassUpdate
+  adminPassUpdate,
+  handlegeteditprofile
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -92,6 +93,8 @@ router.post("/updatepass", updatepass);
 router.get("/imagKitauth", handleimagKitauth);
 
 router.get("/fpadmin", handlefpadmin);
+
+router.get("/edit_profile", handlegeteditprofile);
 
 router.post("/updatepassadmin", adminPassUpdate);
 

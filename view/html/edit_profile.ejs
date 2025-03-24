@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="../css/edit_profile.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('sidebar') %>
+    <div class="profile-container">
+        <h2>Edit Profile</h2>
+        <form id="profileForm" action="/edit" method="POST">
+            <img id="profilePic" src="pic.jpg" alt="profile-pic" class="profile-photo" onclick="document.getElementById('photoInput').click()">
+            <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none">
+            <button type="button" class="change-profile-pic" onclick="document.getElementById('photoInput').click()"> Change Photo </button>
+            <h4>Username</h4>
+            <div class="field-container">
+                <input type="text" id="username" name="username" value="JohnDoe" readonly>
+                <a onclick="editField('username')">EDIT</a>
+            </div>
+            <h4>Name</h4>
+            <div class="field-container">
+                <input type="text" id="name" name="name" value="John Doe" readonly>
+                <a onclick="editField('name')">EDIT</a>
+            </div>
+            <h4>Bio</h4>
+            <div class="field-container">
+                <textarea id="bio" name="bio" rows="3" readonly>Web developer & tech enthusiast.</textarea>
+                <a onclick="editField('bio')">EDIT</a>
+            </div>
+            <h4>Gender</h4>
+            <div class="field-container">
+                <select id="gender" name="gender">
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <h4>Email</h4>
+            <div class="field-container">
+                <input type="email" id="email" name="email" value="khakse2gaurav2003@gmail.com" readonly>
+                <a onclick="editField('email')">EDIT</a>
+            </div>
+            <h4>Phone Number</h4>
+            <div class="field-container">
+                <input type="tel" id="number" name="phone" value="9087654321" readonly>
+                <a onclick="editField('number')">EDIT</a>
+            </div>
+            <div class="linksHeader">
+                <h4>Links</h4>
+                <button type="button" onclick="addLink()" class="change-profile-pic2">Add Link</button>
+            </div>
+            <div id="linksContainer">
+                <div class="field-container">
+                    <input type="url" class="profile-link" name="links[]" value="https://example.com" readonly>
+                    <a onclick="editField('linksContainer')">EDIT</a>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <label for="terms" class="terms-label">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    I agree to the <a href="#" onclick="openOverlay(event)">Terms & Conditions</a>
+                </label>
+            </div>
+            <div class="overlay" id="overlay">
+                <button type="button" class="close-btn" onclick="document.getElementById('overlay').classList.remove('show-overlay')">X</button>
+                <h1>Terms & Conditions</h1>
+                <div class="content">
+                    <h2>1. Introduction</h2>
+                    <p>Welcome to Feeds! By using our platform, you agree to these terms and conditions.</p>
+
+                    <h2>2. User Responsibilities</h2>
+                    <ul>
+                        <li>You must be at least 13 years old to use this platform.</li>
+                        <li>Do not post offensive or illegal content.</li>
+                        <li>Respect other users and maintain a friendly environment.</li>
+                    </ul>
+
+                    <h2>3. Privacy & Data</h2>
+                    <p>We collect user data only for improving our services. Your personal details will not be shared without consent.</p>
+
+                    <h2>4. Payments</h2>
+                    <p>All payments for premium features are handled securely via Razorpay.</p>
+
+                    <h2>5. Changes to Terms</h2>
+                    <p>We reserve the right to update these terms at any time. Continued use of the platform means you accept the new terms.</p>
+
+                    <p><strong>Last Updated: February 2025</strong></p>
+                </div>
+            </div>
+            <button type="submit">Save Changes</button>
+            <a href="/payment"><button type="button" class="premium-btn">Switch to Premium</button></a>
+        </form>
+    </div>
+
+    <script src="../js/edit_profile.js"></script>
+</body>
+</html>
