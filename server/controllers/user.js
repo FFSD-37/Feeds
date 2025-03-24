@@ -312,6 +312,7 @@ const updatepass = (req, res) => {
 
 const handlelogout = (req, res) => {
   curr = undefined;
+  res.cookie('uuid', '', { maxAge: 0 });
   return res.render("login", { loginType: null, msg: null });
 }
 

@@ -18,7 +18,7 @@ const isAuthuser = (req, res, next) => {
         if(req.url==="/login" || req.url==="/signup" || req.url==="/forgetpass" || req.url==='/'){
             return next();
         }
-        return res.redirect("/login");
+        return res.redirect("/login",{msg:"Please Login First", loginType: null});
     }
 }
 
