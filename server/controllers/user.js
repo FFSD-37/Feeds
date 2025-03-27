@@ -122,6 +122,7 @@ const handledelacc = (req, res) => {
     emails = emails.filter(e => e != users[curr].email);
     users.splice(curr, 1);
     curr = undefined;
+    res.cookie('uuid', '', { maxAge: 0 });
     return res.render("login", { loginType: "Email", msg: "User Deleted Successfully" });
   }
   else {
@@ -311,7 +312,6 @@ const updatepass = (req, res) => {
 };
 
 const handlelogout = (req, res) => {
-  curr = undefined;
   res.cookie('uuid', '', { maxAge: 0 });
   return res.render("login", { loginType: null, msg: null });
 }
@@ -345,23 +345,22 @@ const handleadminlogin = (req, res) => {
 
 const handlegetHome = (req, res) => {
   const {data}=req.userDetails;
-  
-    return res.render("home", { img:data[2]});
+  return res.render("home", { img:data[2]});
 }
 
 const handlegetpayment = (req, res) => {
   const {data}=req.userDetails;
-    return res.render("payment", { img: data[2] });
+  return res.render("payment", { img: data[2] });
 }
 
 const handlegetprofile = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("profile", { img: data[2] });
+  const {data}=req.userDetails;
+  return res.render("profile", { img: data[2] });
 }
 
 const handlegetterms = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("tandc", { img: data[2] });
+  const {data}=req.userDetails;
+  return res.render("tandc", { img: data[2] });
 }
 
 const handlegetcontact = (req, res) => {
@@ -395,8 +394,8 @@ const handlegetadmin = (req, res) => {
 }
 
 const handlegetreels = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("reels", { img: data[2] });
+  const {data}=req.userDetails;
+  return res.render("reels", { img: data[2] });
 }
 
 const handlegethelp = (req, res) => {
