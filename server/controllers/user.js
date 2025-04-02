@@ -4,7 +4,7 @@ import { open } from 'sqlite';
 import fs from 'fs';
 import path from 'path';
 import { create_JWTtoken } from 'cookie-string-parser';
-import User from '../models/users_schema';
+import User from '../models/users_schema.js';
 import bcrypt from 'bcrypt';
 
 const dbPromise = open({
@@ -141,9 +141,9 @@ const handleLogin = async(req, res) => {
     const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isPasswordMatch) return res.render("login", { loginType: "Username", msg: "Incorrect password" });
 
-    const token = create_JWTtoken([users[idx].username, users[idx].email, users[idx].profilePicture], process.env.USER_SECRET, '30d');
+    const token = create_JWTtoken([user.username, user.email, user.profilePicture], process.env.USER_SECRET, '30d');
     res.cookie('uuid', token, { httpOnly: true });
-    return res.render("home", { img: users[idx].profilePicture });
+    return res.render("home", { img: user.profilePicture});
   }
   catch(e){
     console.log(e);
