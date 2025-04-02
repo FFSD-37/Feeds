@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 
 const commentSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true
+    id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Post"
     },
     username: {
         type: String,
@@ -12,7 +12,7 @@ const commentSchema = new mongoose.Schema({
     },
     avatarUrl: {
         type: String, // Can be a URL or file path
-        default: "default-avatar.png"
+        default: process.env.DEFAULT_USER_IMG
     },
     text: {
         type: String,

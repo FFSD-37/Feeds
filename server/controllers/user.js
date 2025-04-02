@@ -4,6 +4,7 @@ import { open } from 'sqlite';
 import fs from 'fs';
 import path from 'path';
 import { create_JWTtoken } from 'cookie-string-parser';
+import User from '../models/users_schema';
 
 const dbPromise = open({
   filename: './controllers/imdb.sqlite',
@@ -83,38 +84,39 @@ let usernames = ['VoyagerX21', 'bloomBoy', 'AtinUser'];
 let emails = ['khakse2gaurav2003@gmail.com', '2357ayush@gmail.com', 'atin@gmail.com'];
 let curr;
 
-const handleSignup = (req, res) => {
-  const userData = {
-    fullName: req.body.fullName,
-    username: req.body.username,
-    email: req.body.email,
-    phone: req.body.phone,
-    password: req.body.password,
-    dob: req.body.dob,
-    profilePicture: req.body.profileImageUrl ? req.body.profileImageUrl : process.env.DEFAULT_USER_IMG,
-    bio: req.body.bio || "",
-    gender: req.body.gender,
-    termsAccepted: !req.body.terms
-  };
-  const uname = req.body.username;
-  const em = req.body.email;
-  if (usernames.includes(uname)) {
-    return res.render("Registration", { msg: "Username already taken" });
+const handleSignup = async(req, res) => {
+  try {
+    const userData = {
+      fullName: req.body.fullName,
+      username: req.body.username,
+      email: req.body.email,
+      phone: req.body.phone,
+      password: req.body.password,
+      dob: req.body.dob,
+      profilePicture: req.body.profileImageUrl ? req.body.profileImageUrl : process.env.DEFAULT_USER_IMG,
+      bio: req.body.bio || "",
+      gender: req.body.gender,
+      termsAccepted: !req.body.terms
+    };
+
+    await User.create(userData);
+
+    const token = create_JWTtoken([userData.username, userData.email, userData.profilePicture], process.env.USER_SECRET, '30d');
+    res.cookie('uuid', token, { httpOnly: true });
+    return res.redirect("/home");
   }
-  else {
-    if (emails.includes(em)) {
-      return res.render("Registration", { msg: "Email already taken" });
-    }
-    else {
-      users.push(userData);
-      usernames.push(uname);
-      emails.push(em);
-      const token = create_JWTtoken([userData.username,userData.email,userData.profilePicture],process.env.USER_SECRET,'30d');
-      res.cookie('uuid',token,{httpOnly:true});
-      return res.redirect("/home");
+  catch (err) {
+    console.log(err);
+    if(err.name=="ValidationError"){
+       const errors=Object.values(err.errors).map(e=>e.message);
+       return res.status(400).json({ err: errors });
+    };
+    if(err.code==11000){
+      const fields=Object.keys(err.keyValue);
+      return res.status(400).json({ err: `User with ${fields[0]} already exists` });
     }
   }
-};
+}
 
 const handledelacc = (req, res) => {
   if (users[curr].password === req.body.password) {
@@ -140,8 +142,8 @@ const handleLogin = (req, res) => {
       return res.render("login", { loginType: "Username", msg: "Incorrect password" });
     }
     curr = idx;
-    const token = create_JWTtoken([users[idx].username,users[idx].email,users[idx].profilePicture],process.env.USER_SECRET,'30d');
-    res.cookie('uuid',token,{httpOnly:true});
+    const token = create_JWTtoken([users[idx].username, users[idx].email, users[idx].profilePicture], process.env.USER_SECRET, '30d');
+    res.cookie('uuid', token, { httpOnly: true });
     return res.render("home", { img: users[idx].profilePicture });
   }
   else {
@@ -153,8 +155,8 @@ const handleLogin = (req, res) => {
       return res.render("login", { loginType: "Email", msg: "Incorrect password" });
     }
     curr = idx;
-    const token = create_JWTtoken([users[idx].username,users[idx].email,users[idx].profilePicture],process.env.USER_SECRET,'30d');
-    res.cookie('uuid',token,{httpOnly:true});
+    const token = create_JWTtoken([users[idx].username, users[idx].email, users[idx].profilePicture], process.env.USER_SECRET, '30d');
+    res.cookie('uuid', token, { httpOnly: true });
     return res.render("home", { img: users[idx].profilePicture });
   }
 };
@@ -282,10 +284,10 @@ const adminPassUpdate = (req, res) => {
         if (otp) {
           if (otp === req.body.otp) {
             process.env.adminPass = req.body.password;
-            return res.render("admin", {msg: "Password Updated Successfully"})
+            return res.render("admin", { msg: "Password Updated Successfully" })
           }
           else {
-            return res.render("fpadmin", {msg: "Invalid OTP"});
+            return res.render("fpadmin", { msg: "Invalid OTP" });
           }
         }
       })
@@ -344,48 +346,48 @@ const handleadminlogin = (req, res) => {
 }
 
 const handlegetHome = (req, res) => {
-  const {data}=req.userDetails;
-  return res.render("home", { img:data[2]});
+  const { data } = req.userDetails;
+  return res.render("home", { img: data[2] });
 }
 
 const handlegetpayment = (req, res) => {
-  const {data}=req.userDetails;
+  const { data } = req.userDetails;
   return res.render("payment", { img: data[2] });
 }
 
 const handlegetprofile = (req, res) => {
-  const {data}=req.userDetails;
+  const { data } = req.userDetails;
   return res.render("profile", { img: data[2] });
 }
 
 const handlegetterms = (req, res) => {
-  const {data}=req.userDetails;
+  const { data } = req.userDetails;
   return res.render("tandc", { img: data[2] });
 }
 
 const handlegetcontact = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("contact", { img: data[2], msg: null });
+  const { data } = req.userDetails;
+  return res.render("contact", { img: data[2], msg: null });
 }
 
 const handlegetconnect = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("connect", { img: data[2] });
+  const { data } = req.userDetails;
+  return res.render("connect", { img: data[2] });
 }
 
 const handlegetgames = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("games", { img: data[2] });
+  const { data } = req.userDetails;
+  return res.render("games", { img: data[2] });
 }
 
 const handlegetstories = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("stories", { img: data[2] });
+  const { data } = req.userDetails;
+  return res.render("stories", { img: data[2] });
 }
 
 const handlegetdelacc = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("delacc", { img: data[2], msg: null });
+  const { data } = req.userDetails;
+  return res.render("delacc", { img: data[2], msg: null });
 }
 
 const handlegetadmin = (req, res) => {
@@ -394,13 +396,13 @@ const handlegetadmin = (req, res) => {
 }
 
 const handlegetreels = (req, res) => {
-  const {data}=req.userDetails;
+  const { data } = req.userDetails;
   return res.render("reels", { img: data[2] });
 }
 
 const handlegethelp = (req, res) => {
-    const {data}=req.userDetails;
-    return res.render("help", { img: data[2] });
+  const { data } = req.userDetails;
+  return res.render("help", { img: data[2] });
 }
 
 const handlegetsignup = (req, res) => {
@@ -412,8 +414,8 @@ const handlegetforgetpass = (req, res) => {
 }
 
 const handlegeteditprofile = (req, res) => {
-  const {data}=req.userDetails;
-  res.render("edit_profile", {img: data[2]});
+  const { data } = req.userDetails;
+  res.render("edit_profile", { img: data[2] });
 }
 
 export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile };

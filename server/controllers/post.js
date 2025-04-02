@@ -14,7 +14,9 @@ const handlepostupload=async(req,res)=>{
         content:req.body.content,
         author:req.body.author,
         avatarUrl:req.body.avatarUrl
-    })
+    });
+
+    return res.status(200).json({ msg: "Post uploaded successfully" });
 
     } catch (error) {
         console.log(error);

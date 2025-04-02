@@ -9,20 +9,19 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
+        unique: [true, "Username already exists"],
         trim: true
     },
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: [true, "Email already exists"],
         lowercase: true,
         trim: true
     },
     phone: {
         type: String,
         required: true,
-        unique: true,
         trim: true
     },
     password: {
@@ -35,7 +34,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String, // URL or file path
-        default: "default-profile.png"
+        default: process.env.DEFAULT_USER_IMG
     },
     bio: {
         type: String,
@@ -45,8 +44,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["Male", "Female", "Other"],
         required: true
-    }
-}, { timestamps: true });  // Automatically adds createdAt and updatedAt fields
+    },
+
+    termsAccepted: {
+        type: Boolean,
+        default: false
+    },
+
+    postIds:[{
+        type: String
+    }]
+}, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
 
