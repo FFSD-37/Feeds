@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { create_JWTtoken } from 'cookie-string-parser';
 import User from '../models/users_schema';
+import bcrypt from 'bcrypt';
 
 const dbPromise = open({
   filename: './controllers/imdb.sqlite',
@@ -86,12 +87,13 @@ let curr;
 
 const handleSignup = async(req, res) => {
   try {
+    const pass=await bcrypt.hash(req.body.password, 10);
     const userData = {
       fullName: req.body.fullName,
       username: req.body.username,
       email: req.body.email,
       phone: req.body.phone,
-      password: req.body.password,
+      password: pass,
       dob: req.body.dob,
       profilePicture: req.body.profileImageUrl ? req.body.profileImageUrl : process.env.DEFAULT_USER_IMG,
       bio: req.body.bio || "",
@@ -109,11 +111,11 @@ const handleSignup = async(req, res) => {
     console.log(err);
     if(err.name=="ValidationError"){
        const errors=Object.values(err.errors).map(e=>e.message);
-       return res.status(400).json({ err: errors });
+       return res.render("Registration", { msg: errors });
     };
     if(err.code==11000){
       const fields=Object.keys(err.keyValue);
-      return res.status(400).json({ err: `User with ${fields[0]} already exists` });
+      return res.render("Registration", { err: `User with ${fields[0]} already exists` });
     }
   }
 }
@@ -132,32 +134,20 @@ const handledelacc = (req, res) => {
   }
 }
 
-const handleLogin = (req, res) => {
-  if (req.body.identifykro == 'username') {
-    const idx = usernames.indexOf(req.body.identifier);
-    if (idx == -1) {
-      return res.render("login", { loginType: "Email", msg: "Username Doesn't exists" });
-    }
-    if (users[idx].password !== req.body.password) {
-      return res.render("login", { loginType: "Username", msg: "Incorrect password" });
-    }
-    curr = idx;
+const handleLogin = async(req, res) => {
+  try{
+    const user=await User.findOne(req.body.identifykro ==='username'?{username:req.body.identifier}:{email:req.body.identifier});
+    if (!user) return res.render("login", { loginType: "Email", msg: "Username Doesn't exists" });;
+    const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
+    if (!isPasswordMatch) return res.render("login", { loginType: "Username", msg: "Incorrect password" });
+
     const token = create_JWTtoken([users[idx].username, users[idx].email, users[idx].profilePicture], process.env.USER_SECRET, '30d');
     res.cookie('uuid', token, { httpOnly: true });
     return res.render("home", { img: users[idx].profilePicture });
   }
-  else {
-    const idx = emails.indexOf(req.body.identifier);
-    if (idx == -1) {
-      return res.render("login", { loginType: "Username", msg: "Email not registered" });
-    }
-    if (users[idx].password != req.body.password) {
-      return res.render("login", { loginType: "Email", msg: "Incorrect password" });
-    }
-    curr = idx;
-    const token = create_JWTtoken([users[idx].username, users[idx].email, users[idx].profilePicture], process.env.USER_SECRET, '30d');
-    res.cookie('uuid', token, { httpOnly: true });
-    return res.render("home", { img: users[idx].profilePicture });
+  catch(e){
+    console.log(e);
+    return res.render("login", { loginType: "Email", msg: "Something went wrong" });
   }
 };
 
