@@ -22,4 +22,25 @@ const handlepostupload=async(req,res)=>{
     }
 };
 
-export {handlepostupload};
+
+const handlePostDelete = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({ err: "Post ID is required" });
+        }
+
+        const deletedPost = await Post.deleteOne({ id });
+
+        if (deletedPost.deletedCount === 0) {
+            return res.status(404).json({ err: "Post not found" });
+        }
+
+        res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ err: error.message });
+    }
+};
+
+export {handlepostupload, handlePostDelete};

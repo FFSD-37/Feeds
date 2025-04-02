@@ -7,4 +7,6 @@ const router=express.Router();
 
 router.post('/',handlepostupload);
 
+router.delete('/:id')
+
 export default router;
