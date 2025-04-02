@@ -137,7 +137,7 @@ const handledelacc = (req, res) => {
 const handleLogin = async(req, res) => {
   try{
     const user=await User.findOne(req.body.identifykro ==='username'?{username:req.body.identifier}:{email:req.body.identifier});
-    if (!user) return res.render("login", { loginType: "Email", msg: "Username Doesn't exists" });;
+    if (!user) return res.render("login", { loginType: "Email", msg: "Username Doesn't exists" });
     const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isPasswordMatch) return res.render("login", { loginType: "Username", msg: "Incorrect password" });
 
