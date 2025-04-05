@@ -68,4 +68,4 @@ const handleGetpost=async(req,res)=>{
     }
 }
 
-export {handlePostupload, handlePostDelete};
+export {handlePostupload, handlePostDelete, handleGetpost};
