@@ -6,12 +6,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    
     username: {
         type: String,
         required: true,
         unique: [true, "Username already exists"],
         trim: true
     },
+
     email: {
         type: String,
         required: true,
@@ -19,27 +21,33 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         trim: true
     },
+
     phone: {
         type: String,
         required: true,
         trim: true
     },
+
     password: {
         type: String,
         required: true
     },
+
     dob: {
         type: Date,
         required: true
     },
+
     profilePicture: {
         type: String, // URL or file path
         default: process.env.DEFAULT_USER_IMG
     },
+
     bio: {
         type: String,
         trim: true
     },
+
     gender: {
         type: String,
         enum: ["Male", "Female", "Other"],
@@ -51,6 +59,24 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
+    isPremium: {
+        type: Boolean,
+        default: false
+    },
+
+    type: {
+        type: String,
+        enum: ["kid","channel","normal", "admin"]
+    },
+
+    savedPostsIds: [{
+        type: String
+    }],
+
+    archivedPostsIds: [{
+        type: String
+    }],
+    
     postIds:[{
         type: String
     }]
