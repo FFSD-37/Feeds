@@ -190,6 +190,7 @@ h2 {
 .post-options {
   margin-left: auto;
   color: black;
+  cursor: pointer;
 }
 
 .post-content {
@@ -230,7 +231,7 @@ h2 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1000;
+  z-index: 10;
   display: none;
   backdrop-filter: blur(4px);
 }
@@ -260,18 +261,6 @@ h2 {
   color: rgb(255, 255, 255);
 }
 
-#overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.1); /* Slight dark overlay */
-  backdrop-filter: blur(4px); /* Apply blur */
-  display: none; /* Initially hidden */
-  z-index: 1000;
-}
-
 /* Report Button */
 .report-button {
   background: #ff4d4d;
@@ -282,13 +271,14 @@ h2 {
   text-align: center;
   width: fit-content;
   font-weight: bold;
+  z-index: 100;
 }
 .report-button:hover {
   background: #cc0000;
 }
 
 /* Modal Overlay */
-.modal-overlay {
+.report-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -302,9 +292,10 @@ h2 {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
-.modal-overlay.show {
+.report-overlay.show {
   visibility: visible;
   opacity: 1;
+  z-index: 100;
 }
 
 /* Modal Content */

@@ -106,6 +106,7 @@ body {
 .radio-group {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
   gap: 1rem;
   margin-top: 0.5rem;
 }
@@ -120,6 +121,29 @@ body {
 
 .checkbox-group {
   margin-top: 1.5rem;
+}
+
+.know-about-type{
+  display: flex;
+  justify-content: center;
+}
+
+.know-about-type > button{
+  display: flex;
+  height: 1.5rem;
+  background-color: #d98abd;
+  border-radius: 5px;
+  margin: 5px 5px;
+  padding: 18px;
+  align-items: center;
+  font-size: medium;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.know-about-type > button:hover{
+  background-color: #cd3798;
 }
 
 .checkbox-group label {

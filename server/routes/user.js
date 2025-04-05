@@ -41,7 +41,7 @@ router.get("/home",isAuthuser, handlegetHome);
 
 router.get("/payment",isAuthuser, handlegetpayment);
 
-router.get("/profile",isAuthuser, handlegetprofile);
+router.get("/profile/:username",isAuthuser, handlegetprofile);
 
 router.get("/tandc",isAuthuser, handlegetterms);
 
@@ -80,7 +80,7 @@ router.post("/adminLogin", handleadminlogin);
 
 router.post("/delacc", handledelacc);
 
-router.get("/forget-password",isAuthuser, handlegetforgetpass);
+router.get("/forget-password", handlegetforgetpass);
 
 router.post("/logout", handlelogout);
 

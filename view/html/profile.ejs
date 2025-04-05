@@ -15,20 +15,19 @@
         </div>
         <div class="profile-info">
           <div class="profile-info-header">
-            <h2 class="username">__UserName___</h2>
-            <div class="settings" onclick="openSettings()">⚙️</div>
+            <h2 class="username">VoyagerX21</h2>
           </div>
           <div class="profile-stats">
-            <div class="stat"><span>0</span> posts</div>
+            <div class="stat"><span>14</span> posts</div>
             <div class="stat"><span>386</span> followers</div>
             <div class="stat"><span>422</span> following</div>
           </div>
           <div class="profile-info-header">
-            <button class="edit-profile">Edit Profile</button>
-            <button class="archive">Archive</button>
+            <button class="edit-profile"><a href="/edit_profile" style="text-decoration: none; color: black;">Edit Profile</a></button>
+            <button class="archive"><a href="/settings" style="text-decoration: none; color: black">Settings</a></button>
           </div>
           <div class="profile-bio">
-            Add a link to your website or other social media.<br />
+            <strong>MY BIO</strong><br />
           </div>
         </div>
       </header>
@@ -44,8 +43,11 @@
         <div class="nav-item2" data-tab="saved" onclick="showTab('saved')">
           🔖 Saved
         </div>
-        <div class="nav-item2" data-tab="tagged" onclick="showTab('tagged')">
-          📌 Tagged
+        <div class="nav-item2" data-tab="liked" onclick="showTab('liked')">
+          💕 Liked
+        </div>
+        <div class="nav-item2" data-tab="archive" onclick="showTab('archive')">
+          🚽 Archive
         </div>
       </nav>
       <div id="posts" class="posts-grid">
@@ -103,10 +105,18 @@
           <img src="<%- img %>" alt="Saved 3" />
         </div>
       </div>
-      <div id="tagged" class="posts-grid hidden">
+      <div id="liked" class="posts-grid hidden">
         <div class="post">
           <img src="<%- img %>" alt="Tagged 1" />
         </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Tagged 2" />
+        </div>
+        <div class="post">
+          <img src="<%- img %>" alt="Tagged 3" />
+        </div>
+      </div>
+      <div id="archive" class="posts-grid hidden">
         <div class="post">
           <img src="<%- img %>" alt="Tagged 2" />
         </div>
@@ -149,6 +159,5 @@
       </p>
     </div>
     <script src="../js/profile.js"></script>
-    <script src="../js/background.js"></script>
   </body>
 </html>

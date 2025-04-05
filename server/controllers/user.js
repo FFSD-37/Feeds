@@ -1,89 +1,37 @@
 import nodemailer from 'nodemailer';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
 import fs from 'fs';
 import path from 'path';
 import { create_JWTtoken } from 'cookie-string-parser';
 import User from '../models/users_schema.js';
+import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt from 'bcrypt';
 
-const dbPromise = open({
-  filename: './controllers/imdb.sqlite',
-  driver: sqlite3.Database
-});
-
-async function setupDatabase() {
-  const db = await dbPromise;
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS otps (
-      email TEXT PRIMARY KEY,
-      otp TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-  console.log("✅ Database & table setup complete!");
-}
-
-setupDatabase().catch(console.error);
-
 async function storeOtp(email, otp) {
-  const db = await dbPromise;
-  await db.run(
-    `INSERT INTO otps (email, otp) VALUES (?, ?)
-    ON CONFLICT(email) DO UPDATE SET otp = excluded.otp, created_at = CURRENT_TIMESTAMP`,
-    [email, otp]
-  );
-  console.log(`✅ OTP for ${email} saved successfully.`);
+  try {
+    const existing = await ResetPassword.findOne({ email });
+
+    if (existing) {
+      existing.otp = otp;
+      await existing.save();
+      console.log(`✅ OTP for ${email} updated successfully.`);
+    } else {
+      await ResetPassword.create({ email, otp });
+      console.log(`✅ OTP for ${email} saved successfully.`);
+    }
+  } catch (err) {
+    console.error(`❌ Error storing OTP for ${email}:`, err);
+  }
 }
 
 async function getOtp(email) {
-  const db = await dbPromise;
-  const row = await db.get(`SELECT otp FROM otps WHERE email = ?`, [email]);
-  return row ? row.otp : null;
-}
-
-let users = [
-  {
-    fullname: "Gourav Khakse",
-    username: "VoyagerX21",
-    email: "khakse2gaurav2003@gmail.com",
-    phone: '8527054595',
-    password: "Khakse@123",
-    dob: "2003-05-21",
-    profilePicture: "https://ik.imagekit.io/FFSD0037/WIN_20241229_22_47_54_Pro_1ajcB2M9r.jpg?updatedAt=1741976412981",
-    bio: "live once live fully",
-    gender: "male",
-    termsAccepted: true
-  },
-  {
-    fullname: "Ayush",
-    username: "bloomBoy",
-    email: "2357ayush@gmail.com",
-    phone: '9043125698',
-    password: "yush@123",
-    dob: "2005-09-20",
-    profilePicture: "https://ik.imagekit.io/FFSD0037/FB_IMG_1694627814088_hFyTN6nXw.jpg?updatedAt=1741777451291",
-    bio: "keep smiling",
-    gender: "male",
-    termsAccepted: true
-  },
-  {
-    fullName: 'Atin Chowdhury',
-    username: 'AtinUser',
-    email: 'atin@gmail.com',
-    phone: '8574961256',
-    password: 'atin@123',
-    dob: '2003-10-31',
-    profilePicture: 'https://ik.imagekit.io/FFSD0037/OHR.EuropaMoon_EN-IN7952428847_UHD_3840_2160_Su1-MPj5k.jpg',
-    bio: 'god is everything',
-    gender: 'male',
-    termsAccepted: true
+  try {
+    const record = await ResetPassword.findOne({ email });
+    return record ? record.otp : null;
+  } catch (err) {
+    console.error(`❌ Error retrieving OTP for ${email}:`, err);
+    return null;
   }
-];
-
-let usernames = ['VoyagerX21', 'bloomBoy', 'AtinUser'];
-let emails = ['khakse2gaurav2003@gmail.com', '2357ayush@gmail.com', 'atin@gmail.com'];
-let curr;
+}
 
 const handleSignup = async(req, res) => {
   try {
@@ -104,7 +52,6 @@ const handleSignup = async(req, res) => {
     };
 
     await User.create(userData);
-
     // const token = create_JWTtoken([userData.username, userData.email, userData.profilePicture,userData.type], process.env.USER_SECRET, '30d');
     // res.cookie('uuid', token, { httpOnly: true });
     return res.redirect("/login", { loginType: "Email", msg: "User Registered Successfully" });
@@ -289,17 +236,23 @@ const adminPassUpdate = (req, res) => {
   }
 }
 
-const updatepass = (req, res) => {
+const updatepass = async (req, res) => {
   if (req.body.new_password != req.body.new_password2) {
     return res.render("Forgot_pass", { msg: "Password mismatch", otpsec: "NO", newpass: "YES", emailsec: "NO", title: "Forgot Password" })
   }
   else {
-    const user = users[emails.indexOf(req.body.foremail)];
-    if (user.password == req.body.new_password) {
+    const user = await User.findOne({
+      email: req.body.foremail,
+    })
+
+    console.log(user,user.username);
+    
+    if (await bcrypt.compare(user.password, req.body.new_password)) {
       return res.render("Forgot_pass", { msg: "Same password as before", otpsec: "NO", newpass: "YES", emailsec: "NO", title: "Forgot Password" })
     }
     else {
-      user.password = req.body.new_password;
+      user.password = await bcrypt.hash(req.body.new_password, 10);
+      await user.save();
       return res.render("login", { msg: "Password Updated!!", loginType: null });
     }
   }
@@ -339,62 +292,62 @@ const handleadminlogin = (req, res) => {
 
 const handlegetHome = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("home", { img: data[2] });
+  return res.render("home", { img: data[2], currUser: data[0] });
 }
 
 const handlegetpayment = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("payment", { img: data[2] });
+  return res.render("payment", { img: data[2], currUser: data[0] });
 }
 
 const handlegetprofile = (req, res) => {
+  const u = req.params;
   const { data } = req.userDetails;
-  return res.render("profile", { img: data[2] });
+  return res.render("profile", { img: data[2], currUser: data[0] });
 }
 
 const handlegetterms = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("tandc", { img: data[2] });
+  return res.render("tandc", { img: data[2], currUser: data[0] });
 }
 
 const handlegetcontact = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("contact", { img: data[2], msg: null });
+  return res.render("contact", { img: data[2], msg: null, currUser: data[0] });
 }
 
 const handlegetconnect = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("connect", { img: data[2] });
+  return res.render("connect", { img: data[2], currUser: data[0] });
 }
 
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("games", { img: data[2] });
+  return res.render("games", { img: data[2], currUser: data[0] });
 }
 
 const handlegetstories = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("stories", { img: data[2] });
+  return res.render("stories", { img: data[2], currUser: data[0] });
 }
 
 const handlegetdelacc = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("delacc", { img: data[2], msg: null });
+  return res.render("delacc", { img: data[2], msg: null, currUser: data[0] });
 }
 
 const handlegetadmin = (req, res) => {
-  curr = undefined;
   return res.render("admin", { msg: null });
 }
 
 const handlegetreels = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("reels", { img: data[2] });
+  return res.render("reels", { img: data[2], currUser: data[0] });
 }
 
 const handlegethelp = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("help", { img: data[2] });
+  return res.render("help", { img: data[2], currUser: data[0] });
 }
 
 const handlegetsignup = (req, res) => {
@@ -407,7 +360,7 @@ const handlegetforgetpass = (req, res) => {
 
 const handlegeteditprofile = (req, res) => {
   const { data } = req.userDetails;
-  res.render("edit_profile", { img: data[2] });
+  res.render("edit_profile", { img: data[2], currUser: data[0] });
 }
 
 export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile };

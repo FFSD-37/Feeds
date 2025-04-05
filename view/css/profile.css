@@ -19,6 +19,7 @@ body {
   height: 100dvh;
   max-width: 1050px;
   margin: 0 0;
+  margin-bottom: 40px;
   padding: 30px 20px;
   text-align: center;
 }
@@ -95,8 +96,8 @@ body {
   color: #0c0c0c;
   text-align: center;
   font-weight: bold;
-  position: absolute;
-  margin-top: 750px;
+  position: fixed;
+  bottom: 0;
 }
 
 .footer a {
