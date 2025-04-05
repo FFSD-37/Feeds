@@ -5,21 +5,30 @@ const commentSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Post"
     },
+
     username: {
         type: String,
         required: true,
         trim: true
     },
+
     avatarUrl: {
-        type: String, // Can be a URL or file path
+        type: String,
         default: process.env.DEFAULT_USER_IMG
     },
+
     text: {
         type: String,
         required: true,
         trim: true
+    },
+
+    parentCommntID:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Comment'
     }
-}, { timestamps: true });  // Automatically adds `createdAt` and `updatedAt`
+    
+}, { timestamps: true });
 
 const Comment = mongoose.model("Comment", commentSchema);
 

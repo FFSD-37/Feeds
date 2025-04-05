@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    
+
     username: {
         type: String,
         required: true,
@@ -38,10 +38,34 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
+    visibility: {
+        type: String,
+        enum: ["Public", "Private"],
+        default: "Public"
+    },
+
     profilePicture: {
-        type: String, // URL or file path
+        type: String,
         default: process.env.DEFAULT_USER_IMG
     },
+
+    followers: [{
+        username:{
+            type:String
+        },
+        avatarUrl:{
+            type:String
+        }
+    }],
+
+    followings: [{
+        username:{
+            type:String
+        },
+        avatarUrl:{
+            type:String
+        }
+    }],
 
     bio: {
         type: String,
@@ -66,10 +90,15 @@ const userSchema = new mongoose.Schema({
 
     type: {
         type: String,
-        enum: ["kid","channel","normal", "admin"]
+        enum: ["Kids","Student","Normal", "Admin"],
+        default:'Normal'
     },
 
     savedPostsIds: [{
+        type: String
+    }],
+
+    likedPostsIds: [{
         type: String
     }],
 
@@ -79,7 +108,11 @@ const userSchema = new mongoose.Schema({
     
     postIds:[{
         type: String
-    }]
+    }],
+
+    channelName:[{
+        type: String
+    }],
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

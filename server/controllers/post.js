@@ -2,7 +2,7 @@ import { verify_JWTtoken } from "cookie-string-parser";
 import Post from "../models/postSchema.js";
 import User from "../models/users_schema.js";
 
-const handlepostupload=async(req,res)=>{
+const handlePostupload=async(req,res)=>{
     try {
     const authorDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
     
@@ -54,4 +54,18 @@ const handlePostDelete = async (req, res) => {
     }
 };
 
-export {handlepostupload, handlePostDelete};
+const handleGetpost=async(req,res)=>{
+    try{
+    const {id}=req.params;
+    if(!id) return res.status(400).json({ err: "Post ID is required" });
+    const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
+    if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
+        // if(userDetails.data[])
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({err:error.message})
+    }
+}
+
+export {handlePostupload, handlePostDelete};

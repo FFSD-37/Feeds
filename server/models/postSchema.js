@@ -6,10 +6,13 @@ const postSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    title: {
-        type: String,
-        required: true
+
+    type:{
+        type:String,
+        enum:['Reels','Img'],
+        required:true
     },
+
     url: {
         type: String,
         required: true
