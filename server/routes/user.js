@@ -80,7 +80,7 @@ router.post("/adminLogin", handleadminlogin);
 
 router.post("/delacc", handledelacc);
 
-router.get("/forget-password", handlegetforgetpass);
+router.get("/forget-password",isAuthuser, handlegetforgetpass);
 
 router.post("/logout", handlelogout);
 
@@ -90,11 +90,11 @@ router.post("/verifyotp", verifyotp);
 
 router.post("/updatepass", updatepass);
 
-router.get("/imagKitauth", handleimagKitauth);
+router.get("/imagKitauth",isAuthuser, handleimagKitauth);
 
-router.get("/fpadmin", handlefpadmin);
+router.get("/fpadmin",isAuthuser, handlefpadmin);
 
-router.get("/edit_profile", handlegeteditprofile);
+router.get("/edit_profile",isAuthuser, handlegeteditprofile);
 
 router.post("/updatepassadmin", adminPassUpdate);
 

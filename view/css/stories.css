@@ -35,7 +35,7 @@ body {
 .story-avatar-border {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
+    border-radius: 25%;
     background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     display: flex;
     justify-content: center;
@@ -46,7 +46,7 @@ body {
 .story-avatar {
     width: 74px;
     height: 74px;
-    border-radius: 50%;
+    border-radius: 25%;
     border: 3px solid white;
     object-fit: cover;
 }

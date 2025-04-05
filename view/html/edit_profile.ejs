@@ -11,7 +11,7 @@
     <div class="profile-container">
         <h2>Edit Profile</h2>
         <form id="profileForm" action="/edit" method="POST">
-            <img id="profilePic" src="pic.jpg" alt="profile-pic" class="profile-photo" onclick="document.getElementById('photoInput').click()">
+            <img id="profilePic" src="<%- img %>" alt="profile-pic" class="profile-photo" onclick="document.getElementById('photoInput').click()">
             <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none">
             <button type="button" class="change-profile-pic" onclick="document.getElementById('photoInput').click()"> Change Photo </button>
             <h4>Username</h4>

@@ -106,9 +106,34 @@
         </div>
 
         <div class="form-group">
+          <label>Account Type</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="acctype" value="Kids" required />
+              Kids
+            </label>
+            <label>
+              <input type="radio" name="acctype" value="Student" required />
+              Student
+            </label>
+            <label>
+              <input type="radio" name="acctype" value="Channel" required/>
+              Channel
+            </label>
+            <label>
+              <input type="radio" name="acctype" value="Normal" checked/>
+              Normal
+            </label>
+            <a href="#" style="text-decoration: none;" onclick="alert('1. Kids : Age should be 2 to 8 years\n2. Student : Age should be 9 to 16 years\n3. Channel/Normal : Age should be greater than 16\n')">
+              Not sure about the type ?
+            </a>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="dob">Date of Birth</label>
           <input type="date" id="dob" name="dob" required />
-          <div class="error-message">Age should be atleast 13</div>
+          <div class="error-message">Age criteria should match with the account type</div>
         </div>
 
         <input type="hidden" id="profileImageUrl" name="profileImageUrl"/>

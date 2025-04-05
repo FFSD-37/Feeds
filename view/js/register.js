@@ -30,11 +30,22 @@ const validatePassword = (password) => {
   );
 };
 
+document.addEventListener("onclick", (e) => {
+
+})
+
 const validateDOB = (dob) => {
   const date = new Date(dob);
   const today = new Date();
   const age = today.getFullYear() - date.getFullYear();
-  return age >= 13 && age <= 120;
+  const temp = form.acctype.value;
+  if (temp === "Kids"){
+    return age >= 2 && age <= 8;
+  }
+  if (temp === "Student"){
+    return age >= 9 && age <= 16;
+  }
+  return age >= 17 && age <= 120;
 };
 
 const showError = (input, isValid) => {
@@ -113,6 +124,7 @@ form.addEventListener("submit", (e) => {
     dobValid,
     genderValid,
     termsValid,
+    type,
   });
 
   showError(form.fullName, fullNameValid);
