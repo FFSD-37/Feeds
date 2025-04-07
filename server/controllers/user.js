@@ -34,6 +34,7 @@ async function getOtp(email) {
 }
 
 const handleSignup = async(req, res) => {
+  console.log(req.body)
   try {
     const pass=await bcrypt.hash(req.body.password, 10);
     const userData = {
@@ -92,7 +93,7 @@ const handleLogin = async(req, res) => {
 
     const token = create_JWTtoken([user.username, user.email, user.profilePicture, user.type], process.env.USER_SECRET, '30d');
     res.cookie('uuid', token, { httpOnly: true });
-    return res.render("home", { img: user.profilePicture});
+    return res.render("home", { img: user.profilePicture, currUser: user.username});
   }
   catch(e){
     console.log(e);

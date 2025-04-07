@@ -124,7 +124,6 @@ form.addEventListener("submit", (e) => {
     dobValid,
     genderValid,
     termsValid,
-    type,
   });
 
   showError(form.fullName, fullNameValid);

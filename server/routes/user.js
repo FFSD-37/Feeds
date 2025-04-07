@@ -1,5 +1,4 @@
 import express from "express";
-import nodemailer from 'nodemailer';
 import {
   handleSignup,
   handleLogin,
@@ -68,7 +67,7 @@ router.get("/login",isAuthuser, (req, res) => {
 
 router.get("/admin",isAuthuser, handlegetadmin);
 
-router.get("/signup",isAuthuser, handlegetsignup);
+router.get("/signup", handlegetsignup);
 
 router.post("/login", handleLogin);
 
