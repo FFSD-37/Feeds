@@ -55,7 +55,7 @@ const handleSignup = async(req, res) => {
     await User.create(userData);
     // const token = create_JWTtoken([userData.username, userData.email, userData.profilePicture,userData.type], process.env.USER_SECRET, '30d');
     // res.cookie('uuid', token, { httpOnly: true });
-    return res.redirect("/login", { loginType: "Email", msg: "User Registered Successfully" });
+    return res.render("/login", { loginType: "Email", msg: "User Registered Successfully" });
   }
   catch (err) {
     console.log(err);
