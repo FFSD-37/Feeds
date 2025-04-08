@@ -25,7 +25,8 @@ import {
   handleadminlogin,
   handlefpadmin,
   adminPassUpdate,
-  handlegeteditprofile
+  handlegeteditprofile,
+  handlegetpostoverlay
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -96,5 +97,7 @@ router.get("/fpadmin",isAuthuser, handlefpadmin);
 router.get("/edit_profile",isAuthuser, handlegeteditprofile);
 
 router.post("/updatepassadmin", adminPassUpdate);
+
+router.get("/post_overlay", handlegetpostoverlay);
 
 export default router;

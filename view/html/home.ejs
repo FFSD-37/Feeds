@@ -8,7 +8,7 @@
   </head>
   <body>
     <%- include('sidebar') %>
-    <div class="container">
+    <div class="container" id="container">
       <div class="left-section">
         <h2><a href="/reels" style="text-decoration: none; color: black;">Suggested Reels</a></h2>
         <div class="divider3"></div>
@@ -86,14 +86,14 @@
             <div class="dropdown-menu" id="socialDropdown">
               <div class="menu-item danger" onclick="openReportModal()">Report</div>
               <div class="menu-item normal">Add to favorites</div>
-              <div class="menu-item normal">Go to post</div>
+              <div class="menu-item normal" onclick="postOverlay()">Go to post</div>
               <div class="menu-item normal">Share to...</div>
               <div class="menu-item normal">Copy link</div>
               <div class="menu-item normal">About this account</div>
               <div class="menu-item normal" onclick="closepostdropdown()">Cancel</div>
             </div>
           </div>
-          <div class="post-content"><img src="https://ik.imagekit.io/FFSD0037/OHR.EuropaMoon_EN-IN7952428847_UHD_3840_2160_Su1-MPj5k.jpg?updatedAt=1742232322510" /></div>
+          <div class="post-content" onclick="postOverlay()"><img class="post-on-home-page" src="https://ik.imagekit.io/FFSD0037/IMG_20240302_230841106_2_vWhhz6WmJ.jpg?updatedAt=1743840584453" /></div>
           <div class="post-actions">
             <div class="action-icon">
               <svg
@@ -108,7 +108,7 @@
                 />
               </svg>
             </div>
-            <div class="action-icon">
+            <div class="action-icon" onclick="postOverlay()" id="comment-button-post">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="24px"
@@ -149,87 +149,6 @@
             </div>
           </div>
         </div>
-        <div class="post">
-          <div class="post-header">
-            <div class="user-avatar"></div>
-            <a href="profile.html" style="text-decoration: none; color: black"
-              ><span class="username">Vicky_Kaushal09</span></a
-            >
-            <span class="post-time">• 7d</span>
-            <div class="post-options" id="postOptions">
-              <a
-                href="javascript:void(0)"
-                style="text-decoration: none; color: black"
-                >•••</a
-              >
-            </div>
-            <div class="dropdown-menu" id="socialDropdown">
-              <div class="menu-item danger">Report</div>
-              <div class="menu-item normal">Add to favorites</div>
-              <div class="menu-item normal">Go to post</div>
-              <div class="menu-item normal">Share to...</div>
-              <div class="menu-item normal">Copy link</div>
-              <div class="menu-item normal">About this account</div>
-              <div class="menu-item normal">Cancel</div>
-            </div>
-          </div>
-          <div class="post-content"><img src="https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_rbCY31wJT6.jpg?updatedAt=1741780445993" /></div>
-          <div class="post-actions">
-            <div class="action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="M480-147q-14 0-28.5-5T426-168l-69-63q-106-97-191.5-192.5T80-634q0-94 63-157t157-63q53 0 100 22.5t80 61.5q33-39 80-61.5T660-854q94 0 157 63t63 157q0 115-85 211T602-230l-68 62q-11 11-25.5 16t-28.5 5Zm-38-543q-29-41-62-62.5T300-774q-60 0-100 40t-40 100q0 52 37 110.5T285.5-410q51.5 55 106 103t88.5 79q34-31 88.5-79t106-103Q726-465 763-523.5T800-634q0-60-40-100t-100-40q-47 0-80 21.5T518-690q-7 10-17 15t-21 5q-11 0-21-5t-17-15Zm38 189Z"
-                />
-              </svg>
-            </div>
-            <div class="action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="m240-240-92 92q-19 19-43.5 8.5T80-177v-623q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240Zm-34-80h594v-480H160v525l46-45Zm-46 0v-480 480Z"
-                />
-              </svg>
-            </div>
-            <div class="action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="M792-443 176-183q-20 8-38-3.5T120-220v-520q0-22 18-33.5t38-3.5l616 260q25 11 25 37t-25 37ZM200-280l474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
-                />
-              </svg>
-            </div>
-            <div class="last-action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="m480-240-168 72q-40 17-76-6.5T200-241v-519q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v519q0 43-36 66.5t-76 6.5l-168-72Zm0-88 200 86v-518H280v518l200-86Zm0-432H280h400-200Z"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
       <div id="report-modal" class="report-overlay">
         <div class="modal-content">
           <div class="modal-header">
@@ -249,6 +168,7 @@
           </ul>
         </div>
       </div>
+      <%- include('post_overlay') %>
     <script src="../js/background.js"></script>
     <script src="../js/home.js"></script>
   </body>
