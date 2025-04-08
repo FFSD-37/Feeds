@@ -1,0 +1,111 @@
+const commentHeart = document.querySelectorAll(".comment-heart");
+const commentInput = document.getElementById("message-input");
+const postButton = document.querySelector(".overlaypost-button");
+
+commentInput.addEventListener("input", function () {
+    if (this.value.trim() !== "") {
+        postButton.classList.remove("disabled");
+    } else {
+        postButton.classList.add("disabled");
+    }
+});
+
+const emojiBtn = document.getElementById("emoji-btn");
+const emojiPicker = document.getElementById("emoji-picker");
+const messageInput = document.getElementById("message-input");
+
+emojiBtn.addEventListener("click", () => {
+    emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
+});
+
+emojiPicker.addEventListener("emoji-click", e => {
+    messageInput.value += e.detail.unicode;
+    postButton.classList.remove("disabled");
+});
+
+emojiPicker.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        emojiPicker.style.display = "none";
+    }
+})
+function postComment(e) {
+    if (e.type === "keydown" && e.key !== "Enter") return;
+    if (!postButton.classList.contains("disabled")) {
+        const commentSection = document.querySelector(".comment-section");
+        const existingP = commentSection.querySelector("p");
+        if (existingP) existingP.remove();
+
+        const newComment = document.createElement("div");
+        newComment.className = "comment";
+        newComment.innerHTML = `
+      <div class="comment-profile">U</div>
+      <div class="comment-content">
+          <div>
+              <p class="comment-username">user</p>
+              <p class="comment-text">${commentInput.value}</p>
+          </div>
+          <div class="comment-info">
+              <span class="comment-time">now</span>
+              <span class="comment-reply">Reply</span>
+              <span class="comment-heart" name="heart-comment" data-liked="false">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>
+              </span>
+          </div>
+      </div>
+    `;
+        commentSection.appendChild(newComment);
+        commentInput.value = "";
+        postButton.classList.add("disabled");
+    }
+}
+
+postButton.addEventListener("click", postComment);
+postButton.addEventListener("keydown", postComment);
+
+commentInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") postComment(e);
+});
+
+document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
+    const trig = ele.getAttribute("name");
+    ele.addEventListener("click", function () {
+        if (trig === "like") {
+            const liked = this.getAttribute("data-liked") === "true";
+            if (!liked) {
+                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Z"/></svg>`;
+                this.setAttribute("data-liked", "true");
+            } else {
+                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z"/></svg>`;
+                this.setAttribute("data-liked", "false");
+            }
+            // fetch request for like for the backend part is pending
+        }
+        if (trig === "comment") {
+            commentInput.focus();
+        }
+        if (trig === "share") {
+            // logic for share
+        }
+        if (trig === "save") {
+            const liked = this.getAttribute("data-liked") === "true";
+            if (!liked) {
+                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Z"/></svg>`;
+                this.setAttribute("data-liked", "true");
+            } else {
+                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Zm80-122 200-86 200 86v-518H280v518Zm0-518h400-400Z"/></svg>`;
+                this.setAttribute("data-liked", "false");
+            }
+            // fetch request for like for the backend part is pending
+        }
+        if (trig == "heart-comment") {
+            const liked = this.getAttribute("data-liked") === "true";
+            if (!liked) {
+                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Z"/></svg>`; // or your SVG
+                this.setAttribute("data-liked", "true");
+            } else {
+                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>`;
+                this.setAttribute("data-liked", "false");
+            }
+        }
+    });
+});
