@@ -1,0 +1,137 @@
+body {
+  margin: 0px;
+  height: 100vh;
+  background: #383838;
+}
+
+.center {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 350px;
+  padding: 20px;
+  background: #6d5454;
+  border-radius: 15px;
+}
+
+.form-input input {
+  display: none;
+}
+
+.image-selector {
+  width: 45%;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  background: #1172c2;
+  color: #fff;
+  font-size: 15px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.continue-button {
+  width: 45%;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  background: #be357a;
+  color: #fff;
+  font-size: 15px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 2px;
+  border: none;
+}
+
+.form-input img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: none;
+  margin-bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 8px;
+}
+
+.preview {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 300px;
+  height: 300px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-line {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.v-line-1,
+.v-line-2 {
+  top: 0;
+  bottom: 0;
+  width: 2px;
+}
+
+.v-line-1 {
+  left: 33.33%;
+}
+
+.v-line-2 {
+  left: 66.66%;
+}
+
+.h-line-1,
+.h-line-2 {
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.h-line-1 {
+  top: 33.33%;
+}
+
+.h-line-2 {
+  top: 66.66%;
+}
+
+.grid-line {
+  display: block;
+}
+
+.preview-file-ip-1 {
+  display: none;
+}
+
+.post-manipulation-buttons {
+  display: none;
+  justify-content: space-between;
+  width: 80%;
+  margin-top: 10px;
+}

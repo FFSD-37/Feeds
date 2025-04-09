@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Editor Using HTML, CSS, and JavaScript - ByteWebster</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/create_post_2.css" />
+  </head>
+  <body>
+    <div class="right">
+      <h4>Filters</h4>
+      <div class="skew">
+        <label for="brt"
+          >Brightness:
+          <div class="s" id="brt">100%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range brt"
+          id="range"
+          type="range"
+          min="0"
+          max="4"
+          value="1"
+          step=".05"
+          name="brt"
+          oninput="pcnt(value, '#brt')"
+        />
+      </div>
+      <div class="skew">
+        <label for="cnt"
+          >Contrast:
+          <div class="s" id="cnt">100%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range cnt"
+          id="range"
+          type="range"
+          min="0"
+          max="4"
+          value="1"
+          step=".05"
+          name="cnt"
+          oninput="pcnt(value, '#cnt')"
+        />
+      </div>
+      <div class="skew">
+        <label for="gs"
+          >Grayscale:
+          <div class="s" id="gs">0%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range gs"
+          id="range"
+          type="range"
+          min="0"
+          max="1"
+          value="0"
+          step=".05"
+          name="gs"
+          oninput="pcnt(value, '#gs')"
+        />
+      </div>
+      <div class="skew">
+        <label for="inv"
+          >Invert:
+          <div class="s" id="inv">0%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range inv"
+          id="range"
+          type="range"
+          min="0"
+          max="1"
+          value="0"
+          step=".05"
+          name="inv"
+          oninput="pcnt(value, '#inv')"
+        />
+      </div>
+      <div class="skew">
+        <label for="opa"
+          >Opacity:
+          <div class="s" id="opa">100%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range opa"
+          id="range"
+          type="range"
+          min="0"
+          max="1"
+          value="1"
+          step=".05"
+          name="opa"
+          oninput="pcnt(value, '#opa')"
+        />
+      </div>
+      <div class="skew">
+        <label for="sat"
+          >Saturate:
+          <div class="s" id="sat">0%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range sat"
+          id="range"
+          type="range"
+          min="0"
+          max="4"
+          value="1"
+          step=".05"
+          name="sat"
+          oninput="pcnt(value, '#sat')"
+        />
+      </div>
+      <div class="skew">
+        <label for="sep"
+          >Sepia:
+          <div class="s" id="sep">0%</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range sep"
+          id="range"
+          type="range"
+          min="0"
+          max="1"
+          value="0"
+          step=".05"
+          name="sep"
+          oninput="pcnt(value, '#sep')"
+        />
+      </div>
+      <div class="skew">
+        <label for="blr"
+          >Blur:
+          <div class="s" id="blr">0px</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range blr"
+          id="range"
+          type="range"
+          min="0"
+          max="20"
+          value="0"
+          step="1"
+          name="blr"
+          oninput="blr(value)"
+        />
+      </div>
+      <div class="skew">
+        <label for="hr"
+          >Hue-Rotate:
+          <div class="s" id="hr">0deg</div>
+        </label>
+      </div>
+      <div class="sliders">
+        <input
+          class="range hr"
+          id="range"
+          type="range"
+          min="0"
+          max="360"
+          value="0"
+          step="1"
+          name="hr"
+          oninput="hr(value)"
+        />
+      </div>
+      <div class="bottom-buttons">
+        <button class="btn btn" type="button" id="restoreBtn">
+          Reset Filters
+        </button>
+        <button id="downloadBtn">
+          <i class="bx bx-download"></i> Download Image
+        </button>
+      </div>
+    </div>
+    <div class="left">
+      <img
+        id="img"
+        src="<%- img2 %>"
+        alt="Image not found"
+      />
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../js/create_post_2.js"></script>
+  </body>
+</html>

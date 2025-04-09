@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>CSS Progress Bar</title>
+    <link rel="stylesheet" href="../css/create_post.css">
+  </head>
+  <body>
+    <div class="center">
+      <div class="form-input">
+        <h4 style="padding: 5px; font-size: 20px">Create New Post</h4>
+        <label class="preview" for="file-ip-1">
+          <input
+            type="file"
+            id="file-ip-1"
+            accept="image/*"
+            onchange="showPreview(event);"
+          />
+          <div class="grid-line v-line-1"></div>
+          <div class="grid-line v-line-2"></div>
+          <div class="grid-line h-line-1"></div>
+          <div class="grid-line h-line-2"></div>
+          <strong
+            style="
+              background-color: rgb(52, 15, 15);
+              color: white;
+              font-weight: bold;
+              border-radius: 5px;
+              padding: 7px;
+            "
+            >Select from Computer</strong
+          >
+          <img id="file-ip-1-preview" />
+        </label>
+        <div class="post-manipulation-buttons">
+          <!-- <label class="continue-button" onclick="continueEditing();"
+            >Continue Editing</label
+          > -->
+          <form id="createPostForm" action="/createpost" method="POST">
+            <input type="hidden" id="profileImageUrl" name="profileImageUrl" />
+            <button type="submit" class="continue-button" id="continueBtn" style="text-decoration: none;">
+              Continue Editing
+            </button>
+          </form>
+          <label for="file-ip-1" class="image-selector">Again Select</label>
+          <input
+            type="file"
+            id="file-ip-1"
+            accept="image/*"
+            onchange="showPreview(event);"
+          />
+        </div>
+      </div>
+    </div>
+    <%- include('sidebar') %>
+    <script src="../js/create_post.js"></script>
+    <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+  </body>
+</html>

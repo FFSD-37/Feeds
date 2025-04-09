@@ -26,7 +26,10 @@ import {
   handlefpadmin,
   adminPassUpdate,
   handlegeteditprofile,
-  handlegetpostoverlay
+  handlegetpostoverlay,
+  handlegetcreatepost,
+  handlecreatepost,
+  handlegetcreatepost2
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -56,6 +59,10 @@ router.get("/stories",isAuthuser, handlegetstories);
 router.get("/delacc",isAuthuser, handlegetdelacc);
 
 router.get("/reels",isAuthuser, handlegetreels);
+
+router.get("/create_post", isAuthuser, handlegetcreatepost);
+
+router.get("/create_post_2", isAuthuser, handlegetcreatepost2)
 
 router.get("/help",isAuthuser, handlegethelp);
 
@@ -87,6 +94,8 @@ router.post("/logout", handlelogout);
 router.post("/sendotp", sendotp);
 
 router.post("/verifyotp", verifyotp);
+
+router.post("/createpost", handlecreatepost);
 
 router.post("/updatepass", updatepass);
 

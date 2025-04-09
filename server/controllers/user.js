@@ -361,11 +361,27 @@ const handlegetforgetpass = (req, res) => {
 
 const handlegeteditprofile = (req, res) => {
   const { data } = req.userDetails;
-  res.render("edit_profile", { img: data[2], currUser: data[0] });
+  return res.render("edit_profile", { img: data[2], currUser: data[0] });
 }
 
 const handlegetpostoverlay = (req, res) => {
-  res.render("post_overlay");
+  return res.render("post_overlay");
 }
 
-export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile, handlegetpostoverlay };
+const handlegetcreatepost = (req, res) => {
+  const { data } = req.userDetails;
+  return res.render("create_post", {img: data[2], currUser: data[0]});
+}
+
+const handlecreatepost = (req, res) => {
+  const image = req.body.profileImageUrl;
+  // const { data } = req.userDetails;
+  return res.render("create_post_second", {img2: image});
+}
+
+const handlegetcreatepost2 = (req, res) => {
+  const {data} = req.userDetails
+  return res.render("create_post_second", {img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2]});
+}
+
+export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile, handlegetpostoverlay, handlegetcreatepost, handlecreatepost, handlegetcreatepost2 };
