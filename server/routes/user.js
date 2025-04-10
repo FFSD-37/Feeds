@@ -75,29 +75,29 @@ router.get("/login",isAuthuser, (req, res) => {
 
 router.get("/admin",isAuthuser, handlegetadmin);
 
-router.get("/signup", handlegetsignup);
+router.get("/signup",isAuthuser, handlegetsignup);
 
-router.post("/login", handleLogin);
+router.post("/login",isAuthuser, handleLogin);
 
-router.post("/signup", handleSignup);
+router.post("/signup",isAuthuser, handleSignup);
 
-router.post("/contact", handleContact);
+router.post("/contact",isAuthuser, handleContact);
 
-router.post("/adminLogin", handleadminlogin);
+router.post("/adminLogin",isAuthuser, handleadminlogin);
 
-router.post("/delacc", handledelacc);
+router.post("/delacc",isAuthuser, handledelacc);
 
-router.get("/forget-password", handlegetforgetpass);
+router.get("/forget-password",isAuthuser, handlegetforgetpass);
 
-router.post("/logout", handlelogout);
+router.post("/logout",isAuthuser, handlelogout);
 
-router.post("/sendotp", sendotp);
+router.post("/sendotp",isAuthuser, sendotp);
 
-router.post("/verifyotp", verifyotp);
+router.post("/verifyotp",isAuthuser, verifyotp);
 
-router.post("/createpost", handlecreatepost);
+router.post("/createpost", isAuthuser, handlecreatepost);
 
-router.post("/updatepass", updatepass);
+router.post("/updatepass",isAuthuser, updatepass);
 
 router.get("/imagKitauth",isAuthuser, handleimagKitauth);
 
@@ -105,8 +105,8 @@ router.get("/fpadmin",isAuthuser, handlefpadmin);
 
 router.get("/edit_profile",isAuthuser, handlegeteditprofile);
 
-router.post("/updatepassadmin", adminPassUpdate);
+router.post("/updatepassadmin",isAuthuser, adminPassUpdate);
 
-router.get("/post_overlay", handlegetpostoverlay);
+router.get("/post_overlay",isAuthuser, handlegetpostoverlay);
 
 export default router;

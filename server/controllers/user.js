@@ -375,8 +375,8 @@ const handlegetcreatepost = (req, res) => {
 
 const handlecreatepost = (req, res) => {
   const image = req.body.profileImageUrl;
-  // const { data } = req.userDetails;
-  return res.render("create_post_second", {img2: image});
+  const { data } = req.userDetails;
+  return res.render("create_post_second", {img2: image, img: data[2], currUser: data[0]});
 }
 
 const handlegetcreatepost2 = (req, res) => {
