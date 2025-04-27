@@ -87,17 +87,17 @@ router.post("/adminLogin",isAuthuser, handleadminlogin);
 
 router.post("/delacc",isAuthuser, handledelacc);
 
-router.get("/forget-password",isAuthuser, handlegetforgetpass);
+router.get("/forget-password", handlegetforgetpass);
 
 router.post("/logout",isAuthuser, handlelogout);
 
-router.post("/sendotp",isAuthuser, sendotp);
+router.post("/sendotp", sendotp);
 
-router.post("/verifyotp",isAuthuser, verifyotp);
+router.post("/verifyotp", verifyotp);
 
 router.post("/createpost", isAuthuser, handlecreatepost);
 
-router.post("/updatepass",isAuthuser, updatepass);
+router.post("/updatepass", updatepass);
 
 router.get("/imagKitauth",isAuthuser, handleimagKitauth);
 

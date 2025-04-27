@@ -55,18 +55,20 @@ const handleSignup = async(req, res) => {
     await User.create(userData);
     // const token = create_JWTtoken([userData.username, userData.email, userData.profilePicture,userData.type], process.env.USER_SECRET, '30d');
     // res.cookie('uuid', token, { httpOnly: true });
-    return res.render("/login", { loginType: "Email", msg: "User Registered Successfully" });
+    return res.render("login", { loginType: "Email", msg: "User Registered Successfully" });
   }
   catch (err) {
     console.log(err);
-    if(err.name=="ValidationError"){
+    console.log(err.code);
+    if(err.cause.code===11000){
+      console.log("heelo");
+      const fields=Object.keys(err.cause.keyValue);
+      return res.render("Registration", { msg: `User with ${fields[0]} already exists` });
+    }
+    if(err.name==="ValidationError"){
        const errors=Object.values(err.errors).map(e=>e.message);
        return res.render("Registration", { msg: errors });
     };
-    if(err.code==11000){
-      const fields=Object.keys(err.keyValue);
-      return res.render("Registration", { err: `User with ${fields[0]} already exists` });
-    }
   }
 }
 
@@ -112,9 +114,6 @@ function generateOTP() {
 
 const sendotp = async (req, res) => {
   var mail = req.body.email;
-  if (!(emails.includes(mail))) {
-    return res.render("Forgot_pass", { msg: "Email not Registered", newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
-  }
   var otp = generateOTP();
   let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
