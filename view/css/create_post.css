@@ -42,9 +42,8 @@ body {
 }
 
 .continue-button {
-  width: 45%;
-  height: 35px;
-  line-height: 35px;
+  width: 65%;
+  height: 50px;
   text-align: center;
   background: #be357a;
   color: #fff;
