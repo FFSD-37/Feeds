@@ -58,10 +58,7 @@ const handleSignup = async(req, res) => {
     return res.render("login", { loginType: "Email", msg: "User Registered Successfully" });
   }
   catch (err) {
-    console.log(err);
-    console.log(err.code);
     if(err.cause.code===11000){
-      console.log("heelo");
       const fields=Object.keys(err.cause.keyValue);
       return res.render("Registration", { msg: `User with ${fields[0]} already exists` });
     }
