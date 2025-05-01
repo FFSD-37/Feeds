@@ -60,7 +60,14 @@ const handleGetpost=async(req,res)=>{
     if(!id) return res.status(400).json({ err: "Post ID is required" });
     const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
     if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
-        // if(userDetails.data[])
+    const userType=userDetails.data[3];
+    
+    const postDetails=await Post.findOne({
+        id
+    });
+
+    if(!postDetails) return res.status(404).json({ err: "Post not found" });
+
     }
     catch(error){
         console.log(error);

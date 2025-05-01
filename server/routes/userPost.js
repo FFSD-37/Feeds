@@ -3,7 +3,7 @@ import {
     handleGetpost,
     handlePostDelete,
     handlePostupload
-} from '../controllers/post.js';
+} from '../controllers/userPost.js';
 
 const router=express.Router();
 
