@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=menu" />
 </head>
 <body>
     <div class="sidebar">
@@ -127,11 +128,14 @@
             /></svg
           ><span class="tooltip">Premium</span></a
         >
-        <li class="nav-item profile">
-          <a href="/profile/<%- currUser %>" class="nav-item profile-pic-anchor">
-            <img class="sidebar-profile-pic"src="<%- img %>" alt="Profile" />
+        <li class="nav-item profile" style="padding: 0;">
+          <a href="#" class="icon-container" id="menu-toggle">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+              <path d="M120-280v-80h720v80H120Zm0-160v-80h720v80H120Zm0-160v-80h720v80H120Z"/>
+            </svg>
+            <span class="tooltip">Menu</span>
           </a>
-          <div class="profile-dropdown">
+          <div class="profile-dropdown" id="menu-dropdown">
             <a href="/edit_profile">Edit Profile</a>
             <a href="#">See Daily Usage</a>
             <a href="#">Settings</a>
@@ -140,6 +144,9 @@
             <a href="/delacc">Delete Account</a>
           </div>
         </li>
+        <a href="/profile/<%- currUser %>" class="nav-item profile-pic-anchor">
+          <img class="sidebar-profile-pic"src="<%- img %>" alt="Profile" />
+        </a>
       </div>
       <div class="modal-overlay" id="logoutModal">
         <div class="logout-modal">

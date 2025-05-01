@@ -20,3 +20,17 @@ document.addEventListener("keydown", (e) => {
     hideLogoutModal();
   }
 });
+
+const toggle = document.getElementById('menu-toggle');
+const dropdown = document.getElementById('menu-dropdown');
+
+toggle.addEventListener('click', function (e) {
+  e.preventDefault();
+  dropdown.classList.toggle('show');
+});
+
+document.addEventListener('click', function (e) {
+  if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+    dropdown.classList.remove('show');
+  }
+});
