@@ -317,7 +317,7 @@ const handlegetprofile = async (req, res) => {
     return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects });
   }
   else{
-    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], post: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects })
+    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects })
   }
 }
 

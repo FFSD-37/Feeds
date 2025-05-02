@@ -52,6 +52,7 @@ body {
 .profile-info-header {
   display: flex;
   align-items: center;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -166,6 +167,7 @@ body {
 }
 
 .no-posts-msg {
+  grid-column: 1 / -1;
   text-align: center;
   font-style: italic;
   color: gray;

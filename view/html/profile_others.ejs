@@ -44,78 +44,48 @@
         </div>
       </nav>
       <div id="posts" class="posts-grid">
-        <div class="post">
-          <img src="<%- img %>" alt="Post 1" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 2" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 3" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 4" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 5" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 6" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 7" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 8" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 9" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 5" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 6" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 7" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 8" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Post 9" />
-        </div>
-      </div>
+        <% if (posts && posts.length > 0) { %>
+          <% posts.forEach(post => { %>
+            <div class="post">
+              <img src="<%= post.url %>" alt="Post image" />
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="no-posts-msg">No posts yet.</div>
+        <% } %>
+      </div>      
       <div id="saved" class="posts-grid hidden">
-        <div class="post">
-          <img src="<%- img %>" alt="Saved 1" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Saved 2" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Saved 3" />
-        </div>
+        <% if (saved && saved.length > 0) { %>
+          <% saved.forEach(save => { %>
+            <div class="post">
+              <img src="<%= save.url %>" alt="Post image" />
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="no-posts-msg">No saved posts yet.</div>
+        <% } %>
       </div>
       <div id="liked" class="posts-grid hidden">
-        <div class="post">
-          <img src="<%- img %>" alt="Tagged 1" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Tagged 2" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Tagged 3" />
-        </div>
+        <% if (liked && liked.length > 0) { %>
+          <% liked.forEach(like => { %>
+            <div class="post">
+              <img src="<%= like.url %>" alt="Post image" />
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="no-posts-msg">No liked posts yet.</div>
+        <% } %>
       </div>
       <div id="archive" class="posts-grid hidden">
-        <div class="post">
-          <img src="<%- img %>" alt="Tagged 2" />
-        </div>
-        <div class="post">
-          <img src="<%- img %>" alt="Tagged 3" />
-        </div>
+        <% if (archived && archived.length > 0) { %>
+          <% archived.forEach(archive => { %>
+            <div class="post">
+              <img src="<%= archive.url %>" alt="Post image" />
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="no-posts-msg">No archived posts yet.</div>
+        <% } %>
       </div>
     </div>
     <div class="footer">
