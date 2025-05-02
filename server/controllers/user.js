@@ -112,6 +112,9 @@ function generateOTP() {
 
 const sendotp = async (req, res) => {
   var mail = req.body.email;
+  if (!(await User.findOne({email: mail}))){
+    return res.render("Forgot_pass", { msg: "No such user", newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
+  }
   var otp = generateOTP();
   let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
