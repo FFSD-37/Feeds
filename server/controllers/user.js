@@ -282,9 +282,11 @@ const handleContact = (req, res) => {
   })
 }
 
-const handleadminlogin = (req, res) => {
+const handleadminlogin = async (req, res) => {
   if (req.body.username === process.env.adminUsername && req.body.password === process.env.adminPass) {
-    return res.render("adminPortal");
+    const totalUsers = await User.find({}).sort({createdAt: -1});
+    const totalPosts = await Post.find({});
+    return res.render("adminPortal", {total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers});
   }
   else {
     return res.render("admin", { msg: "Incorrect Credentials" });

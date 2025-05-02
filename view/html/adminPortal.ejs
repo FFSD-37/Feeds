@@ -3,183 +3,293 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>adminPortal</title>
-    <link rel="stylesheet" href="../css/adminPortal.css" />
-    <style>
-      .nav__cont {
-        position: fixed;
-        width: 50px;
-        top: 0;
-        height: 100vh;
-        z-index: 100;
-        background-color: #202020;
-        overflow: hidden;
-        transition: width 0.3s ease;
-        cursor: pointer;
-        box-shadow: 4px 7px 10px rgba(0, 0, 0, 0.4);
-        &:hover {
-          width: 200px;
-        }
-        @media screen and (min-width: 600px) {
-          width: 80px;
-        }
-      }
-
-      .nav {
-        list-style-type: none;
-        color: white;
-        &:first-child {
-          padding-top: 1.5rem;
-        }
-      }
-
-      .nav__items {
-        padding-bottom: 4rem;
-        font-family: "roboto";
-        a {
-          position: relative;
-          display: block;
-          top: -35px;
-          padding-left: 25px;
-          padding-right: 15px;
-          transition: all 0.3s ease;
-          margin-left: 25px;
-          margin-right: 10px;
-          text-decoration: none;
-          color: white;
-          font-family: "roboto";
-          font-weight: 100;
-          font-size: 1.35em;
-          &:after {
-            content: "";
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 2px;
-            background: radial-gradient(
-              circle at 94.02% 88.03%,
-              #54a4ff,
-              transparent 100%
-            );
-            opacity: 0;
-            transition: all 0.5s ease;
-            z-index: -10;
-          }
-        }
-        &:hover a:after {
-          opacity: 1;
-        }
-        svg {
-          width: 26px;
-          height: 26px;
-          position: relative;
-          left: -17px;
-          cursor: pointer;
-          @media screen and(min-width:600px) {
-            width: 32px;
-            height: 32px;
-            left: -15px;
-          }
-        }
-      }
-
-      body {
-        height: 100vh;
-        background: radial-gradient(
-            circle at 94.02% 88.03%,
-            #54a4ff,
-            transparent 100%
-          ),
-          radial-gradient(circle at 25.99% 27.79%, #ff94fb, transparent 100%),
-          radial-gradient(circle at 50% 50%, #000000, #000000 100%);
-      }
-
-      h1 {
-        margin-top: 6rem;
-        margin-left: 80px;
-        text-align: center;
-        font-family: "Roboto";
-        font-weight: 100;
-        font-size: 4rem;
-        text-transform: uppercase;
-        color: white;
-        letter-spacing: 6px;
-        text-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3);
-      }
-    </style>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/adminPortal.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   </head>
   <body>
-    <svg style="display: none">
-      <defs>
-        <g id="home">
-          <path
-            fill="#90A4AE"
-            d="M42,48H6c-3.3,0-6-2.7-6-6V6c0-3.3,2.7-6,6-6h36c3.3,0,6,2.7,6,6v36C48,45.3,45.3,48,42,48z"
-          />
-          <path
-            fill="#212121"
-            d="M20.8,35.5v-9.6h6.4v9.6h8V22.7H40L24,8.3L8,22.7h4.8v12.8H20.8z"
-          />
-        </g>
-
-        <g id="search">
-          <path
-            fill="#90A4AE"
-            d="M22.9,20.1h-1.5l-0.5-0.5c1.8-2.1,2.9-4.8,2.9-7.7C23.8,5.3,18.5,0,11.9,0S0,5.3,0,11.9s5.3,11.9,11.9,11.9
-              c3,0,5.7-1.1,7.7-2.9l0.5,0.5v1.4l9.1,9.1l2.7-2.7L22.9,20.1z M11.9,20.1c-4.5,0-8.2-3.7-8.2-8.2s3.7-8.2,8.2-8.2s8.2,3.7,8.2,8.2
-              S16.4,20.1,11.9,20.1z"
-          />
-        </g>
-
-        <g id="map">
-          <path
-            fill="#90A4AE"
-            d="M16,14.2c-1,0-1.8,0.8-1.8,1.8s0.8,1.8,1.8,1.8c1,0,1.8-0.8,1.8-1.8S17,14.2,16,14.2z M16,0
-              C7.2,0,0,7.2,0,16c0,8.8,7.2,16,16,16s16-7.2,16-16C32,7.2,24.8,0,16,0z M19.5,19.5L6.4,25.6l6.1-13.1l13.1-6.1L19.5,19.5z"
-          />
-        </g>
-
-        <g id="planner">
-          <path
-            fill="#90A4AE"
-            d="M28.4,3.6h-1.8V0h-3.6v3.6H8.9V0H5.3v3.6H3.6C1.6,3.6,0,5.1,0,7.1L0,32c0,2,1.6,3.6,3.6,3.6h24.9c2,0,3.6-1.6,3.6-3.6V7.1C32,5.1,30.4,3.6,28.4,3.6z M28.4,32H3.6V12.4h24.9V32z M7.1,16H16v8.9H7.1V16z"
-          />
-        </g>
-      </defs>
-    </svg>
-
-    <nav class="nav__cont">
-      <ul class="nav">
-        <li class="nav__items">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <use xlink:href="#home"></use>
-          </svg>
-          <a href="">Home</a>
-        </li>
-
-        <li class="nav__items">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <use xlink:href="#search"></use>
-          </svg>
-          <a href="">Search</a>
-        </li>
-
-        <li class="nav__items">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-            <use xlink:href="#map"></use>
-          </svg>
-          <a href="">Map</a>
-        </li>
-
-        <li class="nav__items">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 35.6">
-            <use xlink:href="#planner"></use>
-          </svg>
-          <a href="">Planner</a>
-        </li>
-      </ul>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="#" class="navbar-brand">AdminPortal-Feeds</a>
+      <!-- <div class="navbar-search">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" placeholder="Search..." />
+      </div> -->
+      <div class="navbar-right">
+        <!-- <div class="navbar-item">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="navbar-item">
+          <i class="fas fa-envelope"></i>
+          <span class="notification-badge">5</span>
+        </div> -->
+        <div class="user-profile">
+          <div class="user-avatar">F</div>
+          <span class="user-name">Admin</span>
+        </div>
+      </div>
     </nav>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="menu-section">
+        <div class="menu-header">Main</div>
+        <ul class="menu-items">
+          <li class="menu-item active">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </li>
+          <!-- <li class="menu-item"><i class="fas fa-chart-line"></i> Analytics</li> -->
+          <!-- <li class="menu-item"><i class="fas fa-calendar"></i> Calendar</li> -->
+        </ul>
+      </div>
+      <div class="menu-section">
+        <div class="menu-header">Management</div>
+        <ul class="menu-items">
+          <li class="menu-item"><i class="fas fa-users"></i> Users</li>
+          <!-- <li class="menu-item"><i class="fas fa-box"></i> Products</li>
+          <li class="menu-item"><i class="fas fa-shopping-cart"></i> Orders</li> -->
+          <li class="menu-item"><i class="fas fa-comment"></i> Reviews</li>
+        </ul>
+      </div>
+      <!-- <div class="menu-section">
+        <div class="menu-header">Configuration</div>
+        <ul class="menu-items">
+          <li class="menu-item"><i class="fas fa-cog"></i> Settings</li>
+          <li class="menu-item"><i class="fas fa-lock"></i> Privacy</li>
+          <li class="menu-item"><i class="fas fa-shield-alt"></i> Security</li>
+        </ul>
+      </div> -->
+      <div class="menu-section">
+        <div class="menu-header">Support</div>
+        <ul class="menu-items">
+          <!-- <li class="menu-item">
+            <i class="fas fa-question-circle"></i> Help Center
+          </li> -->
+          <li class="menu-item"><i class="fas fa-ticket-alt"></i> Tickets</li>
+          <!-- <li class="menu-item">
+            <i class="fas fa-headset"></i> Contact Support
+          </li> -->
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <h1 class="page-title">Dashboard</h1>
+
+      <!-- Stats Cards -->
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="background-color: #e5f8ed; color: #28a745"
+          >
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3><%- total_users %></h3>
+            <p>Total Users</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="background-color: #e5f6ff; color: var(--info)"
+          >
+          <i class="fas fa-image"></i>
+          </div>
+          <div class="stat-info">
+            <h3><%- total_posts %></h3>
+            <p>Total Posts</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="background-color: #fff4e5; color: #ff9800"
+          >
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <h3>₹0</h3>
+            <p>Total Revenue</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-icon"
+            style="background-color: #ffe5e5; color: var(--danger)"
+          >
+            <i class="fas fa-ticket-alt"></i>
+          </div>
+          <div class="stat-info">
+            <h3>0</h3>
+            <p>Support Tickets</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart & Activities -->
+      <div class="content-row">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title">Recent Activities</div>
+          </div>
+          <ul class="recent-activities"  style="max-height: 300px; overflow-y: auto;">
+            <li class="activity-item">
+              <div
+                class="activity-icon"
+                style="background-color: #e5f8ed; color: #28a745"
+              >
+                <i class="fas fa-user-plus"></i>
+              </div>
+              <div class="activity-info">
+                <div class="activity-title">New user registered</div>
+                <div class="activity-time">5 minutes ago</div>
+              </div>
+            </li>
+            <li class="activity-item">
+              <div
+                class="activity-icon"
+                style="background-color: #e5f6ff; color: var(--info)"
+              >
+                <i class="fas fa-shopping-bag"></i>
+              </div>
+              <div class="activity-info">
+                <div class="activity-title">New order placed #2587</div>
+                <div class="activity-time">28 minutes ago</div>
+              </div>
+            </li>
+            <li class="activity-item">
+              <div
+                class="activity-icon"
+                style="background-color: #fff4e5; color: #ff9800"
+              >
+                <i class="fas fa-comment"></i>
+              </div>
+              <div class="activity-info">
+                <div class="activity-title">New review received</div>
+                <div class="activity-time">1 hour ago</div>
+              </div>
+            </li>
+            <li class="activity-item">
+              <div
+                class="activity-icon"
+                style="background-color: #ffe5e5; color: var(--danger)"
+              >
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="activity-info">
+                <div class="activity-title">Server reached 95% capacity</div>
+                <div class="activity-time">2 hours ago</div>
+              </div>
+            </li>
+            <li class="activity-item">
+              <div
+                class="activity-icon"
+                style="background-color: #e5e5ff; color: var(--secondary)"
+              >
+                <i class="fas fa-box"></i>
+              </div>
+              <div class="activity-info">
+                <div class="activity-title">Product stock update</div>
+                <div class="activity-time">3 hours ago</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title">Latest Users</div>
+          </div>
+          <ul class="recent-activities" style="max-height: 300px; overflow-y: auto;">
+            <% if (allUsersInOrder && allUsersInOrder.length > 0) { %>
+              <% allUsersInOrder.forEach(user => { %>
+                <li class="activity-item">
+                  <div class="activity-icon" style="background-color: #e5f8ed">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="activity-info">
+                    <div class="activity-title"><%= user.username %></div>
+                    <div class="activity-time"><%= user.email %></div>
+                  </div>
+                </li>
+              <% }) %>
+            <% } else { %>
+              <li class="activity-item">
+                <div class="activity-info">
+                  <div class="activity-title">No users found</div>
+                </div>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Recent Orders Table -->
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-title">Recent Purchases</div>
+        </div>
+        <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+          <!-- <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#ORD-2587</td>
+                <td>John Doe</td>
+                <td>May 2, 2025</td>
+                <td>$285.99</td>
+                <td>
+                  <span class="status-badge status-active">Completed</span>
+                </td>
+              </tr>
+              <tr>
+                <td>#ORD-2586</td>
+                <td>Jane Smith</td>
+                <td>May 1, 2025</td>
+                <td>$125.75</td>
+                <td>
+                  <span class="status-badge status-pending">Processing</span>
+                </td>
+              </tr>
+              <tr>
+                <td>#ORD-2584</td>
+                <td>Sarah Williams</td>
+                <td>Apr 29, 2025</td>
+                <td>$95.20</td>
+                <td>
+                  <span class="status-badge status-inactive">Cancelled</span>
+                </td>
+              </tr>
+            </tbody>
+          </table> -->
+          <div class="no-data">No orders found</div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>© 2025 AdminPortal. All rights reserved.</p>
+      </footer>
+    </main>
+    <script src="../js/adminPortal.js"></script>
   </body>
 </html>
