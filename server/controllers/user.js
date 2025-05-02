@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { create_JWTtoken } from 'cookie-string-parser';
 import User from '../models/users_schema.js';
+import Post from '../models/postSchema.js';
 import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt from 'bcrypt';
 
@@ -297,10 +298,27 @@ const handlegetpayment = (req, res) => {
   return res.render("payment", { img: data[2], currUser: data[0] });
 }
 
-const handlegetprofile = (req, res) => {
+const handlegetprofile = async (req, res) => {
   const u = req.params;
   const { data } = req.userDetails;
-  return res.render("profile", { img: data[2], currUser: data[0] });
+  const profUser = await User.findOne({username: u.username});
+  if (!profUser){
+    return res.render("Error_page", {img: data[2], currUser: data[0], error_msg: "Profile Not Found!!"});
+  }
+  const postIds = profUser.postIds || [];
+  const postObjects = await Post.find({ _id: { $in: postIds } });
+  const savedIds = profUser.savedPostsIds || [];
+  const savedObjects = await Post.find({_id: { $in: savedIds}});
+  const likeIds = profUser.likedPostsIds || [];
+  const likedObjects = await Post.find({_id: {$in: likeIds}});
+  const archiveIds = profUser.archivedPostsIds || [];
+  const archivedObjects = await Post.find({_id: {$in: archiveIds}});
+  if (u.username === data[0]){
+    return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects });
+  }
+  else{
+    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], post: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects })
+  }
 }
 
 const handlegetterms = (req, res) => {
