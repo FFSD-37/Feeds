@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Premium Subscription</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <link rel="stylesheet" href="../css/alert.css">
-    <link rel="stylesheet" href="../css/payment.css">
-    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/alert.css" />
+    <link rel="stylesheet" href="../css/payment.css" />
+    <link rel="stylesheet" href="../css/sidebar.css" />
   </head>
   <body>
     <%- include('sidebar') %>
@@ -16,7 +16,7 @@
         <h1>Choose Premium Plan</h1>
         <p>Select your preferred subscription plan</p>
       </div>
-      <form id="paymentForm" novalidate>
+      <form id="paymentForm" onsubmit="return false;" novalidate>
         <div class="plans-container">
           <div class="plan" data-price="199">
             <div class="plan-name">Monthly</div>
@@ -34,28 +34,65 @@
             <div class="plan-duration">per month</div>
           </div>
         </div>
-        <div style="display: flex; justify-content: center;">
-        <div style="display: flex; flex-direction: column; width: 50%; justify-content: center;padding: 20px 10px; text-align: center; border: 2px solid black; border-radius: 20px;">
-          <h3 style="margin-bottom: 10px; font-size: 18px; color: #444;">Premium Features:</h3>
-          <ul style="list-style: none; padding-left: 0; font-size: 16px; color: #333;">
-            <li style="margin: 8px 0;"><span style="color: green;">✔️</span> Ad-free experience</li>
-            <li style="margin: 8px 0;"><span style="color: green;">✔️</span> Customized Wallpapers</li>
-            <li style="margin: 8px 0;"><span style="color: green;">✔️</span> Priority customer support</li>
-            <li style="margin: 8px 0;"><span style="color: green;">✔️</span> Will notified who searched you</li>
-            <li style="margin: 8px 0;"><span style="color: green;">✔️</span> Create unlimited channels (Free users can create up to 3)</li>
-          </ul>
+        <div style="display: flex; justify-content: center">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              width: 50%;
+              justify-content: center;
+              padding: 20px 10px;
+              text-align: center;
+              border: 2px solid black;
+              border-radius: 20px;
+            "
+          >
+            <h3 style="margin-bottom: 10px; font-size: 18px; color: #444">
+              Premium Features:
+            </h3>
+            <ul
+              style="
+                list-style: none;
+                padding-left: 0;
+                font-size: 16px;
+                color: #333;
+              "
+            >
+              <li style="margin: 8px 0">
+                <span style="color: green">✔️</span> Ad-free experience
+              </li>
+              <li style="margin: 8px 0">
+                <span style="color: green">✔️</span> Customized Wallpapers
+              </li>
+              <li style="margin: 8px 0">
+                <span style="color: green">✔️</span> Priority customer support
+              </li>
+              <li style="margin: 8px 0">
+                <span style="color: green">✔️</span> Will notified who searched
+                you
+              </li>
+              <li style="margin: 8px 0">
+                <span style="color: green">✔️</span> Create unlimited channels
+                (Free users can create up to 3)
+              </li>
+            </ul>
+          </div>
+          <input type="hidden" name="plan_name" id="plan_name" />
+          <input type="hidden" name="plan_price" id="plan_price" />
         </div>
-      </div>
         <div class="total-amount">
           <div>Total Amount</div>
           <div class="amount">₹1014.00</div>
           <div>(6 months)</div>
         </div>
-        <button type="button" id="pay-btn" class="submit-btn">
+        <button type="submit" id="pay-btn" class="submit-btn">
           Subscribe Now
         </button>
 
-        <div class="secure-badge">🔒 Secure payment powered by <a href="https://razorpay.com/" target="_blank">razor pay</a></div>
+        <div class="secure-badge">
+          🔒 Secure payment powered by
+          <a href="https://razorpay.com/" target="_blank">razor pay</a>
+        </div>
       </form>
     </div>
     <script src="../js/background.js"></script>

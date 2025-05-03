@@ -29,10 +29,11 @@ import {
   handlegetpostoverlay,
   handlegetcreatepost,
   handlecreatepost,
-  handlegetcreatepost2
+  handlegetcreatepost2,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
+import { checkOut, verify_payment } from "../controllers/payment.js";
 
 const router = express.Router();
 
@@ -108,5 +109,11 @@ router.get("/edit_profile",isAuthuser, handlegeteditprofile);
 router.post("/updatepassadmin", adminPassUpdate);
 
 router.get("/post_overlay",isAuthuser, handlegetpostoverlay);
+
+router.post("/checkout_razorpay", isAuthuser, checkOut);
+
+router.post("/payment", isAuthuser, checkOut);
+
+router.post("/verify_payment",isAuthuser,verify_payment)
 
 export default router;

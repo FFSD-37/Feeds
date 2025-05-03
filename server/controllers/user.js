@@ -36,10 +36,10 @@ async function getOtp(email) {
   }
 }
 
-const handleSignup = async(req, res) => {
+const handleSignup = async (req, res) => {
   console.log(req.body)
   try {
-    const pass=await bcrypt.hash(req.body.password, 10);
+    const pass = await bcrypt.hash(req.body.password, 10);
     const userData = {
       fullName: req.body.fullName,
       username: req.body.username,
@@ -61,13 +61,13 @@ const handleSignup = async(req, res) => {
     return res.render("login", { loginType: "Email", msg: "User Registered Successfully" });
   }
   catch (err) {
-    if(err.cause.code===11000){
-      const fields=Object.keys(err.cause.keyValue);
+    if (err.cause.code === 11000) {
+      const fields = Object.keys(err.cause.keyValue);
       return res.render("Registration", { msg: `User with ${fields[0]} already exists` });
     }
-    if(err.name==="ValidationError"){
-       const errors=Object.values(err.errors).map(e=>e.message);
-       return res.render("Registration", { msg: errors });
+    if (err.name === "ValidationError") {
+      const errors = Object.values(err.errors).map(e => e.message);
+      return res.render("Registration", { msg: errors });
     };
   }
 }
@@ -86,18 +86,18 @@ const handledelacc = (req, res) => {
   }
 }
 
-const handleLogin = async(req, res) => {
-  try{
-    const user=await User.findOne(req.body.identifykro ==='username'?{username:req.body.identifier}:{email:req.body.identifier});
+const handleLogin = async (req, res) => {
+  try {
+    const user = await User.findOne(req.body.identifykro === 'username' ? { username: req.body.identifier } : { email: req.body.identifier });
     if (!user) return res.render("login", { loginType: "Email", msg: "Username Doesn't exists" });
     const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isPasswordMatch) return res.render("login", { loginType: "Username", msg: "Incorrect password" });
 
     const token = create_JWTtoken([user.username, user.email, user.profilePicture, user.type], process.env.USER_SECRET, '30d');
     res.cookie('uuid', token, { httpOnly: true });
-    return res.render("home", { img: user.profilePicture, currUser: user.username});
+    return res.render("home", { img: user.profilePicture, currUser: user.username });
   }
-  catch(e){
+  catch (e) {
     console.log(e);
     return res.render("login", { loginType: "Email", msg: "Something went wrong" });
   }
@@ -114,7 +114,7 @@ function generateOTP() {
 
 const sendotp = async (req, res) => {
   var mail = req.body.email;
-  if (!(await User.findOne({email: mail}))){
+  if (!(await User.findOne({ email: mail }))) {
     return res.render("Forgot_pass", { msg: "No such user", newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
   }
   var otp = generateOTP();
@@ -248,8 +248,8 @@ const updatepass = async (req, res) => {
       email: req.body.foremail,
     })
 
-    console.log(user,user.username);
-    
+    console.log(user, user.username);
+
     if (await bcrypt.compare(user.password, req.body.new_password)) {
       return res.render("Forgot_pass", { msg: "Same password as before", otpsec: "NO", newpass: "YES", emailsec: "NO", title: "Forgot Password" })
     }
@@ -286,15 +286,17 @@ const handleContact = (req, res) => {
 
 const handleadminlogin = async (req, res) => {
   if (req.body.username === process.env.adminUsername && req.body.password === process.env.adminPass) {
-    const totalUsers = await User.find({}).sort({createdAt: -1});
+    const totalUsers = await User.find({}).sort({ createdAt: -1 });
     const totalPosts = await Post.find({});
     const tickets = await Report.find({});
     const orders = await Payment.find({}).lean();
     var revenue = 0;
     orders.forEach(order => {
-      revenue += Number(order.amount);
+      if (order.status !== "Pending") {
+        revenue += Number(order.amount);
+      }
     });
-    return res.render("adminPortal", {total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders});
+    return res.render("adminPortal", { total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders });
   }
   else {
     return res.render("admin", { msg: "Incorrect Credentials" });
@@ -314,22 +316,22 @@ const handlegetpayment = (req, res) => {
 const handlegetprofile = async (req, res) => {
   const u = req.params;
   const { data } = req.userDetails;
-  const profUser = await User.findOne({username: u.username});
-  if (!profUser){
-    return res.render("Error_page", {img: data[2], currUser: data[0], error_msg: "Profile Not Found!!"});
+  const profUser = await User.findOne({ username: u.username });
+  if (!profUser) {
+    return res.render("Error_page", { img: data[2], currUser: data[0], error_msg: "Profile Not Found!!" });
   }
   const postIds = profUser.postIds || [];
   const postObjects = await Post.find({ _id: { $in: postIds } });
   const savedIds = profUser.savedPostsIds || [];
-  const savedObjects = await Post.find({_id: { $in: savedIds}});
+  const savedObjects = await Post.find({ _id: { $in: savedIds } });
   const likeIds = profUser.likedPostsIds || [];
-  const likedObjects = await Post.find({_id: {$in: likeIds}});
+  const likedObjects = await Post.find({ _id: { $in: likeIds } });
   const archiveIds = profUser.archivedPostsIds || [];
-  const archivedObjects = await Post.find({_id: {$in: archiveIds}});
-  if (u.username === data[0]){
+  const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
+  if (u.username === data[0]) {
     return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects });
   }
-  else{
+  else {
     return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects })
   }
 }
@@ -397,18 +399,18 @@ const handlegetpostoverlay = (req, res) => {
 
 const handlegetcreatepost = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("create_post", {img: data[2], currUser: data[0]});
+  return res.render("create_post", { img: data[2], currUser: data[0] });
 }
 
 const handlecreatepost = (req, res) => {
   const image = req.body.profileImageUrl;
   const { data } = req.userDetails;
-  return res.render("create_post_second", {img2: image, img: data[2], currUser: data[0]});
+  return res.render("create_post_second", { img2: image, img: data[2], currUser: data[0] });
 }
 
 const handlegetcreatepost2 = (req, res) => {
-  const {data} = req.userDetails
-  return res.render("create_post_second", {img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2]});
+  const { data } = req.userDetails
+  return res.render("create_post_second", { img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2] });
 }
 
 export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile, handlegetpostoverlay, handlegetcreatepost, handlecreatepost, handlegetcreatepost2 };

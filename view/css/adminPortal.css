@@ -439,6 +439,12 @@ body {
   font-size: 0.9rem;
 }
 
+.recent-purchases-class{
+  background-color: #f5f7fb;
+  border: none;
+  box-shadow: none;
+}
+
 /* Responsive styles */
 @media (max-width: 992px) {
   .sidebar {

@@ -5,15 +5,15 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  user_id: {
-    type: String,
-    required: true
-  },
   username: {
     type: String,
     required: true
   },
   type: {
+    type: String,
+    required: true
+  },
+  status:{
     type: String,
     required: true
   },
