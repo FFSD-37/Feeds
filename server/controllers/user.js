@@ -289,8 +289,12 @@ const handleadminlogin = async (req, res) => {
     const totalUsers = await User.find({}).sort({createdAt: -1});
     const totalPosts = await Post.find({});
     const tickets = await Report.find({});
-    const orders = await Payment.find({});
-    return res.render("adminPortal", {total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders});
+    const orders = await Payment.find({}).lean();
+    var revenue = 0;
+    orders.forEach(order => {
+      revenue += Number(order.amount);
+    });
+    return res.render("adminPortal", {total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders});
   }
   else {
     return res.render("admin", { msg: "Incorrect Credentials" });
