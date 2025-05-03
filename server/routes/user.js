@@ -73,7 +73,7 @@ router.get("/login",isAuthuser, (req, res) => {
   });
 });
 
-router.get("/admin",isAuthuser, handlegetadmin);
+router.get("/admin", handlegetadmin);
 
 router.get("/signup",isAuthuser, handlegetsignup);
 
@@ -83,7 +83,7 @@ router.post("/signup",isAuthuser, handleSignup);
 
 router.post("/contact",isAuthuser, handleContact);
 
-router.post("/adminLogin",isAuthuser, handleadminlogin);
+router.post("/adminLogin", handleadminlogin);
 
 router.post("/delacc",isAuthuser, handledelacc);
 
@@ -101,11 +101,11 @@ router.post("/updatepass", updatepass);
 
 router.get("/imagKitauth",isAuthuser, handleimagKitauth);
 
-router.get("/fpadmin",isAuthuser, handlefpadmin);
+router.get("/fpadmin", handlefpadmin);
 
 router.get("/edit_profile",isAuthuser, handlegeteditprofile);
 
-router.post("/updatepassadmin",isAuthuser, adminPassUpdate);
+router.post("/updatepassadmin", adminPassUpdate);
 
 router.get("/post_overlay",isAuthuser, handlegetpostoverlay);
 

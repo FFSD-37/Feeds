@@ -4,6 +4,8 @@ import path from 'path';
 import { create_JWTtoken } from 'cookie-string-parser';
 import User from '../models/users_schema.js';
 import Post from '../models/postSchema.js';
+import Report from "../models/reports.js";
+import Payment from "../models/payment.js";
 import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt from 'bcrypt';
 
@@ -286,7 +288,9 @@ const handleadminlogin = async (req, res) => {
   if (req.body.username === process.env.adminUsername && req.body.password === process.env.adminPass) {
     const totalUsers = await User.find({}).sort({createdAt: -1});
     const totalPosts = await Post.find({});
-    return res.render("adminPortal", {total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers});
+    const tickets = await Report.find({});
+    const orders = await Payment.find({});
+    return res.render("adminPortal", {total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders});
   }
   else {
     return res.render("admin", { msg: "Incorrect Credentials" });
