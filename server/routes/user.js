@@ -38,7 +38,7 @@ import { checkOut, verify_payment } from "../controllers/payment.js";
 const router = express.Router();
 
 router.get("/",isAuthuser, (req, res) => {
-  res.render("login", { loginType: null, msg: null });
+  res.redirect("/login");
 });
 
 router.get("/home",isAuthuser, handlegetHome);
