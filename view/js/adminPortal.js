@@ -2,6 +2,9 @@
 const sidebarToggle = document.getElementById("sidebarToggle");
 const sidebar = document.getElementById("sidebar");
 const mainContent = document.getElementById("mainContent");
+const overlay = document.getElementById('userOverlay');
+const fetchUserBtn = document.getElementById('fetchUserOverlay');
+const closeBtn = document.getElementById('closeOverlayBtn');
 
 sidebarToggle.addEventListener("click", function () {
     sidebar.classList.toggle("sidebar-hidden");
@@ -34,10 +37,7 @@ menuItems.forEach((item) => {
             mainContent.classList.add("content-full");
         }
 
-        // Section toggling logic
         const id = this.id;
-
-        // Show/hide based on which menu is clicked
         if (id === "menuDashboard") {
             document.getElementById("dashboardSection").style.display = "grid";
             document.getElementById("reviewSection").style.display = "none";
@@ -54,7 +54,7 @@ menuItems.forEach((item) => {
             document.getElementById("usersSection").style.display = "none";
             document.getElementById("reportSection").style.display = "block";
         }
-        else if(id === "menuReviews") {
+        else if (id === "menuReviews") {
             document.getElementById("dashboardSection").style.display = "none";
             document.getElementById("reviewSection").style.display = "block";
             document.getElementById("usersSection").style.display = "none";
@@ -63,8 +63,24 @@ menuItems.forEach((item) => {
     });
 });
 
-// User profile dropdown functionality
 const userProfile = document.querySelector(".user-profile");
 userProfile.addEventListener("click", function () {
     alert("User profile settings coming soon!");
+});
+
+document.querySelectorAll('.manage-user-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const userId = this.dataset.id;
+        const username = this.dataset.username;
+        const email = this.dataset.email;
+
+        fetch('/fetchUserOverlay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: userId, username, email })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.error('Error:', err));
+    });
 });

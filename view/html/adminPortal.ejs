@@ -231,7 +231,14 @@
                 <%= new Date(user.createdAt).toLocaleDateString('en-US') %>
               </td>
               <td>
-                <button class="manage-user-btn" title="Manage User">
+                <button
+                  id="fetchOverlay"
+                  class="manage-user-btn"
+                  title="Manage User"
+                  data-id="<%= user.id %>"
+                  data-username="<%= user.username %>"
+                  data-email="<%= user.email %>"
+                >
                   <i class="fas fa-user-cog"></i>
                 </button>
               </td>

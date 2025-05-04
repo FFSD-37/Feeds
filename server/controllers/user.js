@@ -7,8 +7,9 @@ import Post from '../models/postSchema.js';
 import Report from "../models/reports.js";
 import Payment from "../models/payment.js";
 import ResetPassword from "../models/reset_pass_schema.js";
-import bcrypt from 'bcrypt';
+import bcrypt, { compare } from 'bcrypt';
 import Feedback from '../models/feedbackForm.js';
+import DelUser from '../models/SoftDelUsers.js';
 
 async function storeOtp(email, otp) {
   try {
@@ -73,19 +74,60 @@ const handleSignup = async (req, res) => {
   }
 }
 
-const handledelacc = (req, res) => {
-  if (users[curr].password === req.body.password) {
-    usernames = usernames.filter(u => u != users[curr].username);
-    emails = emails.filter(e => e != users[curr].email);
-    users.splice(curr, 1);
-    curr = undefined;
-    res.cookie('uuid', '', { maxAge: 0 });
-    return res.render("login", { loginType: "Email", msg: "User Deleted Successfully" });
+const handledelacc = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { data } = req.userDetails;
+    const user = await User.findOne({ username: data[0] }).lean();
+
+    if (!(await bcrypt.compare(req.body.password, user.password))) {
+      return res.render("delacc", {
+        img: data[2],
+        currUser: data[0],
+        msg: "Incorrect Password"
+      });
+    }
+    const liked = user.likeIds || [];
+    for (const postId of liked) {
+      const post = await Post.findById(postId);
+      if (post) {
+        post.likes -= 1;
+      }
+    }
+    await DelUser.insertOne(user);
+    
+    let transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+    let mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'DELETION ON ACCOUNT',
+      text: `Your Account ${user.username} from FEEDS has been deleted on Date: ${new Date()}. If it's not you, please Restore your account using /restore url from the login page. It's been great having you.`
+    };
+    
+    await User.findByIdAndDelete({ _id: user._id });
+    try {
+      await transporter.sendMail(mailOptions);
+      res.render("login", { loginType: "Email", msg: "Account deleted successfully." });
+    }
+    catch (err) {
+      console.error('Error sending email:', err);
+      return res.status(500).json({ msg: "Failed to send OTP" });
+    }
+
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).send("Internal Server Error");
   }
-  else {
-    return res.render("delacc", { img: data[2], msg: "Incorrect Password!!" });
-  }
-}
+};
+
 
 const handleLogin = async (req, res) => {
   try {
@@ -305,6 +347,12 @@ const handleadminlogin = async (req, res) => {
   }
 }
 
+const fetchOverlayUser = async (req, res) => {
+  const { user_id, username, email } = req.body;
+  const user = await User.findOne({ username: username });
+  return res.json(user);
+}
+
 const handlegetHome = (req, res) => {
   const { data } = req.userDetails;
   return res.render("home", { img: data[2], currUser: data[0] });
@@ -392,22 +440,22 @@ const handlegetforgetpass = (req, res) => {
 
 const handlegeteditprofile = async (req, res) => {
   const { data } = req.userDetails;
-  const user = await User.findOne({username: data[0]});
+  const user = await User.findOne({ username: data[0] });
   return res.render("edit_profile", { img: data[2], currUser: data[0], CurrentUser: user });
 }
 
 const updateUserProfile = async (req, res) => {
   const { data } = req.userDetails;
-  const {photo, profileImageUrl, display_name, name, bio, gender, phone, terms} = req.body;
+  const { photo, profileImageUrl, display_name, name, bio, gender, phone, terms } = req.body;
   await User.findOneAndUpdate(
-    {username: data[0]},
-    {$set: {display_name: display_name, fullName: name, bio: bio, gender: gender, phone: phone}}
+    { username: data[0] },
+    { $set: { display_name: display_name, fullName: name, bio: bio, gender: gender, phone: phone } }
   )
-  if (photo !== ""){
-    await User.findOneAndUpdate({username: data[0]}, {profilePicture: profileImageUrl});
+  if (photo !== "") {
+    await User.findOneAndUpdate({ username: data[0] }, { profilePicture: profileImageUrl });
   }
 
-  const token = create_JWTtoken([data[0], data[1], (photo !== "")?profileImageUrl:data[2], data[3]], process.env.USER_SECRET, '30d');
+  const token = create_JWTtoken([data[0], data[1], (photo !== "") ? profileImageUrl : data[2], data[3]], process.env.USER_SECRET, '30d');
   res.cookie('uuid', token, { httpOnly: true });
   return res.redirect(`/profile/${data[0]}`);
 }
@@ -451,18 +499,19 @@ export {
   handlegetsignup,
   handlegethelp,
   handlegetreels,
-  handlegetdelacc, 
-  handlegetstories, 
-  handlegetgames, 
-  handlegetadmin, 
-  handleadminlogin, 
-  generateOTP, 
-  handlefpadmin, 
-  adminPassUpdate, 
-  handlegeteditprofile, 
-  handlegetpostoverlay, 
-  handlegetcreatepost, 
+  handlegetdelacc,
+  handlegetstories,
+  handlegetgames,
+  handlegetadmin,
+  handleadminlogin,
+  generateOTP,
+  handlefpadmin,
+  adminPassUpdate,
+  handlegeteditprofile,
+  handlegetpostoverlay,
+  handlegetcreatepost,
   handlecreatepost,
   handlegetcreatepost2,
   updateUserProfile,
+  fetchOverlayUser,
 };

@@ -439,7 +439,7 @@ body {
   font-size: 0.9rem;
 }
 
-.recent-purchases-class{
+.recent-purchases-class {
   background-color: #f5f7fb;
   border: none;
   box-shadow: none;
@@ -450,14 +450,19 @@ body {
   border: none;
   padding: 2px;
   margin: 0 2px;
-  font-size: 12px;   /* Small icon size */
+  font-size: 12px; /* Small icon size */
   cursor: pointer;
   color: inherit;
 }
-.icon-btn i.fa-paper-plane { color: #28a745; }         /* Green for acknowledgment */
-.icon-btn i.fa-exclamation-triangle { color: #ffc107; }/* Yellow for warning */
-.icon-btn i.fa-check-circle { color: #17a2b8; }         /* Teal for resolve */
-
+.icon-btn i.fa-paper-plane {
+  color: #28a745;
+} /* Green for acknowledgment */
+.icon-btn i.fa-exclamation-triangle {
+  color: #ffc107;
+} /* Yellow for warning */
+.icon-btn i.fa-check-circle {
+  color: #17a2b8;
+} /* Teal for resolve */
 
 /* Responsive styles */
 @media (max-width: 992px) {
