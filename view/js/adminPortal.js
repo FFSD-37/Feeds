@@ -40,17 +40,26 @@ menuItems.forEach((item) => {
         // Show/hide based on which menu is clicked
         if (id === "menuDashboard") {
             document.getElementById("dashboardSection").style.display = "grid";
+            document.getElementById("reviewSection").style.display = "none";
             document.getElementById("usersSection").style.display = "none";
             document.getElementById("reportSection").style.display = "none";
         } else if (id === "menuUsers") {
             document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("reviewSection").style.display = "none";
             document.getElementById("usersSection").style.display = "block";
             document.getElementById("reportSection").style.display = "none";
         } else if (id === "menuReports") { // ✅ Check for the menu item, not the section
             document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("reviewSection").style.display = "none";
             document.getElementById("usersSection").style.display = "none";
             document.getElementById("reportSection").style.display = "block";
-        }        
+        }
+        else if(id === "menuReviews") {
+            document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("reviewSection").style.display = "block";
+            document.getElementById("usersSection").style.display = "none";
+            document.getElementById("reportSection").style.display = "none";
+        }
     });
 });
 

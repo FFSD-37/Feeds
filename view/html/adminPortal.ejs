@@ -58,7 +58,7 @@
           <li class="menu-item" id="menuUsers">
             <i class="fas fa-users"></i> Users
           </li>
-          <li class="menu-item"><i class="fas fa-comment"></i> Reviews</li>
+          <li class="menu-item" id="menuReviews"><i class="fas fa-comment"></i> Reviews</li>
         </ul>
       </div>
       <div class="menu-section">
@@ -294,6 +294,36 @@
         </table>
         <% } else { %>
         <div class="no-data">No reports found</div>
+        <% } %>
+      </div>
+
+      <div id="reviewSection" style="display: none">
+        <h2 class="page-title">Review Section</h2>
+        <% if(allReviews && allReviews.length > 0) { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <% allReviews.forEach(function(review) { %>
+              <td><%= review.id %></td>
+              <td><%= review.name %></td>
+              <td><%= review.email %></td>
+              <td><%= review.subject %></td>
+              <td><%= review.message %></td>
+              <% }); %>
+            </tr>
+          </tbody>
+        </table>
+        <% } else { %>
+        <div class="no-data">No Reviews found</div>
         <% } %>
       </div>
 

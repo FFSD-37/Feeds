@@ -8,6 +8,7 @@ import Report from "../models/reports.js";
 import Payment from "../models/payment.js";
 import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt from 'bcrypt';
+import Feedback from '../models/feedbackForm.js';
 
 async function storeOtp(email, otp) {
   try {
@@ -290,13 +291,14 @@ const handleadminlogin = async (req, res) => {
     const totalPosts = await Post.find({});
     const tickets = await Report.find({}).lean();
     const orders = await Payment.find({}).lean();
+    const reviews = await Feedback.find({});
     var revenue = 0;
     orders.forEach(order => {
       if (order.status !== "Pending") {
         revenue += Number(order.amount);
       }
     });
-    return res.render("adminPortal", { total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders, allUsers: totalUsers, allReports: tickets });
+    return res.render("adminPortal", { total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders, allUsers: totalUsers, allReports: tickets, allReviews: reviews });
   }
   else {
     return res.render("admin", { msg: "Incorrect Credentials" });
