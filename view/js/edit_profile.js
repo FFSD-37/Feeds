@@ -35,7 +35,7 @@ function addLink() {
         const newInput = document.createElement('input');
         newInput.type = 'url';
         newInput.className = 'profile-link';
-        newInput.placeholder = 'Add link (max 3)';
+        newInput.placeholder = 'Enter link';
         newInput.readOnly = true;
 
         const newButton = document.createElement('a');
@@ -48,20 +48,6 @@ function addLink() {
     } else {
         alert("You can only add up to 3 links.");
     }
-}
-
-function saveProfile() {
-    const profileData = {
-        username: document.getElementById('username').value,
-        bio: document.getElementById('bio').value,
-        gender: document.getElementById('gender').value,
-        links: Array.from(document.querySelectorAll('.profile-link')).map(input => input.value)
-    };
-    alert("Profile saved: " + JSON.stringify(profileData, null, 2));
-}
-
-function switchToPremium() {
-    alert("You have switched to the premium version!");
 }
 
 function openOverlay() {
@@ -90,3 +76,41 @@ const showError2 = (input, isValid) => {
         input.classList.remove("error");
     }
 };
+
+async function getAuth() {
+    let res = await fetch('/imagKitauth')
+    return res;
+}
+
+const imageupload = document.getElementById("photoInput");
+
+imageupload.addEventListener('change', handleUpload);
+async function handleUpload() {
+    const authResponse = await getAuth();
+
+    if (!authResponse.ok) throw new Error("Failed to fetch auth details");
+
+    const authData = await authResponse.json();
+    var imagekit = new ImageKit({
+        publicKey: "public_wnJ6iUhf4XCA3x6A/XV68fTEU4Y=",
+        urlEndpoint: "https://ik.imagekit.io/FFSD0037/",
+    });
+
+    var file = document.getElementById("photoInput");
+    imagekit.upload({
+        file: file.files[0],
+        fileName: file.files[0].name || "sample-file.jpg",
+        tags: ["tag1"],
+        responseFields: "tags",
+        token: authData.token,
+        signature: authData.signature,
+        expire: authData.expire,
+    }, function (err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            document.getElementById("profileImageUrl").value = result.url;
+            console.log(result);
+        }
+    });
+}

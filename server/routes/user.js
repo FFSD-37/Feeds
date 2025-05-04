@@ -30,6 +30,7 @@ import {
   handlegetcreatepost,
   handlecreatepost,
   handlegetcreatepost2,
+  updateUserProfile,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -114,6 +115,8 @@ router.post("/checkout_razorpay", isAuthuser, checkOut);
 
 router.post("/payment", isAuthuser, checkOut);
 
-router.post("/verify_payment",isAuthuser,verify_payment)
+router.post("/verify_payment",isAuthuser,verify_payment);
+
+router.post("/updateUserDetails", isAuthuser, updateUserProfile);
 
 export default router;

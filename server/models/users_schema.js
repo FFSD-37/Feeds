@@ -14,6 +14,13 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
 
+    display_name: {
+        type: String,
+        default: function (){
+            return this.username;
+        }
+    },
+
     email: {
         type: String,
         required: true,
@@ -93,6 +100,10 @@ const userSchema = new mongoose.Schema({
         enum: ["Kids","Student","Normal", "Admin"],
         default:'Normal'
     },
+
+    links: [{
+        type: String
+    }],
 
     savedPostsIds: [{
         type: String

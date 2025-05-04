@@ -5,57 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
     <link href="../css/edit_profile.css" rel="stylesheet">
+    <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
 </head>
 <body>
     <%- include('sidebar') %>
     <div class="profile-container">
         <h2>Edit Profile</h2>
-        <form id="profileForm" action="/edit" method="POST">
-            <img id="profilePic" src="<%- img %>" alt="profile-pic" class="profile-photo" onclick="document.getElementById('photoInput').click()">
+        <form id="profileForm" action="/updateUserDetails" method="POST">
+            <img id="profilePic" src="<%- CurrentUser.profilePicture %>" alt="profile-pic" class="profile-photo" onclick="document.getElementById('photoInput').click()">
             <input type="file" id="photoInput" name="photo" accept="image/*" style="display: none">
             <button type="button" class="change-profile-pic" onclick="document.getElementById('photoInput').click()"> Change Photo </button>
-            <h4>Username</h4>
+            <input type="hidden" id="profileImageUrl" name="profileImageUrl"/>
+            <h4>Display Name</h4>
             <div class="field-container">
-                <input type="text" id="username" name="username" value="JohnDoe" readonly>
+                <input type="text" id="username" name="display_name" value="<%- CurrentUser.display_name %>" pattern="[A-Za-z]{1}[0-9a-zA-Z]{2, 19}" title="Username must be 3-20 characters, letters and numbers only" readonly>
                 <a onclick="editField('username')">EDIT</a>
             </div>
             <h4>Name</h4>
             <div class="field-container">
-                <input type="text" id="name" name="name" value="John Doe" readonly>
+                <input type="text" id="name" name="name" value="<%- CurrentUser.fullName %>" readonly>
                 <a onclick="editField('name')">EDIT</a>
             </div>
             <h4>Bio</h4>
             <div class="field-container">
-                <textarea id="bio" name="bio" rows="3" readonly>Web developer & tech enthusiast.</textarea>
+                <textarea id="bio" name="bio" rows="3" readonly><%- CurrentUser.bio %></textarea>
                 <a onclick="editField('bio')">EDIT</a>
             </div>
             <h4>Gender</h4>
             <div class="field-container">
                 <select id="gender" name="gender">
-                    <option value="male" selected>Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <% if(CurrentUser.gender == 'Male') { %>
+                        <option value="Male" selected>Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    <% } else if(CurrentUser.gender == 'Female') { %>
+                        <option value="Male">Male</option>
+                        <option value="Female" selected>Female</option>
+                        <option value="Other">Other</option>
+                    <% } else { %>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other" selected>Other</option>
+                    <% } %>
                 </select>
-            </div>
-            <h4>Email</h4>
-            <div class="field-container">
-                <input type="email" id="email" name="email" value="khakse2gaurav2003@gmail.com" readonly>
-                <a onclick="editField('email')">EDIT</a>
             </div>
             <h4>Phone Number</h4>
             <div class="field-container">
-                <input type="tel" id="number" name="phone" value="9087654321" readonly>
+                <input type="tel" id="number" name="phone" value="<%- CurrentUser.phone %>" readonly>
                 <a onclick="editField('number')">EDIT</a>
             </div>
             <div class="linksHeader">
                 <h4>Links</h4>
+                <% if(CurrentUser.links.length < 3) { %>
                 <button type="button" onclick="addLink()" class="change-profile-pic2">Add Link</button>
+                <% } %>
             </div>
             <div id="linksContainer">
+                <% CurrentUser.links.forEach(link => { %>
                 <div class="field-container">
-                    <input type="url" class="profile-link" name="links[]" value="https://example.com" readonly>
+                    <input type="url" class="profile-link" name="links[]" value="<%- link %>" readonly>
                     <a onclick="editField('linksContainer')">EDIT</a>
                 </div>
+                <% }) %>
             </div>
             <div class="checkbox-group">
                 <label for="terms" class="terms-label">
@@ -90,7 +101,9 @@
                 </div>
             </div>
             <button type="submit">Save Changes</button>
-            <a href="/payment"><button type="button" class="premium-btn">Switch to Premium</button></a>
+            <% if(CurrentUser.isPrumium === false) { %>
+                <a href="/payment"><button type="button" class="premium-btn">Switch to Premium</button></a>
+            <% } %>
         </form>
     </div>
 

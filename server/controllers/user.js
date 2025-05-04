@@ -390,9 +390,26 @@ const handlegetforgetpass = (req, res) => {
   res.render("Forgot_pass", { msg: null, newpass: "NO", otpsec: "NO", emailsec: "YES", title: "Forgot Password" });
 }
 
-const handlegeteditprofile = (req, res) => {
+const handlegeteditprofile = async (req, res) => {
   const { data } = req.userDetails;
-  return res.render("edit_profile", { img: data[2], currUser: data[0] });
+  const user = await User.findOne({username: data[0]});
+  return res.render("edit_profile", { img: data[2], currUser: data[0], CurrentUser: user });
+}
+
+const updateUserProfile = async (req, res) => {
+  const { data } = req.userDetails;
+  const {photo, profileImageUrl, display_name, name, bio, gender, phone, terms} = req.body;
+  await User.findOneAndUpdate(
+    {username: data[0]},
+    {$set: {display_name: display_name, fullName: name, bio: bio, gender: gender, phone: phone}}
+  )
+  if (photo !== ""){
+    await User.findOneAndUpdate({username: data[0]}, {profilePicture: profileImageUrl});
+  }
+
+  const token = create_JWTtoken([data[0], data[1], (photo !== "")?profileImageUrl:data[2], data[3]], process.env.USER_SECRET, '30d');
+  res.cookie('uuid', token, { httpOnly: true });
+  return res.redirect(`/profile/${data[0]}`);
 }
 
 const handlegetpostoverlay = (req, res) => {
@@ -446,5 +463,6 @@ export {
   handlegetpostoverlay, 
   handlegetcreatepost, 
   handlecreatepost,
-  handlegetcreatepost2
+  handlegetcreatepost2,
+  updateUserProfile,
 };
