@@ -96,7 +96,7 @@ const handleLogin = async (req, res) => {
 
     const token = create_JWTtoken([user.username, user.email, user.profilePicture, user.type], process.env.USER_SECRET, '30d');
     res.cookie('uuid', token, { httpOnly: true });
-    return res.render("home", { img: user.profilePicture, currUser: user.username });
+    return res.redirect("/home");
   }
   catch (e) {
     console.log(e);
@@ -415,4 +415,36 @@ const handlegetcreatepost2 = (req, res) => {
   return res.render("create_post_second", { img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2] });
 }
 
-export { handleSignup, handleLogin, sendotp, verifyotp, updatepass, handleContact, handledelacc, handlelogout, handlegetHome, handlegetpayment, handlegetprofile, handlegetterms, handlegetcontact, handlegetconnect, handlegetforgetpass, handlegetsignup, handlegethelp, handlegetreels, handlegetdelacc, handlegetstories, handlegetgames, handlegetadmin, handleadminlogin, generateOTP, handlefpadmin, adminPassUpdate, handlegeteditprofile, handlegetpostoverlay, handlegetcreatepost, handlecreatepost, handlegetcreatepost2 };
+export {
+  handleSignup,
+  handleLogin,
+  sendotp,
+  verifyotp,
+  updatepass,
+  handleContact,
+  handledelacc,
+  handlelogout,
+  handlegetHome,
+  handlegetpayment,
+  handlegetprofile,
+  handlegetterms,
+  handlegetcontact,
+  handlegetconnect,
+  handlegetforgetpass,
+  handlegetsignup,
+  handlegethelp,
+  handlegetreels,
+  handlegetdelacc, 
+  handlegetstories, 
+  handlegetgames, 
+  handlegetadmin, 
+  handleadminlogin, 
+  generateOTP, 
+  handlefpadmin, 
+  adminPassUpdate, 
+  handlegeteditprofile, 
+  handlegetpostoverlay, 
+  handlegetcreatepost, 
+  handlecreatepost,
+  handlegetcreatepost2
+};
