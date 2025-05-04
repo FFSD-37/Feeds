@@ -45,7 +45,7 @@
       <div class="menu-section">
         <div class="menu-header">Main</div>
         <ul class="menu-items">
-          <li class="menu-item active">
+          <li class="menu-item active" id="menuDashboard">
             <i class="fas fa-tachometer-alt"></i> Dashboard
           </li>
           <!-- <li class="menu-item"><i class="fas fa-chart-line"></i> Analytics</li> -->
@@ -55,35 +55,22 @@
       <div class="menu-section">
         <div class="menu-header">Management</div>
         <ul class="menu-items">
-          <li class="menu-item"><i class="fas fa-users"></i> Users</li>
-          <!-- <li class="menu-item"><i class="fas fa-box"></i> Products</li>
-          <li class="menu-item"><i class="fas fa-shopping-cart"></i> Orders</li> -->
+          <li class="menu-item" id="menuUsers">
+            <i class="fas fa-users"></i> Users
+          </li>
           <li class="menu-item"><i class="fas fa-comment"></i> Reviews</li>
         </ul>
       </div>
-      <!-- <div class="menu-section">
-        <div class="menu-header">Configuration</div>
-        <ul class="menu-items">
-          <li class="menu-item"><i class="fas fa-cog"></i> Settings</li>
-          <li class="menu-item"><i class="fas fa-lock"></i> Privacy</li>
-          <li class="menu-item"><i class="fas fa-shield-alt"></i> Security</li>
-        </ul>
-      </div> -->
       <div class="menu-section">
         <div class="menu-header">Support</div>
         <ul class="menu-items">
-          <!-- <li class="menu-item">
-            <i class="fas fa-question-circle"></i> Help Center
-          </li> -->
-          <li class="menu-item"><i class="fas fa-ticket-alt"></i> Tickets</li>
-          <!-- <li class="menu-item">
-            <i class="fas fa-headset"></i> Contact Support
-          </li> -->
+          <li class="menu-item" id="menuReports">
+            <i class="fas fa-ticket-alt"></i> Tickets
+          </li>
         </ul>
       </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content" id="mainContent">
       <h1 class="page-title">Dashboard</h1>
 
@@ -140,7 +127,7 @@
       </div>
 
       <!-- Chart & Activities -->
-      <div class="content-row">
+      <div class="content-row" id="dashboardSection">
         <div class="content-card recent-purchases-class">
           <div class="card-header">
             <div class="card-title">Recent Purchases</div>
@@ -165,17 +152,19 @@
                 <tr>
                   <td>#<%= order.id %></td>
                   <td><%= order.username %></td>
-                  <td><%= new Date(order.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric'
-                  }) %></td>
+                  <td>
+                    <%= new Date(order.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </td>
                   <td>₹<%= order.amount %></td>
                   <td>
-                    <span class="status-badge <%= order.status === 'Completed' ? 'status-active' : 'status-pending' %>">
+                    <span
+                      class="status-badge <%= order.status === 'Completed' ? 'status-active' : 'status-pending' %>"
+                    >
                       <% if (order.status === 'Completed') { %>
-                        <i class="fas fa-check-circle"></i> Completed
-                      <% } else if (order.status === 'Pending') { %>
-                        <i class="fas fa-hourglass-half"></i> Pending
-                      <% } %>
+                      <i class="fas fa-check-circle"></i> Completed <% } else if
+                      (order.status === 'Pending') { %>
+                      <i class="fas fa-hourglass-half"></i> Pending <% } %>
                     </span>
                   </td>
                 </tr>
@@ -217,8 +206,96 @@
         </div>
       </div>
 
-      <!-- Recent Orders Table -->
-      
+      <div id="usersSection" style="display: none">
+        <h2 class="page-title">All Users</h2>
+        <% if(allUsers && allUsers.length > 0) { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% allUsers.forEach(function(user) { %>
+            <tr>
+              <td><%= user.id %></td>
+              <td><%= user.username %></td>
+              <td><%= user.email %></td>
+              <td>
+                <%= new Date(user.createdAt).toLocaleDateString('en-US') %>
+              </td>
+              <td>
+                <button class="manage-user-btn" title="Manage User">
+                  <i class="fas fa-user-cog"></i>
+                </button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <div class="no-data">No users found</div>
+        <% } %>
+      </div>
+
+      <div id="reportSection" style="display: none">
+        <h2 class="page-title">Report Section</h2>
+        <% if(allReports && allReports.length > 0) { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Report ID</th>
+              <th>Post_ID</th>
+              <th>Author</th>
+              <th>Report Number</th>
+              <th>Reporter</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <% allReports.forEach(function(report) { %>
+              <td><%= report._id %></td>
+              <td><%= report.post_id %></td>
+              <td><%= report.post_author %></td>
+              <td><%= report.report_number %></td>
+              <td><%= report.user_reported %></td>
+              <td><%= report.reason %></td>
+              <td>
+                <span
+                  class="status-badge <%= report.status === 'Completed' ? 'status-active' : 'status-pending' %>"
+                >
+                  <% if (report.status === 'Completed') { %>
+                  <i class="fas fa-check-circle"></i> Completed <% } else if
+                  (report.status === 'Pending') { %>
+                  <i class="fas fa-hourglass-half"></i> Pending <% } %>
+                </span>
+              </td>
+              <td>
+                <button title="Send Acknowledgment" class="icon-btn">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+                <button title="Send Warning" class="icon-btn">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </button>
+                <button title="Resolve" class="icon-btn">
+                  <i class="fas fa-check-circle"></i>
+                </button>
+              </td>
+              <% }); %>
+            </tr>
+          </tbody>
+        </table>
+        <% } else { %>
+        <div class="no-data">No reports found</div>
+        <% } %>
+      </div>
 
       <footer class="footer">
         <p>© 2025 AdminPortal. All rights reserved.</p>

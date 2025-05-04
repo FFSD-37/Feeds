@@ -5,14 +5,23 @@ const reportSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  post_author:{
+    type: String,
+    required: true
+  },
   report_number: {
-    type: Number
+    type: Number,
+    default: 0
   },
   user_reported: {
-    type: [String]
+    type: String
   },
-  reasons: {
-    type: [String]
+  status: {
+    type: String,
+    default: "Pending"
+  },
+  reason: {
+    type: String
   }
 }, {timestamps: true});
 
