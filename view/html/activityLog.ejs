@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Activity log</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .table-wrapper {
+        width: 80%;
+        max-width: 1000px;
+        height: 600px;
+        overflow-y: auto;
+        border: 2px solid black;
+        border-radius: 5px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #f2f2f2;
+        position: sticky;
+        top: 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #999;
+        padding: 8px;
+        text-align: center;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="table-wrapper">
+      <% if (allLogs && allLogs.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Message</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="messageBody">
+            <% allLogs.forEach(function(log) { %>
+            <tr>
+              <td>ID</td>
+              <td>msg</td>
+              <td>time</td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <div class="no-data">No orders found</div>
+      <% } %>
+    </div>
+  </body>
+</html>
