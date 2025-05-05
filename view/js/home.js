@@ -112,7 +112,7 @@ function selectReason(reason) {
 //    }
 //  });
 
-document.addEventListener('DOMContentLoaded', () => {console.log("hello");
+document.addEventListener('DOMContentLoaded', () => {
 
   const container = document.getElementById('postsContainer');  // match your HTML
   let isLoading = false;
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {console.log("hello");
     return posts;
   }
 
-  container.addEventListener('scroll', async () => {console.log("hello2");
+  container.addEventListener('scroll', async () => {
   
     if (isLoading || noMorePosts) return;
     if (container.scrollTop + container.clientHeight < container.scrollHeight - 100) {
