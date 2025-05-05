@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home – Feed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- your CSS, etc. -->
+</head>
+<body>
+
+  <h1>Latest Posts</h1>
+
+  <div id="posts-container">
+    <% if (!posts || posts.length === 0) { %>
+      <p>No posts to display.</p>
+    <% } else { %>
+      <% posts.forEach(function(post) { %>
+        <div class="post" data-createdat="<%= post.createdAt.toISOString() %>">
+          <img src="<%= post.url %>&&tr=w-640,h-640" alt="Post image" />
+          <p><%= post.content %></p>
+          <p><%= post.author %></p>
+          <small>Posted at <%= new Date(post.createdAt).toLocaleString() %></small>
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+
+</body>
+</html>
