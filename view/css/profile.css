@@ -193,6 +193,34 @@ body {
   display: none;
 }
 
+.follow-btn{
+  background-color: #3897f0;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.follow-btn:hover {
+  background-color: #2f81d6;
+}
+
+.unfollow-btn{
+  background-color: #3897f0;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.unfollow-btn:hover {
+  background-color: #2f81d6;
+}
+
 @media (max-width: 735px) {
   .profile-header {
     flex-direction: column;

@@ -378,11 +378,13 @@ const handlegetprofile = async (req, res) => {
   const likedObjects = await Post.find({ _id: { $in: likeIds } });
   const archiveIds = profUser.archivedPostsIds || [];
   const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
+  const meUser = await User.findOne({username: data[0]});
+  const isFollow = meUser.followings.some(f => f.username === u.username);
   if (u.username === data[0]) {
-    return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects });
+    return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower: isFollow });
   }
   else {
-    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects })
+    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower: isFollow })
   }
 }
 
@@ -480,6 +482,54 @@ const handlegetcreatepost2 = (req, res) => {
   return res.render("create_post_second", { img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2] });
 }
 
+const followSomeone = async (req, res) => {
+  const { data } = req.userDetails;
+  const { username } = req.params;
+  const otherUser = await User.findOne({username: username});
+  try{
+    await User.findOneAndUpdate(
+      {username: data[0]},
+      {$addToSet: {followings: {
+        username: otherUser.username,
+        avatarUrl : otherUser.profilePicture
+      }}}
+    )
+    await User.findOneAndUpdate(
+      {username: username},
+      {$addToSet: {followers: {
+        username: data[0],
+        avatarUrl: data[2]
+      }}}
+    )
+    return res.json({success: true, message: null});
+  }
+  catch(err){
+    console.log(err);
+  }
+}
+
+const unfollowSomeone = async (req, res) => {
+  const { data } = req.userDetails;
+  const { username } = req.params;
+  try{
+    await User.findOneAndUpdate(
+      {username: data[0]},
+      {$pull: {followings: {username: username}}},
+      {new: true}
+    )
+    await User.findOneAndUpdate(
+      {username: username},
+      {$pull: {followers: {username: data[0]}}},
+      {new: true}
+    )
+    return res.json({success: true, message: null});
+  }
+  catch(err){
+    console.log(err);
+    return res.json({success: false, message: "not succeeded"});
+  }
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -514,4 +564,6 @@ export {
   handlegetcreatepost2,
   updateUserProfile,
   fetchOverlayUser,
+  followSomeone,
+  unfollowSomeone,
 };

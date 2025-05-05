@@ -32,6 +32,8 @@ import {
   handlegetcreatepost2,
   updateUserProfile,
   fetchOverlayUser,
+  followSomeone,
+  unfollowSomeone,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -121,5 +123,9 @@ router.post("/verify_payment",isAuthuser,verify_payment);
 router.post("/updateUserDetails", isAuthuser, updateUserProfile);
 
 router.post("/fetchUserOverlay", fetchOverlayUser);
+
+router.post("/follow/:username", isAuthuser, followSomeone);
+
+router.post("/unfollow/:username", isAuthuser, unfollowSomeone);
 
 export default router;
