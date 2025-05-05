@@ -353,9 +353,21 @@ const fetchOverlayUser = async (req, res) => {
   return res.json(user);
 }
 
-const handlegetHome = (req, res) => {
+const handlegetHome = async(req, res) => {
   const { data } = req.userDetails;
-  return res.render("home", { img: data[2], currUser: data[0] });
+  const createdAt=req.query.createdAt || new Date();
+  
+          // const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
+          // if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
+          // const userType=userDetails.data[3];
+          
+          const posts=await Post.find({
+              createdAt: { $lt: createdAt },
+          }).sort({createdAt:-1}).limit(5);
+  
+          if(!posts) return res.status(404).json({ err: "Post not found" });
+  
+  return res.render("home", { img: data[2], currUser: data[0], posts });
 }
 
 const handlegetpayment = (req, res) => {
