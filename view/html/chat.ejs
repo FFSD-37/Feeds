@@ -144,6 +144,7 @@
   </head>
   <body class="" id="body">
     <div class="sidebar" id="user-list">
+      <div class="me"><%= currUser %></div>
       <% friends.forEach(friend => { %>
       <div class="user">
         <img src="<%= friend.avatarUrl %>" alt="" />
@@ -169,10 +170,10 @@
 
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
-      const socket = io("http://localhost:8000");
 
-      const currentUser = "Me";
-      let activeUser = "Alice";
+      const currentUser = document.querySelector('.me').textContent;
+      document.querySelector('.me').remove();
+      let activeUser;
 
       const userList = document.getElementById("user-list");
       const chatBox = document.getElementById("chat-box");
@@ -180,34 +181,49 @@
       const sendBtn = document.getElementById("send-btn");
       const toggleBtn = document.getElementById("toggle-theme");
       const body = document.getElementById("body");
+      const users=document.querySelectorAll('.user');
 
-      function appendMessage(text, type, time, read = false) {
+      users.forEach(user => {
+        user.addEventListener('click', () => {
+          activeUser = user.children[1].textContent;
+          loadMessages(activeUser);
+        })
+      })
+
+        const socket = io("http://localhost:8000", {
+          withCredentials: true
+        });
+        
+        socket.on("connect", () => {
+          console.log("Connected to server");
+        });
+
+      function appendMessage(text, type, time) {
         const msg = document.createElement("div");
         msg.className = `message ${type}`;
-        msg.innerHTML = `<div>${text}</div><div class="timestamp">${time}${
-          type === "sent" ? (read ? " ✅" : " 🕜️") : ""
-        }</div>`;
+        msg.innerHTML = `<div>${text}</div><div class="timestamp">${time}</div>`;
         chatBox.appendChild(msg);
         chatBox.scrollTop = chatBox.scrollHeight;
       }
 
-      async function loadMessages() {
+      async function loadMessages(activeUser) {
         chatBox.innerHTML = "";
         const res = await fetch(
-          `http://localhost:3000/chat/${currentUser}`
+          `http://localhost:3000/chat/${activeUser}`,
+          { method: "GET", credentials: "include", headers: { 'Content-Type': 'application/json' } }
         );
-        const messages = await res.json();
+        let messages = await res.json();console.log(messages.chats);
+        messages = messages.chats;
+        if(!messages.length) return;
         messages
           .filter((m) => m.from === activeUser || m.from === currentUser)
           .forEach((m) =>
             appendMessage(
               m.text,
               m.from === currentUser ? "sent" : "received",
-              m.time,
-              m.read
+              m.createdAt
             )
           );
-        socket.emit("markRead", { user: currentUser });
       }
 
       sendBtn.addEventListener("click", () => {
@@ -218,24 +234,21 @@
           minute: "2-digit",
         });
         socket.emit("sendMessage", {
-          from: currentUser,
           to: activeUser,
           text,
           time,
         });
-        appendMessage(text, "sent", time, false);
+        appendMessage(text, "sent", time);
+        console.log(activeUser);
+        
         messageInput.value = "";
       });
 
       socket.on("receiveMessage", (msg) => {
         if (msg.from === activeUser) {
           appendMessage(msg.text, "received", msg.time);
-          socket.emit("markRead", { user: currentUser });
         }
       });
-
-      socket.emit("join", currentUser);
-      loadMessages();
 
       toggleBtn.addEventListener("click", () => {
         body.classList.toggle("dark");
@@ -252,7 +265,6 @@
 
       emojiPicker.addEventListener("emoji-click", (e) => {
         messageInput.value += e.detail.unicode;
-        emojiPicker.style.display = "none";
       });
     </script>
   </body>

@@ -2,7 +2,7 @@ import express from 'express'
 import router from './routes/user.js'
 import dotenv from 'dotenv'
 import path from 'path' 
-import { cookieParser, parseCookieString } from 'cookie-string-parser';
+import { cookieParser, parseCookieString, verify_JWTtoken } from 'cookie-string-parser';
 import connectToMongo from './Db/connection.js';
 import channelRouter from './routes/channel.js';
 import notificationRouter from './routes/notification.js';
@@ -12,6 +12,7 @@ import { Server } from 'socket.io';
 import http from 'http'
 import User from './models/users_schema.js';
 import Chat from './models/chatSchema.js';
+import cors from 'cors'
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,11 @@ app.set('views',path.resolve('../view/html'));
 app.use(express.static(path.resolve('../view')));
 connectToMongo();
 app.use(cookieParser);
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/',router);
@@ -29,28 +35,36 @@ app.use('/notification', notificationRouter);
 app.use('/', channelPost);
 
 const server=http.createServer(app);
-const io=new Server(server);
+const io=new Server(server,{
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST']
+  }
+});
 
 io.use((socket, next) => {
   const cookie=socket.handshake.headers.cookie;
   const parsedCookie=parseCookieString(cookie);
 
-  const user=verify_JWTtoken(parsedCookie.uuid, process.env.USER_SECRET);
-  socket.userId=user[0];
-  socket.img=user[2];
+  const {data}=verify_JWTtoken(parsedCookie.uuid, process.env.USER_SECRET);
+  
+  socket.userId=data[0];
+  socket.img=data[2];
   next();
 });
 
 io.on('connection', async(socket) => {
-  console.log('a user connected');
+  console.log(socket.userId+'user connected');
   await User.findOneAndUpdate({username: socket.userId}, {socketId: socket.id});
 
-  socket.on('send', async(data) => {
+  socket.on('sendMessage', async(data) => {
     try{
-    const { username, message } = data;
-    await Chat.create({ sender: socket.userId, receiver: username, message });
-    const {socketId}=await User.findOne({username: username}).populate('socketId');
-    socket.to(socketId).emit('recv', { username: socket.userId, message });
+    const { to, text, time } = data;
+    
+    await Chat.create({ from: socket.userId, to, text, createdAt: time});
+    const {socketId}=await User.findOne({username: to});
+    socket.to(socketId).emit('receiveMessage', { from: socket.userId, text, time });
     }
     catch(err){
       console.log(err);

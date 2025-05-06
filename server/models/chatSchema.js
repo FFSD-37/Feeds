@@ -2,24 +2,25 @@ import mongoose from 'mongoose';
 
 const chatSchema = new mongoose.Schema(
   {
-    sender: {
+    from: {
       type: String,
       required: true,
       trim: true
     },
-    receiver: {
+    to: {
       type: String,
       required: true,
       trim: true
     },
-    message: {
+    text: {
       type: String,
       required: true,
       trim: true
     },
-  },
-  {
-    timestamps: true 
+    createdAt: {
+      type: String,
+      default: Date.now
+    }
   }
 );
 
