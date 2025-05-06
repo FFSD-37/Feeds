@@ -38,6 +38,7 @@ import {
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
 import { checkOut, verify_payment } from "../controllers/payment.js";
+import { getChat, getChatpage } from "../controllers/chat.js";
 
 const router = express.Router();
 
@@ -127,5 +128,9 @@ router.post("/fetchUserOverlay", fetchOverlayUser);
 router.post("/follow/:username", isAuthuser, followSomeone);
 
 router.post("/unfollow/:username", isAuthuser, unfollowSomeone);
+
+router.get("/chat/:username",isAuthuser, getChat);
+
+router.get("/chat",isAuthuser, getChatpage);
 
 export default router;

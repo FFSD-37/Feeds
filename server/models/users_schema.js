@@ -59,17 +59,11 @@ const userSchema = new mongoose.Schema({
     followers: [{
         username:{
             type:String
-        },
-        avatarUrl:{
-            type:String
         }
     }],
 
     followings: [{
         username:{
-            type:String
-        },
-        avatarUrl:{
             type:String
         }
     }],
@@ -120,6 +114,11 @@ const userSchema = new mongoose.Schema({
     postIds:[{
         type: String
     }],
+
+    socketId:{
+        type: String,
+        default: null
+    },
 
     channelName:[{
         type: String

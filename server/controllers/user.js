@@ -497,20 +497,17 @@ const handlegetcreatepost2 = (req, res) => {
 const followSomeone = async (req, res) => {
   const { data } = req.userDetails;
   const { username } = req.params;
-  const otherUser = await User.findOne({username: username});
   try{
     await User.findOneAndUpdate(
       {username: data[0]},
       {$addToSet: {followings: {
-        username: otherUser.username,
-        avatarUrl : otherUser.profilePicture
+        username: username
       }}}
     )
     await User.findOneAndUpdate(
       {username: username},
       {$addToSet: {followers: {
-        username: data[0],
-        avatarUrl: data[2]
+        username: data[0]
       }}}
     )
     return res.json({success: true, message: null});
