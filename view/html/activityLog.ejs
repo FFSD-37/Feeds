@@ -60,9 +60,9 @@
           <tbody id="messageBody">
             <% allLogs.forEach(function(log) { %>
             <tr>
-              <td>ID</td>
-              <td>msg</td>
-              <td>time</td>
+              <td><%- log.id %></td>
+              <td><%- log.message %></td>
+              <td><%- log.createdAt %></td>
             </tr>
             <% }); %>
           </tbody>

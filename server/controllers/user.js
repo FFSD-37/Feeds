@@ -6,11 +6,13 @@ import User from '../models/users_schema.js';
 import Post from '../models/postSchema.js';
 import Report from "../models/reports.js";
 import Payment from "../models/payment.js";
+import ActivityLog from "../models/activityLogSchema.js"
 import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt, { compare } from 'bcrypt';
 import Feedback from '../models/feedbackForm.js';
 import DelUser from '../models/SoftDelUsers.js';
 import Notification from '../models/notification_schema.js';
+
 
 async function storeOtp(email, otp) {
   try {
@@ -59,8 +61,7 @@ const handleSignup = async (req, res) => {
     };
 
     await User.create(userData);
-    // const token = create_JWTtoken([userData.username, userData.email, userData.profilePicture,userData.type], process.env.USER_SECRET, '30d');
-    // res.cookie('uuid', token, { httpOnly: true });
+    await ActivityLog.create({username: req.body.username, id: `#${Date.now()}`, message: "You Registered Successfully!!"});
     return res.render("login", { loginType: "Email", msg: "User Registered Successfully" });
   }
   catch (err) {
@@ -96,7 +97,7 @@ const handledelacc = async (req, res) => {
       }
     }
     await DelUser.insertOne(user);
-    
+
     let transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
@@ -113,6 +114,7 @@ const handledelacc = async (req, res) => {
       text: `Your Account ${user.username} from FEEDS has been deleted on Date: ${new Date()}. If it's not you, please Restore your account using /restore url from the login page. It's been great having you.`
     };
     
+    await ActivityLog.create({username: user.username, id: `#${Date.now()}`, message: "Your Account has been delete"})
     await User.findByIdAndDelete({ _id: user._id });
     try {
       await transporter.sendMail(mailOptions);
@@ -128,7 +130,6 @@ const handledelacc = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
 
 const handleLogin = async (req, res) => {
   try {
@@ -354,20 +355,15 @@ const fetchOverlayUser = async (req, res) => {
   return res.json(user);
 }
 
-const handlegetHome = async(req, res) => {
+const handlegetHome = async (req, res) => {
   const { data } = req.userDetails;
-  const createdAt=req.query.createdAt || new Date();
-  
-          // const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
-          // if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
-          // const userType=userDetails.data[3];
-          
-          const posts=await Post.find({
-              createdAt: { $lt: createdAt },
-          }).sort({createdAt:-1}).limit(5);
-  
-          if(!posts) return res.status(404).json({ err: "Post not found" });
-  
+  const createdAt = req.query.createdAt || new Date();
+  const posts = await Post.find({
+    createdAt: { $lt: createdAt },
+  }).sort({ createdAt: -1 }).limit(5);
+
+  if (!posts) return res.status(404).json({ err: "Post not found" });
+
   return res.render("home", { img: data[2], currUser: data[0], posts });
 }
 
@@ -391,10 +387,7 @@ const handlegetprofile = async (req, res) => {
   const likedObjects = await Post.find({ _id: { $in: likeIds } });
   const archiveIds = profUser.archivedPostsIds || [];
   const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
-  const meUser = await User.findOne({username: data[0]});
-  // const isFollow = meUser.followings.some(f => f.username === u.username);
-  // const isFriend = meUser.followings.some(f => f.username === u.username) && meUser.followers.some(f => f.username === u.username);
-  // const isFollow = meUser.followers.some(f => f.username === u.username);
+  const meUser = await User.findOne({ username: data[0] });
   const isFollowingThem = meUser.followings.some(f => f.username === u.username);
   const isFollowedByThem = meUser.followers.some(f => f.username === u.username);
   const isFriend = isFollowingThem && isFollowedByThem;
@@ -505,22 +498,30 @@ const handlegetcreatepost2 = (req, res) => {
 const followSomeone = async (req, res) => {
   const { data } = req.userDetails;
   const { username } = req.params;
-  try{
+  try {
     await User.findOneAndUpdate(
-      {username: data[0]},
-      {$addToSet: {followings: {
-        username: username
-      }}}
+      { username: data[0] },
+      {
+        $addToSet: {
+          followings: {
+            username: username
+          }
+        }
+      }
     )
     await User.findOneAndUpdate(
-      {username: username},
-      {$addToSet: {followers: {
-        username: data[0]
-      }}}
+      { username: username },
+      {
+        $addToSet: {
+          followers: {
+            username: data[0]
+          }
+        }
+      }
     )
-    return res.json({success: true, message: null});
+    return res.json({ success: true, message: null });
   }
-  catch(err){
+  catch (err) {
     console.log(err);
   }
 }
@@ -528,29 +529,29 @@ const followSomeone = async (req, res) => {
 const unfollowSomeone = async (req, res) => {
   const { data } = req.userDetails;
   const { username } = req.params;
-  try{
+  try {
     await User.findOneAndUpdate(
-      {username: data[0]},
-      {$pull: {followings: {username: username}}},
-      {new: true}
+      { username: data[0] },
+      { $pull: { followings: { username: username } } },
+      { new: true }
     )
     await User.findOneAndUpdate(
-      {username: username},
-      {$pull: {followers: {username: data[0]}}},
-      {new: true}
+      { username: username },
+      { $pull: { followers: { username: data[0] } } },
+      { new: true }
     )
-    return res.json({success: true, message: null});
+    return res.json({ success: true, message: null });
   }
-  catch(err){
+  catch (err) {
     console.log(err);
-    return res.json({success: false, message: "not succeeded"});
+    return res.json({ success: false, message: "not succeeded" });
   }
 }
 
 const handlegetnotification = (req, res) => {
   const { data } = req.userDetails;
   const allNotifications = Notification.find({}).lean();
-  return res.render("notifications", {img: data[2], currUser: data[0], allNotifications})
+  return res.render("notifications", { img: data[2], currUser: data[0], allNotifications })
 }
 
 export {
