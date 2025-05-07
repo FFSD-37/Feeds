@@ -618,5 +618,6 @@ export {
   fetchOverlayUser,
   followSomeone,
   unfollowSomeone,
+  handlegetnotification,
   getSearch
 };
