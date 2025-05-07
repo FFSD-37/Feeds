@@ -301,6 +301,7 @@ const updatepass = async (req, res) => {
     else {
       user.password = await bcrypt.hash(req.body.new_password, 10);
       await user.save();
+      await ActivityLog.create({username: req.body.username, id: `#${Date.now()}`, message: "Your Password has been changed!!"});
       return res.render("login", { msg: "Password Updated!!", loginType: null });
     }
   }
