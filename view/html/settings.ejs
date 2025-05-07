@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        padding: 1rem;
+        padding-bottom: 2.9rem;
+        background: linear-gradient(#6b48ff, #6b48ff22);
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        overflow-y: auto;
+        height: calc(95vh - 2rem);
+        background-color: #c6a586;
+      }
+
+      h2 {
+        margin-top: 2rem;
+        color: #333;
+      }
+      .section {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 2rem;
+        background-color: #c6a586;
+      }
+      .section h2 {
+        margin: 0 0 1rem;
+        font-size: 1.25rem;
+      }
+
+      .profile-privacy-toggle {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+      .profile-privacy-toggle input {
+        display: none;
+      }
+      .profile-privacy-slider {
+        position: relative;
+        width: 40px;
+        height: 20px;
+        background: #ccc;
+        border-radius: 20px;
+        margin-right: 0.5rem;
+        transition: background 0.3s;
+      }
+      .profile-privacy-slider::before {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: #fff;
+        border-radius: 50%;
+        top: 1px;
+        left: 1px;
+        transition: transform 0.3s;
+      }
+      .profile-privacy-toggle input:checked + .profile-privacy-slider {
+        background: #4caf50;
+      }
+      .profile-privacy-toggle input:checked + .profile-privacy-slider::before {
+        transform: translateX(20px);
+      }
+      .profile-privacy-label {
+        font-size: 0.95rem;
+        color: #333;
+      }
+      .profile-privacy-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .profile-privacy-modal {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 6px;
+        max-width: 300px;
+        text-align: center;
+      }
+      .profile-privacy-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin: 0 0.25rem;
+      }
+      .profile-privacy-confirm-btn {
+        background: #4caf50;
+        color: #fff;
+      }
+      .profile-privacy-cancel-btn {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+      .data-table th,
+      .data-table td {
+        border: 1px solid #ddd;
+        padding: 0.6rem;
+        text-align: left;
+      }
+      .no-data {
+        text-align: center;
+        color: #777;
+        font-style: italic;
+        padding: 1rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        margin: 0.25rem 0.5rem 0 0;
+      }
+      .btn i {
+        margin-right: 0.5rem;
+      }
+      .btn-share {
+        background: #3498db;
+        color: #fff;
+      }
+      .btn-copy-url {
+        background: #2ecc71;
+        color: #fff;
+      }
+      .btn-submit-help {
+        background: #4caf50;
+        color: #fff;
+      }
+
+      .help-form {
+        max-width: 480px;
+        margin-top: 0.5rem;
+      }
+      .help-form .form-group {
+        margin-bottom: 1rem;
+      }
+      .help-form label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+      }
+      .help-form input,
+      .help-form textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+      }
+      #permissionsForm .form-group {
+        margin-bottom: 1rem;
+      }
+      #permissionsForm label {
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+        cursor: pointer;
+      }
+      #permissionsForm input[type="checkbox"] {
+        margin-right: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+      }
+
+      .footer {
+        width: 100%;
+        font-size: 15px;
+        color: #0c0c0c;
+        text-align: center;
+        font-weight: bold;
+        position: fixed;
+        bottom: 0;
+      }
+
+      .footer1,.footer2 {
+        height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .footer a {
+        color: #090808;
+        text-decoration: none;
+        margin: 0 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('sidebar') %>
+    <div class="main-container">
+      <div class="section">
+        <h2>Account Privacy</h2>
+        <label class="profile-privacy-toggle">
+          <input type="checkbox" id="publicToggle" />
+          <span class="profile-privacy-slider"></span>
+          <span class="profile-privacy-label"
+            >Make my profile
+            <strong>
+              <% if(Meuser.visibility === "Private") { %>public<% } else { %>private<% } %>
+            </strong></span
+          >
+        </label>
+      </div>
+
+      <div class="section">
+        <h2>Blocked Users</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(Meuser.blockedUsers && Meuser.blockedUsers.length > 0) { %> <%
+            blockedUsers.forEach((user) => { %>
+            <tr>
+              <td><%= user.username %></td>
+              <td>
+                <button
+                  class="btn btn-copy-url"
+                  onblock="unblockUser('<%= user.username %>')"
+                >
+                  <i class="fas fa-user-slash"></i> Unblock
+                </button>
+              </td>
+            </tr>
+            <% }); %> <% } else { %>
+            <tr>
+              <td colspan="2" class="no-data">No blocked users found</td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Profile Sharing</h2>
+        <button class="btn btn-share" id="btnShareProfile">
+          <i class="fa-solid fa-share-nodes"></i> Share Profile
+        </button>
+        <button class="btn btn-copy-url" id="btnCopyProfileUrl">
+          <i class="fa-solid fa-copy"></i> Copy Profile URL
+        </button>
+      </div>
+
+      <div class="section">
+        <h2>Help</h2>
+        <a href="/help" style="text-decoration: none; color: black">
+          <button class="btn btn-help">Go to Help</button>
+        </a>
+      </div>
+
+      <div class="section">
+        <h2>About Profile</h2>
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <td><strong>Username</strong></td>
+              <td><%= Meuser.username %></td>
+            </tr>
+            <tr>
+              <td><strong>Full Name</strong></td>
+              <td><%= Meuser.fullName %></td>
+            </tr>
+            <tr>
+              <td><strong>Email</strong></td>
+              <td><%= Meuser.email %></td>
+            </tr>
+            <tr>
+              <td><strong>Joined</strong></td>
+              <td><%= new Date(Meuser.createdAt).toDateString() %></td>
+            </tr>
+            <tr>
+              <td><strong>Coins</strong></td>
+              <td><%= Meuser.coins %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="confirmModal" class="profile-privacy-modal-overlay">
+        <div class="profile-privacy-modal">
+          <p class="profile-privacy-message">Are you sure ?</p>
+          <button
+            id="confirmYes"
+            class="profile-privacy-btn profile-privacy-confirm-btn"
+          >
+            Yes
+          </button>
+          <button
+            id="confirmNo"
+            class="profile-privacy-btn profile-privacy-cancel-btn"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="footer1">
+      <a href="#"
+        ><a href="/contact" style="text-decoration: none; color: black"
+          >About</a
+        ></a
+      >
+      •
+      <a href="#"
+        ><a href="/help" style="text-decoration: none; color: black"
+          >Help</a
+        ></a
+      >
+      •
+      <a href="#"
+        ><a href="/tandc" style="text-decoration: none; color: black"
+          >Terms</a
+        ></a
+      >
+      •
+      <a href="#"
+        ><a
+          href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor/@13.5555453,80.0240735,17z/data=!3m1!4b1!4m6!3m5!1s0x3a4d773f1e0f8721:0xadb0842ffc2719e4!8m2!3d13.5555453!4d80.0266484!16s%2Fm%2F0wbmm91?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoASAFQAw%3D%3D"
+          style="text-decoration: none; color: black"
+          target="_blank"
+          >Locations</a
+        ></a
+      >
+      </div>
+      <div class="footer2">
+      <p>
+        © 2025
+        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
+          >Feeds</a
+        >
+        from IIIT Sri-City
+      </p>
+      </div>
+    </div>
+
+    <script>
+      // Profile Privacy Toggle with Confirmation
+      const toggle = document.getElementById("publicToggle");
+      const modal = document.getElementById("confirmModal");
+      const yesBtn = document.getElementById("confirmYes");
+      const noBtn = document.getElementById("confirmNo");
+      let desiredState = toggle.checked;
+
+      // prompt for confirmation whenever the user tries to toggle
+      toggle.addEventListener("change", (e) => {
+        desiredState = e.target.checked; // desired new state
+        toggle.checked = !desiredState; // revert until confirmed
+        modal.style.display = "flex"; // show confirmation
+      });
+
+      yesBtn.addEventListener("click", () => {
+        toggle.checked = desiredState; // apply desired state
+        modal.style.display = "none";
+        // TODO: send API request to update privacy to desiredState
+      });
+
+      noBtn.addEventListener("click", () => {
+        modal.style.display = "none"; // cancel, leave original state
+      });
+
+      // Profile Sharing & Copy URL actions
+      document
+        .getElementById("btnShareProfile")
+        .addEventListener("click", () => {
+          // implement share logic, e.g. navigator.share()
+        });
+      document
+        .getElementById("btnCopyProfileUrl")
+        .addEventListener("click", () => {
+          navigator.clipboard.writeText(window.location.href);
+          alert("Profile URL copied!");
+        });
+
+      // Help form submit handler
+      document.querySelector(".help-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        // TODO: send help form data
+        alert("Help request submitted!");
+      });
+
+      function unblockUser(username) {
+        fetch(`/unblock/${username}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        location.reload();
+      }
+    </script>
+  </body>
+</html>
