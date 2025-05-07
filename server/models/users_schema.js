@@ -89,7 +89,7 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
-    noOfCoins: {
+    coins: {
         type: Number,
         default: 0
     },

@@ -61,7 +61,15 @@ const handleSignup = async (req, res) => {
     };
 
     await User.create(userData);
-    await ActivityLog.create({username: req.body.username, id: `#${Date.now()}`, message: "You Registered Successfully!!"});
+    await ActivityLog.create({ username: req.body.username, id: `#${Date.now()}`, message: "You Registered Successfully!!" });
+    await User.findOneAndUpdate(
+      { username: req.body.username },
+      {
+        $inc: {
+          coins: 10
+        }
+      }
+    )
     return res.render("login", { loginType: "Email", msg: "User Registered Successfully" });
   }
   catch (err) {
@@ -113,8 +121,8 @@ const handledelacc = async (req, res) => {
       subject: 'DELETION ON ACCOUNT',
       text: `Your Account ${user.username} from FEEDS has been deleted on Date: ${new Date()}. If it's not you, please Restore your account using /restore url from the login page. It's been great having you.`
     };
-    
-    await ActivityLog.create({username: user.username, id: `#${Date.now()}`, message: "Your Account has been delete"})
+
+    await ActivityLog.create({ username: user.username, id: `#${Date.now()}`, message: "Your Account has been delete" })
     await User.findByIdAndDelete({ _id: user._id });
     try {
       await transporter.sendMail(mailOptions);
@@ -301,7 +309,7 @@ const updatepass = async (req, res) => {
     else {
       user.password = await bcrypt.hash(req.body.new_password, 10);
       await user.save();
-      await ActivityLog.create({username: req.body.username, id: `#${Date.now()}`, message: "Your Password has been changed!!"});
+      await ActivityLog.create({ username: req.body.username, id: `#${Date.now()}`, message: "Your Password has been changed!!" });
       return res.render("login", { msg: "Password Updated!!", loginType: null });
     }
   }
@@ -398,6 +406,9 @@ const handlegetprofile = async (req, res) => {
     return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
   }
   else {
+    if(profUser.isPremium){
+      await Notification.create({mainUser: u.username, msgSerial: 5, userInvolved: data[0], coin: 1 });
+    }
     return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
   }
 }
@@ -473,6 +484,7 @@ const updateUserProfile = async (req, res) => {
 
   const token = create_JWTtoken([data[0], data[1], (photo !== "") ? profileImageUrl : data[2], data[3]], process.env.USER_SECRET, '30d');
   res.cookie('uuid', token, { httpOnly: true });
+  await ActivityLog.create({ username: data[0], id: `#${Date.now()}`, message: "You Profile has been Updated!!" });
   return res.redirect(`/profile/${data[0]}`);
 }
 
@@ -520,6 +532,16 @@ const followSomeone = async (req, res) => {
         }
       }
     )
+    await ActivityLog.create({ username: data[0], id: `#${Date.now()}`, message: `You have started following #${username}!!` });
+    await User.findOneAndUpdate(
+      { username: data[0] },
+      {
+        $inc: {
+          coins: 1
+        }
+      }
+    )
+    await Notification.create({mainUser: username, msgSerial: 1, userInvolved: data[0], coin: 1 });
     return res.json({ success: true, message: null });
   }
   catch (err) {
@@ -541,6 +563,16 @@ const unfollowSomeone = async (req, res) => {
       { $pull: { followers: { username: data[0] } } },
       { new: true }
     )
+    await ActivityLog.create({ username: data[0], id: `#${Date.now()}`, message: `You have unfollowed #${username}!!` });
+    await User.findOneAndUpdate(
+      { username: data[0] },
+      {
+        $dec: {
+          coins: 1
+        }
+      }
+    )
+    await Notification.create({mainUser: username, msgSerial: 7, userInvolved: data[0], coin: 1 });
     return res.json({ success: true, message: null });
   }
   catch (err) {
@@ -551,7 +583,7 @@ const unfollowSomeone = async (req, res) => {
 
 const handlegetnotification = (req, res) => {
   const { data } = req.userDetails;
-  const allNotifications = Notification.find({}).lean();
+  const allNotifications = Notification.find({mainUser: data[0]}).lean();
   return res.render("notifications", { img: data[2], currUser: data[0], allNotifications })
 }
 

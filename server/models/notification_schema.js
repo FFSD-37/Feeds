@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
+    mainUser:{
+        type: String,
+        required: true
+    },
+
     msgSerial: {
         type: Number,
         required: true
