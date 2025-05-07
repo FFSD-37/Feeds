@@ -10,6 +10,7 @@ import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt, { compare } from 'bcrypt';
 import Feedback from '../models/feedbackForm.js';
 import DelUser from '../models/SoftDelUsers.js';
+import Notification from '../models/notification_schema.js';
 
 async function storeOtp(email, otp) {
   try {
@@ -546,6 +547,12 @@ const unfollowSomeone = async (req, res) => {
   }
 }
 
+const handlegetnotification = (req, res) => {
+  const { data } = req.userDetails;
+  const allNotifications = Notification.find({}).lean();
+  return res.render("notifications", {img: data[2], currUser: data[0], allNotifications})
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -582,4 +589,5 @@ export {
   fetchOverlayUser,
   followSomeone,
   unfollowSomeone,
+  handlegetnotification,
 };

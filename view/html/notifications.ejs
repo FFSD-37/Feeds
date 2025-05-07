@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Notification Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .table-wrapper {
+        width: 80%;
+        max-width: 1000px;
+        height: 600px;
+        overflow-y: auto;
+        border-radius: 5px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        background-color: #aaa3a3;
+        position: sticky;
+        top: 0;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: center;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      .no-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        color: #555;
+        font-size: 1.125rem;
+        font-weight: 500;
+      }
+
+      .no-data .icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: #bbb;
+      }
+
+      .no-data p {
+        margin: 0;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="table-wrapper">
+      <% if(allNotifications && allNotifications.length > 0){ %>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Notification</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="messageBody">
+          <% allNotifications.forEach(function(noti) { %>
+          <tr>
+            <td><%= noti.createdAt %></td>
+            <% if(noti.msgSerial === 1) { %>
+            <td>
+              <a href="/profile/<%= noti.userInvolved %>"
+                ><%= noti.userInvolved %></a
+              >
+              <pre> started following you.</pre>
+            </td>
+            <td></td>
+            <% } else if(noti.msgSerial === 2){ %>
+            <td>
+              <a href="/profile/<%= noti.userInvolved %>"
+                ><%= noti.userInvolved %></a
+              >
+              <pre> liked your comment.</pre>
+            </td>
+            <td></td>
+            <% } else if(noti.msgSerial === 3){ %>
+            <td>
+              <a href="/profile/<%= noti.userInvolved %>"
+                ><%= noti.userInvolved %></a
+              >
+              <pre> liked your post.</pre>
+            </td>
+            <td></td>
+            <% } else if(noti.msgSerial === 4){ %>
+            <td>
+              <a href="/profile/<%= noti.userInvolved %>"
+                ><%= noti.userInvolved %></a
+              >
+              <pre> requested to follow you.</pre>
+            </td>
+            <td>
+              <button onclick="followback('<%= noti.userInvolved %>')">
+                Follow back
+              </button>
+            </td>
+            <% } else if(noti.msgSerial === 5){ %>
+            <td>
+              <a href="/profile/<%= noti.userInvolved %>"
+                ><%= noti.userInvolved %></a
+              >
+              <pre> has viewed your profile.</pre>
+            </td>
+            <td></td>
+            <% } else if(noti.msgSerial === 6){ %>
+            <td><pre>You've got <%= noti.coin %> coins.</pre></td>
+            <td></td>
+            <% } %>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <div class="no-data">
+        <span class="icon">🔔</span>
+        <p>No notifications found</p>
+      </div>
+      <% } %>
+    </div>
+    <script>
+      function followback(username) {
+        fetch(`/followback/${username}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => console.error(error));
+      }
+    </script>
+  </body>
+</html>
