@@ -44,12 +44,21 @@
             </div>
           </div>
         </div>
-        <div class="post-content" onclick="postOverlay()">
-          <img
-            class="post-on-home-page"
-            src="<%= post.url %>&&tr=w-640,h-640"
-          />
-        </div>
+        <% if(post.type === "Img") { %>
+          <div class="post-content" onclick="postOverlay()">
+            <img
+              class="post-on-home-page"
+              src="<%= post.url %>&&tr=w-640,h-640"
+            />
+          </div>
+        <% } else { %>
+          <div class="post-content" onclick="postOverlay()">
+            <video
+              class="post-on-home-page"
+              src="<%= post.url %>&&tr=w-640,h-640"
+            />
+          </div>
+        <% } %>
         <div class="post-actions">
           <div class="action-icon">
             <svg
