@@ -34,6 +34,7 @@ import {
   fetchOverlayUser,
   followSomeone,
   unfollowSomeone,
+  getSearch,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -132,5 +133,7 @@ router.post("/unfollow/:username", isAuthuser, unfollowSomeone);
 router.get("/chat/:username",isAuthuser, getChat);
 
 router.get("/chat",isAuthuser, getChatpage);
+
+router.get("/search/:username",isAuthuser, getSearch);
 
 export default router;

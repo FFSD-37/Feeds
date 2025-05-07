@@ -539,6 +539,33 @@ const unfollowSomeone = async (req, res) => {
   }
 }
 
+const getSearch = async (req, res) => {
+  const { data } = req.userDetails;
+  const { username } = req.params;console.log(username);
+  
+  let users = await User.find({
+    username: { $regex: username, $options: "i" }
+  }).limit(10);
+
+  if(users.length < 5)
+    users.push(...await User.find({
+      display_name: { $regex: username, $options: "i" }
+    }).limit(5-users.length));
+  
+  if(users.length){
+    users = users.filter(user => user.username !== data[0]);
+    users=users.map(user => ({
+      username:user.username,
+      avatarUrl:user.profilePicture,
+      display_name:user.display_name,
+      followers:user.followers.length,
+      following:user.followings.length
+    }));
+  }
+  
+  return res.render("search", { img: data[2], currUser: data[0], users });
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -575,4 +602,5 @@ export {
   fetchOverlayUser,
   followSomeone,
   unfollowSomeone,
+  getSearch
 };
