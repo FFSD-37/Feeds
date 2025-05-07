@@ -36,6 +36,7 @@ import {
   unfollowSomeone,
   getSearch,
   handlegetnotification,
+  handlegetsettings,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -141,5 +142,7 @@ router.get("/chat",isAuthuser, getChatpage);
 router.get("/search/:username",isAuthuser, getSearch);
 
 router.get("/dailyUsage",isAuthuser,getDailyusage);
+
+router.get("/settings", isAuthuser, handlegetsettings);
 
 export default router;

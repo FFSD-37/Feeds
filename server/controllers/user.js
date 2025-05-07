@@ -614,6 +614,12 @@ const getSearch = async (req, res) => {
   return res.render("search", { img: data[2], currUser: data[0], users });
 }
 
+const handlegetsettings = async (req, res) => {
+  const { data } = req.userDetails;
+  const Meuser = await User.findOne({username: data[0]});
+  return res.render("settings", {img: data[2], currUser: data[0], Meuser})
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -651,5 +657,6 @@ export {
   followSomeone,
   unfollowSomeone,
   handlegetnotification,
-  getSearch
+  getSearch,
+  handlegetsettings
 };
