@@ -170,5 +170,15 @@
       </div>
     </div>
     <script src="../js/sidebar.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+      const socket = io("http://localhost:8000", {
+        withCredentials: true
+      });
+      
+      socket.on("connect", () => {
+        console.log("Connected to server");
+      });
+    </script>
 </body>
 </html>

@@ -42,14 +42,6 @@ const channelSchema = new mongoose.Schema({
             default: process.env.DEFAULT_USER_IMG
         }
     }],
-    
-    savedPostsIds: [{
-        type: String
-    }],
-
-    likedPostsIds: [{
-        type: String
-    }],
 
     archivedPostsIds: [{
         type: String

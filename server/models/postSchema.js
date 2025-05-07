@@ -25,9 +25,6 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: [true,'Author is required']
     },
-    avatarUrl: {
-        type: String
-    },
     likes: {
         type: Number,
         default: 0

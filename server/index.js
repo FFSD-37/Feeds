@@ -13,6 +13,7 @@ import http from 'http'
 import User from './models/users_schema.js';
 import Chat from './models/chatSchema.js';
 import cors from 'cors'
+import { clearSession, setSession } from './controllers/timout.js';
 dotenv.config();
 
 const app = express();
@@ -57,7 +58,8 @@ io.use((socket, next) => {
 io.on('connection', async(socket) => {
   console.log(socket.userId+'user connected');
   await User.findOneAndUpdate({username: socket.userId}, {socketId: socket.id});
-
+  setSession(socket.userId);
+  
   socket.on('sendMessage', async(data) => {
     try{
     const { to, text, time } = data;
@@ -73,6 +75,7 @@ io.on('connection', async(socket) => {
   
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    clearSession(socket.userId);
   });
 });
 

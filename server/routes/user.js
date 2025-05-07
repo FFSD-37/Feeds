@@ -41,6 +41,7 @@ import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
 import { checkOut, verify_payment } from "../controllers/payment.js";
 import { getChat, getChatpage } from "../controllers/chat.js";
+import { getDailyusage } from "../controllers/timout.js";
 
 const router = express.Router();
 
@@ -138,5 +139,7 @@ router.get("/chat/:username",isAuthuser, getChat);
 router.get("/chat",isAuthuser, getChatpage);
 
 router.get("/search/:username",isAuthuser, getSearch);
+
+router.get("/daily_usage",isAuthuser,getDailyusage);
 
 export default router;
