@@ -190,9 +190,24 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
+          <% if(post.type === "Img") { %>
           <div class="post-content" onclick="postOverlay()">
-            <img class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" />
+            <img
+              class="post-on-home-page"
+              src="<%= post.url %>&&tr=w-640,h-640"
+            />
           </div>
+        <% } else { %>
+          <div class="post-content" onclick="postOverlay()">
+            <video
+              class="post-on-home-page"
+              src="<%= post.url %>&&tr=w-640,h-640"
+              muted
+              loop
+              preload="metadata"
+            ></video>
+          </div>          
+        <% } %>
           <div class="post-actions">
             <div class="action-icon">
               <svg
@@ -259,5 +274,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } finally {
       isLoading = false;
     }
+  });
+});
+
+document.querySelectorAll('.post-on-home-page').forEach(video => {
+  video.addEventListener('mouseenter', () => video.play());
+  video.addEventListener('mouseleave', () => {
+    video.pause();
+    video.currentTime = 0; // optional: reset to start
   });
 });

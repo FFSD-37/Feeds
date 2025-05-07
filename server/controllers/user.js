@@ -581,9 +581,9 @@ const unfollowSomeone = async (req, res) => {
   }
 }
 
-const handlegetnotification = (req, res) => {
+const handlegetnotification = async (req, res) => {
   const { data } = req.userDetails;
-  const allNotifications = Notification.find({mainUser: data[0]}).lean();
+  const allNotifications = await Notification.find({mainUser: data[0]}).lean();
   return res.render("notifications", { img: data[2], currUser: data[0], allNotifications })
 }
 

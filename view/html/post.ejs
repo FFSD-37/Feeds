@@ -56,8 +56,11 @@
             <video
               class="post-on-home-page"
               src="<%= post.url %>&&tr=w-640,h-640"
-            />
-          </div>
+              muted
+              loop
+              preload="metadata"
+            ></video>
+          </div>          
         <% } %>
         <div class="post-actions">
           <div class="action-icon">
