@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Usage</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .chart-container {
+            margin-bottom: 40px;
+            height: 400px;
+            /* Fixed height for chart */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <%- include('sidebar')  %>
+        <h1>Daily Usage Statistics</h1>
+        
+        <% if (user.length === 0) { %>
+            <p>No usage data available</p>
+        <% } else { 
+            // Process data - convert milliseconds to proper dates
+            const dailyData = {};
+            user.forEach(session => {
+                // Convert loginAt milliseconds to Date
+                const loginDate = new Date(session.loginAt);
+                const dateKey = loginDate.toLocaleDateString();
+                
+                // Calculate duration in milliseconds
+                const durationMs = session.logoutAt - session.loginAt;
+                
+                // Convert to hours and aggregate
+                const durationHours = durationMs / (1000 * 60 * 60); // ms to hours
+                
+                if (!dailyData[dateKey]) {
+                    dailyData[dateKey] = 0;
+                }
+                dailyData[dateKey] += durationHours;
+            });
+
+            // Sort dates chronologically
+            const sortedDates = Object.keys(dailyData).sort((a, b) => 
+                new Date(a) - new Date(b)
+            );
+        %>
+            <div class="chart-container">
+                <canvas id="usageChart"></canvas>
+            </div>
+
+            <!-- Data container -->
+            <div id="chartData" 
+                 data-dates='<%- JSON.stringify(sortedDates) %>'
+                 data-values='<%- JSON.stringify(sortedDates.map(date => dailyData[date])) %>'
+                 style="display: none;">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Total Usage (Hours)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% sortedDates.forEach(date => { %>
+                        <tr>
+                            <td><%= date %></td>
+                            <td><%= dailyData[date].toFixed(2) %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+
+    <% if (user.length > 0) { %>
+    <script>
+        // Get data from hidden element
+        const chartData = document.getElementById('chartData');
+        const dates = JSON.parse(chartData.dataset.dates);
+        const values = JSON.parse(chartData.dataset.values);
+
+        // Create chart
+        const ctx = document.getElementById('usageChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Usage Time (Hours)',
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Hours' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Date' }
+                    }
+                }
+            }
+        });
+    </script>
+    <% } %>
+</body>
+</html>

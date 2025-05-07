@@ -140,6 +140,6 @@ router.get("/chat",isAuthuser, getChatpage);
 
 router.get("/search/:username",isAuthuser, getSearch);
 
-router.get("/daily_usage",isAuthuser,getDailyusage);
+router.get("/dailyUsage",isAuthuser,getDailyusage);
 
 export default router;

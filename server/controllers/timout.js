@@ -32,7 +32,7 @@ const getDailyusage=async(req,res)=>{
     try{
         const {data}=req.userDetails;
         const user=await seasonSchema.find({username:data[0]}).sort({createdAt:-1});
-        return res.json(user);
+        return res.render("dailyusage", { img: data[2], currUser: data[0], user });
     }catch(err){
         console.log(err);
     }
