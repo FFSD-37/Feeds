@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.classList.add('post');
         // keep the same data attribute for pagination
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-
+        console.log(p.type);
         div.innerHTML = `
           <div class="post-header">
             <div class="user-avatar"></div>
@@ -189,26 +189,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 Cancel
               </div>
             </div>
-          </div>
-          <% if(post.type === "Img") { %>
+          </div>`;
+          if(p.type === "Img") {
+          div.innerHTML += `
           <div class="post-content" onclick="postOverlay()">
             <img
               class="post-on-home-page"
-              src="<%= post.url %>&&tr=w-640,h-640"
+              src="${p.url}&&tr=w-640,h-640"
             />
-          </div>
-        <% } else { %>
+          </div>`
+        } else {
+          div.innerHTML += `
           <div class="post-content" onclick="postOverlay()">
             <video
               class="post-on-home-page"
-              src="<%= post.url %>&&tr=w-640,h-640"
+              src="${p.url}&&tr=w-640,h-640"
               muted
               loop
               preload="metadata"
             ></video>
-          </div>          
-        <% } %>
-          <div class="post-actions">
+          </div>`
+        }
+        div.innerHTML += 
+          `<div class="post-actions">
             <div class="action-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

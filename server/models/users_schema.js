@@ -68,6 +68,12 @@ const userSchema = new mongoose.Schema({
         }
     }],
 
+    blockedUsers: [{
+        username:{
+            type:String
+        }
+    }],
+
     bio: {
         type: String,
         trim: true
