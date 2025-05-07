@@ -89,6 +89,11 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 
+    noOfCoins: {
+        type: Number,
+        default: 0
+    },
+
     type: {
         type: String,
         enum: ["Kids","Student","Normal", "Admin"],

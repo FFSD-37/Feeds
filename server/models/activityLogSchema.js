@@ -16,18 +16,13 @@ const activityLogSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-    author: {
-      type: String,
-      required: true,
-      trim: true,
     }
   },
   {
-    timestamps: true // automatically adds createdAt and updatedAt
+    timestamps: true
   }
 );
 
-const log = mongoose.model('Message', activityLogSchema);
+const ActivityLog = mongoose.model('Message', activityLogSchema);
 
-module.exports = log;
+export default ActivityLog;

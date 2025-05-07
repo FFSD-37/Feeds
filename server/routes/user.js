@@ -34,7 +34,6 @@ import {
   fetchOverlayUser,
   followSomeone,
   unfollowSomeone,
-  getSearch,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -72,6 +71,8 @@ router.get("/create_post", isAuthuser, handlegetcreatepost);
 router.get("/create_post_2", isAuthuser, handlegetcreatepost2)
 
 router.get("/help",isAuthuser, handlegethelp);
+
+router.get("/notifications", isAuthuser, handlegetnotification);
 
 router.get("/login",isAuthuser, (req, res) => {
   res.render("login", {
