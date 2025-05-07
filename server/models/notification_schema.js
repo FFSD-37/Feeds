@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
     msgSerial: {
-        type: Integer,
+        type: Number,
         required: true
     },
     userInvolved: {
@@ -10,7 +10,7 @@ const notificationSchema = new mongoose.Schema({
         required: true
     },
     coin: {
-        type: Integer,
+        type: Number,
         required: true
     }
 }, { timestamps: true }); 

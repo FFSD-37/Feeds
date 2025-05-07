@@ -391,12 +391,19 @@ const handlegetprofile = async (req, res) => {
   const archiveIds = profUser.archivedPostsIds || [];
   const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
   const meUser = await User.findOne({username: data[0]});
-  const isFollow = meUser.followings.some(f => f.username === u.username);
+  // const isFollow = meUser.followings.some(f => f.username === u.username);
+  // const isFriend = meUser.followings.some(f => f.username === u.username) && meUser.followers.some(f => f.username === u.username);
+  // const isFollow = meUser.followers.some(f => f.username === u.username);
+  const isFollowingThem = meUser.followings.some(f => f.username === u.username);
+  const isFollowedByThem = meUser.followers.some(f => f.username === u.username);
+  const isFriend = isFollowingThem && isFollowedByThem;
+  const isFollower = isFollowedByThem && !isFollowingThem;
+  const isRequested = isFollowingThem && !isFollowedByThem;
   if (u.username === data[0]) {
-    return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower: isFollow });
+    return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
   }
   else {
-    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower: isFollow })
+    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
   }
 }
 
