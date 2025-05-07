@@ -34,6 +34,7 @@ import {
   fetchOverlayUser,
   followSomeone,
   unfollowSomeone,
+  getSearch,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
