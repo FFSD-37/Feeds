@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
 
 const channelPostschema = new mongoose.Schema({
-    id: {
-        type: String,
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true
+        auto: true
     },
-
-    type:{
-        type:String,
-        enum:['Reels','Img'],
-        required:true
+    type: {
+        type: String,
+        enum: ['Reels', 'Img'],
+        required: true
     },
 
     url: {
@@ -23,19 +22,8 @@ const channelPostschema = new mongoose.Schema({
     },
     channel: {
         type: String,
-        required: [true,'channel is required']
+        required: [true, 'channel is required']
     },
-    
-    channelType:{
-        type:String,
-        enum: ["Kids","Student","Public"],
-        required:true
-    },
-
-    channelUrl: {
-        type: String
-    },
-
     likes: {
         type: Number,
         default: 0
@@ -47,7 +35,11 @@ const channelPostschema = new mongoose.Schema({
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
-    }]
+    }],
+    warnings: {
+        type: Number,
+        default: 0
+    }
 }, { timestamps: true });
 
 const channelPost = mongoose.model('channelPost', channelPostschema);
