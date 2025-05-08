@@ -401,33 +401,80 @@ const handlegetprofile = async (req, res) => {
   const u = req.params;
   const { data } = req.userDetails;
   const profUser = await User.findOne({ username: u.username });
+
   if (!profUser) {
-    return res.render("Error_page", { img: data[2], currUser: data[0], error_msg: "Profile Not Found!!" });
+    return res.render("Error_page", {
+      img: data[2],
+      currUser: data[0],
+      error_msg: "Profile Not Found!!"
+    });
   }
+
   const postIds = profUser.postIds || [];
   const postObjects = await Post.find({ _id: { $in: postIds } });
-  const savedIds = profUser.savedPostsIds || [];
-  const savedObjects = await Post.find({ _id: { $in: savedIds } });
-  const likeIds = profUser.likedPostsIds || [];
-  const likedObjects = await Post.find({ _id: { $in: likeIds } });
-  const archiveIds = profUser.archivedPostsIds || [];
-  const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
+
   const meUser = await User.findOne({ username: data[0] });
   const isFollowingThem = meUser.followings.some(f => f.username === u.username);
   const isFollowedByThem = meUser.followers.some(f => f.username === u.username);
   const isFriend = isFollowingThem && isFollowedByThem;
   const isFollower = isFollowedByThem && !isFollowingThem;
   const isRequested = isFollowingThem && !isFollowedByThem;
-  if (u.username === data[0]) {
-    return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
+
+  const isOwnProfile = u.username === data[0];
+  const isKid = profUser.type === "Kids";
+
+  if (isKid) {
+    return res.render("profile_kids", {
+      img: data[2],
+      myUser: profUser,
+      currUser: data[0]
+    });
   }
-  else {
+
+  const savedIds = profUser.savedPostsIds || [];
+  const savedObjects = await Post.find({ _id: { $in: savedIds } });
+  const likeIds = profUser.likedPostsIds || [];
+  const likedObjects = await Post.find({ _id: { $in: likeIds } });
+  const archiveIds = profUser.archivedPostsIds || [];
+  const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
+
+  if (isOwnProfile) {
+    return res.render("profile", {
+      img: data[2],
+      myUser: profUser,
+      currUser: data[0],
+      posts: postObjects,
+      saved: savedObjects,
+      liked: likedObjects,
+      archived: archivedObjects,
+      isFollower,
+      isFriend,
+      isRequested
+    });
+  } else {
     if (profUser.isPremium) {
-      await Notification.create({ mainUser: u.username, msgSerial: 5, userInvolved: data[0], coin: 1 });
+      await Notification.create({
+        mainUser: u.username,
+        msgSerial: 5,
+        userInvolved: data[0],
+        coin: 1
+      });
     }
-    return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
+    return res.render("profile_others", {
+      img: data[2],
+      myUser: profUser,
+      currUser: data[0],
+      posts: postObjects,
+      saved: savedObjects,
+      liked: likedObjects,
+      archived: archivedObjects,
+      isFollower,
+      isFriend,
+      isRequested
+    });
   }
-}
+};
+
 
 const handlegetterms = (req, res) => {
   const { data } = req.userDetails;

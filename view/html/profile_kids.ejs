@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kid Profile</title>
+    <link rel="stylesheet" href="../css/profile_kids.css" />
+  </head>
+  <body>
+    <%- include('sidebar') %>
+    <div class="container">
+      <header class="profile-header">
+        <div class="profile-pic">
+          <img src="<%= myUser.profilePicture %>" alt="Profile Picture" />
+        </div>
+        <div class="profile-info">
+          <div class="profile-info-header">
+            <h2 class="username">
+              <%= myUser.display_name %>
+            </h2>
+          </div>
+          <div class="profile-stats">
+            <div class="stat"><span><%= (myUser.followers || []).length %></span> Buddies</div>
+            <div class="stat"><span><%= (myUser.followings || []).length %></span> Patrols</div>
+          </div>
+          <div class="profile-bio"><strong><%= myUser.bio %></strong></div>
+          <div class="profile-info-header">
+            <button class="edit-profile">
+              <a href="/edit_profile" style="text-decoration: none; color: black;">Edit Profile</a>
+            </button>
+            <button class="archive">
+              <a href="/settings" style="text-decoration: none; color: black;">Settings</a>
+            </button>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <div class="footer">
+      <a href="/contact" style="text-decoration: none; color: black">About</a> •
+      <a href="/help" style="text-decoration: none; color: black">Help</a> •
+      <a href="/tandc" style="text-decoration: none; color: black">Terms</a> •
+      <a href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor" style="text-decoration: none; color: black" target="_blank">Locations</a>
+      <p>
+        © 2025
+        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)">Feeds</a>
+        from IIIT Sri-City
+      </p>
+    </div>
+  </body>
+  <script src="../js/profile.js"></script>
+</html>
