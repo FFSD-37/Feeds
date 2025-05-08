@@ -1,61 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>CSS Progress Bar</title>
     <link rel="stylesheet" href="../css/create_post.css">
-  </head>
-  <body>
+    <style>
+      /* Dropdown Styles */
+      .post-type-selector {
+        position: relative;
+        margin-bottom: 15px;
+        width: 200px;
+      }
+      
+      .post-type-btn {
+        background: #f0f0f0;
+        border: 1px solid #ddd;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      .post-type-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: none;
+      }
+      
+      .post-type-dropdown.active {
+        display: block;
+      }
+      
+      .post-type-option {
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+      
+      .post-type-option:hover {
+        background: #f5f5f5;
+      }
+    </style>
+</head>
+<body>
     <div class="center">
       <div class="form-input">
         <h4 style="padding: 5px; font-size: 20px">Create New Post</h4>
+        
+        <!-- Post Type Selector Dropdown -->
+        <div class="post-type-selector">
+          <div class="post-type-btn" id="postTypeBtn">
+            <span id="selected-post-type">Image Post</span>
+            <span>▼</span>
+          </div>
+          <div class="post-type-dropdown" id="postTypeDropdown">
+            <div class="post-type-option" data-type="image" data-accept="image/*">Image Post</div>
+            <div class="post-type-option" data-type="reel" data-accept="video/*">Reel Post</div>
+            <div class="post-type-option" data-type="story" data-accept="video/*">Story Post</div>
+          </div>
+        </div>
+
+        <!-- Rest of your form content remains the same -->
         <label class="preview" for="file-ip-1">
-          <input
-            type="file"
-            id="file-ip-1"
-            accept="image/*"
-            onchange="showPreview(event);"
-          />
+          <input type="file" id="file-ip-1" accept="image/*" onchange="showPreview(event);" />
           <div class="grid-line v-line-1"></div>
           <div class="grid-line v-line-2"></div>
           <div class="grid-line h-line-1"></div>
           <div class="grid-line h-line-2"></div>
-          <strong
-            style="
-              background-color: rgb(52, 15, 15);
-              color: white;
-              font-weight: bold;
-              border-radius: 5px;
-              padding: 7px;
-            "
-            >Select from Computer</strong
-          >
+          <strong style="background-color: rgb(52, 15, 15); color: white; font-weight: bold; border-radius: 5px; padding: 7px;">
+            Select from Computer
+          </strong>
           <img id="file-ip-1-preview" />
+          <video id="file-ip-1-video-preview" controls style="display: none;"></video>
         </label>
+        
         <div class="post-manipulation-buttons">
-          <!-- <label class="continue-button" onclick="continueEditing();"
-            >Continue Editing</label
-          > -->
           <form id="createPostForm" action="/createpost" method="POST">
             <input type="hidden" id="profileImageUrl" name="profileImageUrl" />
+            <input type="hidden" id="postType" name="postType" value="image" />
             <button type="submit" class="continue-button" id="continueBtn" style="text-decoration: none;">
               Continue Editing
             </button>
           </form>
           <label for="file-ip-1" class="image-selector">Again Select</label>
-          <input
-            type="file"
-            id="file-ip-1"
-            accept="image/*"
-            onchange="showPreview(event);"
-          />
         </div>
       </div>
     </div>
+    
     <%- include('sidebar') %>
+    
+    <script>
+      // DOM Elements
+      const postTypeBtn = document.getElementById('postTypeBtn');
+      const postTypeDropdown = document.getElementById('postTypeDropdown');
+      const selectedPostType = document.getElementById('selected-post-type');
+      const fileInput = document.getElementById('file-ip-1');
+      const postTypeInput = document.getElementById('postType');
+      
+      // Toggle dropdown
+      postTypeBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent immediate closing
+        postTypeDropdown.classList.toggle('active');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function() {
+        postTypeDropdown.classList.remove('active');
+      });
+      
+      // Handle option selection
+      document.querySelectorAll('.post-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+          const type = this.getAttribute('data-type');
+          const accept = this.getAttribute('data-accept');
+          const text = this.textContent;
+          
+          // Update UI
+          selectedPostType.textContent = text;
+          fileInput.setAttribute('accept', accept);
+          postTypeInput.value = type;
+          
+          // Close dropdown
+          postTypeDropdown.classList.remove('active');
+        });
+      });
+      
+      // Modified showPreview function
+      function showPreview(event) {
+        const input = event.target;
+        const previewImg = document.getElementById('file-ip-1-preview');
+        const previewVideo = document.getElementById('file-ip-1-video-preview');
+        
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          const fileType = file.type.split('/')[0]; // 'image' or 'video'
+          
+          if (fileType === 'image') {
+            previewImg.style.display = 'block';
+            previewVideo.style.display = 'none';
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewImg.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+          } else if (fileType === 'video') {
+            previewImg.style.display = 'none';
+            previewVideo.style.display = 'block';
+            previewVideo.src = URL.createObjectURL(file);
+          }
+        }
+      }
+    </script>
     <script src="../js/create_post.js"></script>
     <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
-  </body>
+</body>
 </html>
