@@ -3,35 +3,28 @@ function openpostdropdown(e) {
 }
 
 function postOverlay(url, caption, time, author) {
-  // Hide social dropdown and display main div
   document.getElementById("socialDropdown").style.display = "none";
   document.getElementById("maindiv").style.display = "grid";
   document.getElementById("maindiv").style.opacity = "1";
-  
-  // Set the image source in the overlay
+
   const overlayImage = document.getElementById("overlayImage");
   if (overlayImage) {
-    overlayImage.src = url + "&&tr=w-1080,h-1080"; // Using higher resolution for the overlay
+    overlayImage.src = url + "&&tr=w-1080,h-1080";
   }
 
   const postAuthor = document.getElementById("postAuthor");
-  postAuthor.innerHTML = author;
+  postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
   const overlayPostCaption = document.getElementById("overlayPostCaption");
-  if (caption){
+  if (caption) {
     overlayPostCaption.innerHTML = caption;
-  }
-  else{
+  } else {
     overlayPostCaption.innerHTML = "";
   }
   const overlayPostTime = document.getElementById("overlayPostTime");
   overlayPostTime.innerHTML = time;
 }
 
-// document.getElementById("comment-button-post").addEventListener("click", (e) => {
-//   document.getElementById("message-input").focus();
-// });
-
-document.addEventListener('keydown', (e) => {
+document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     const reportModal = document.getElementById("report-modal");
     if (reportModal.classList.contains("show")) {
@@ -44,7 +37,6 @@ document.addEventListener('keydown', (e) => {
       document.body.style.overflow = "";
       return;
     }
-
     const dropdown = document.getElementById("socialDropdown");
     if (dropdown.style.display === "block") {
       dropdown.style.display = "none";
@@ -70,67 +62,6 @@ function selectReason(reason) {
   closeReportModal();
 }
 
-// async function postDisplay(createdAt){
-//   const post=await fetch(`/post/suggestedPost/get?createdAt=${createdAt}`, {
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     credentials: 'include'
-//   })
-//   const postData=await post.json();
-//   console.log(postData);
-//   return postData;
-// }
-
-//  // flag so we don’t double‑fetch
-//  let isLoading = false;
-//  // if server tells us there are no more posts, we can turn off scrolling
-//  let noMorePosts = false;
-
-//  window.addEventListener('scroll', () => {
-//    if (isLoading || noMorePosts) return;
-
-//    // when scrolled within 100px of bottom
-//    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
-//      isLoading = true;
-
-//      // find the last .post element’s data-createdat
-//      const posts = document.querySelectorAll('.post');
-//      if (!posts.length) {
-//        isLoading = false;
-//        return;
-//      }
-//      const last = posts[posts.length - 1];
-//      const lastCreatedAt = last.getAttribute('data-createdat');
-
-//      // call your function
-//      postDisplay(lastCreatedAt)
-//        .then(newPosts => {
-//          if (!newPosts || newPosts.length === 0) {
-//            noMorePosts = true;
-//            return;
-//          }
-//          const container = document.getElementById('posts-container');
-//          newPosts.forEach(p => {
-//            const div = document.createElement('div');
-//            div.classList.add('post');
-//            div.setAttribute('data-createdat', p.createdAt);
-//            div.innerHTML = `
-//              <h2>${p.title}</h2>
-//              <p>${p.body}</p>
-//              <small>Posted at ${new Date(p.createdAt).toLocaleString()}</small>
-//            `;
-//            container.appendChild(div);
-//          });
-//        })
-//        .catch(err => console.error('fetch error', err))
-//        .finally(() => {
-//          isLoading = false;
-//        });
-//    }
-//  });
-
 function timeAgo(date) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
   const intervals = {
@@ -143,32 +74,39 @@ function timeAgo(date) {
   };
   for (const [unit, sec] of Object.entries(intervals)) {
     const count = Math.floor(seconds / sec);
-    if (count >= 1) return `${count}${unit.charAt(0)}`; // e.g. 3m, 2h, 7d, 3w
+    if (count >= 1) return `${count}${unit.charAt(0)}`;
   }
-  return 'just now';
+  return "just now";
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('postsContainer');
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("postsContainer");
   let isLoading = false;
   let noMorePosts = false;
 
   async function fetchPosts(afterCreatedAt) {
     const res = await fetch(
       `/post/suggestedPost/get?createdAt=${encodeURIComponent(afterCreatedAt)}`,
-      { method: 'GET', credentials: 'include' }
+      { method: "GET", credentials: "include" }
     );
     const { posts } = await res.json();
     return posts;
   }
 
-  container.addEventListener('scroll', async () => {
+  container.addEventListener("scroll", async () => {
     if (isLoading || noMorePosts) return;
-    if (container.scrollTop + container.clientHeight < container.scrollHeight - 100) return;
+    if (
+      container.scrollTop + container.clientHeight <
+      container.scrollHeight - 100
+    )
+      return;
 
     isLoading = true;
-    const postsEls = container.querySelectorAll('.post');
-    if (postsEls.length === 0) { isLoading = false; return; }
+    const postsEls = container.querySelectorAll(".post");
+    if (postsEls.length === 0) {
+      isLoading = false;
+      return;
+    }
 
     const lastCreatedAt = postsEls[postsEls.length - 1].dataset.createdat;
     try {
@@ -177,15 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
         noMorePosts = true;
         return;
       }
-      newPosts.forEach(p => {
-        const div = document.createElement('div');
-        div.classList.add('post');
-        // keep the same data attribute for pagination
+      newPosts.forEach((p) => {
+        const div = document.createElement("div");
+        div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        console.log(p.type);
         div.innerHTML = `
           <div class="post-header">
-            <a href="/profile/${p.author}" style="text-decoration:none;color:black">
+            <a href="/profile/${
+              p.author
+            }" style="text-decoration:none;color:black">
               <span class="username">${p.author}</span>
             </a>
             <span class="post-time">• ${timeAgo(new Date(p.createdAt))}</span>
@@ -196,26 +134,25 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="menu-item danger" onclick="openReportModal()">
                 Report
               </div>
-              <div class="menu-item normal">Add to favorites</div>
-              <div class="menu-item normal" onclick="postOverlay()">
+              <div class="menu-item normal" onclick="postOverlay(${p.url}, ${p.content}, ${p.createdAt}, ${p.author})">
                 Go to post
               </div>
-              <div class="menu-item normal">Share to...</div>
-              <div class="menu-item normal">Copy link</div>
-              <div class="menu-item normal">About this account</div>
+              <div class="menu-item normal" id="btnShareProfile" onclick="shareTo(${p.author})">Share to...</div>
+              <div class="menu-item normal" onclick="copyURL(${p.author})">Copy link</div>
+              <div class="menu-item normal"><a href="/settings" style="text-decoration: none; color: white">About this account</a></div>
               <div class="menu-item normal" onclick="closepostdropdown()">
                 Cancel
               </div>
             </div>
           </div>`;
-          if(p.type === "Img") {
+        if (p.type === "Img") {
           div.innerHTML += `
           <div class="post-content" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
             <img
               class="post-on-home-page"
               src="${p.url}&&tr=w-640,h-640"
             />
-          </div>`
+          </div>`;
         } else {
           div.innerHTML += `
           <div class="post-content" onclick="reelOpen('${p.url}')">
@@ -225,10 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
               loop
               preload="metadata"
             ></video>
-          </div>`
+          </div>`;
         }
-        div.innerHTML += 
-          `<div class="post-actions">
+        div.innerHTML += `<div class="post-actions">
             <div class="action-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -290,23 +226,23 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(div);
       });
     } catch (err) {
-      console.error('Fetch error:', err);
+      console.error("Fetch error:", err);
     } finally {
       isLoading = false;
     }
   });
 });
 
-document.querySelectorAll('.post-on-home-page').forEach(video => {
-  video.addEventListener('mouseenter', () => video.play());
-  video.addEventListener('mouseleave', () => {
+document.querySelectorAll(".post-on-home-page").forEach((video) => {
+  video.addEventListener("mouseenter", () => video.play());
+  video.addEventListener("mouseleave", () => {
     video.pause();
-    video.currentTime = 0; // optional: reset to start
+    video.currentTime = 0;
   });
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".post-time").forEach(el => {
+  document.querySelectorAll(".post-time").forEach((el) => {
     const createdAt = el.dataset.created;
     el.textContent = `• ${timeAgo(createdAt)}`;
   });
