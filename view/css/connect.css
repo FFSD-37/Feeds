@@ -6,7 +6,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background: linear-gradient(#6b48ff, #6b48ff22);
+    background: #8199d1;
     transition: background-color 1s ease-in-out;
 }
 

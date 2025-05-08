@@ -424,10 +424,44 @@ const handlegetcontact = (req, res) => {
   return res.render("contact", { img: data[2], msg: null, currUser: data[0] });
 }
 
-const handlegetconnect = (req, res) => {
+const handlegetconnect = async (req, res) => {
   const { data } = req.userDetails;
-  return res.render("connect", { img: data[2], currUser: data[0] });
-}
+
+  try {
+    const currentUser = await User.findOne({ username: data[0] }).populate('followings');
+
+    const mutualFollowersPromises = currentUser.followings.map(async (user) => {
+      const followedUser = await User.findOne({ username: user.username })
+        .populate('followers');
+      return followedUser.followers.filter(follower => follower.username !== data[0]);
+    });
+
+    const mutualFollowersArrays = await Promise.all(mutualFollowersPromises);
+    
+    let metualFollowers = [...new Set(
+      mutualFollowersArrays.flat().map(user => user.username)
+    )];
+
+    const users = await User.find({ username: { $in: metualFollowers } });
+
+    metualFollowers = users.map(user => ({
+      username: user.username,
+      avatarUrl: user.profilePicture,
+      display_name: user.display_name,
+      followers: user.followers.length,
+      following: user.followings.length
+    }));
+
+    return res.render("connect", { 
+      img: data[2], 
+      currUser: data[0], 
+      users: metualFollowers
+    });
+  } catch (error) {
+    console.error("Error in handlegetconnect:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+};
 
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
@@ -592,27 +626,36 @@ const getSearch = async (req, res) => {
   const { data } = req.userDetails;
   const { username } = req.params;console.log(username);
   
-  let users = await User.find({
+  const usernameMatches = await User.find({
     username: { $regex: username, $options: "i" }
   }).limit(10);
-
-  if(users.length < 5)
-    users.push(...await User.find({
-      display_name: { $regex: username, $options: "i" }
-    }).limit(5-users.length));
   
-  if(users.length){
-    users = users.filter(user => user.username !== data[0]);
-    users=users.map(user => ({
-      username:user.username,
-      avatarUrl:user.profilePicture,
-      display_name:user.display_name,
-      followers:user.followers.length,
-      following:user.followings.length
-    }));
+  const uniqueUsernames = new Set(usernameMatches.map(u => u.username));
+  
+  let displayNameMatches = [];
+  if (usernameMatches.length < 5) {
+    displayNameMatches = await User.find({
+      display_name: { $regex: username, $options: "i" },
+      username: { $nin: [...uniqueUsernames] }
+    }).limit(5 - usernameMatches.length);
   }
   
-  return res.render("search", { img: data[2], currUser: data[0], users });
+  const allUsers = [...usernameMatches, ...displayNameMatches];
+  const userMap = new Map();
+  allUsers.forEach(user => userMap.set(user.username, user));
+  
+  let users = Array.from(userMap.values())
+    .filter(user => user.username !== data[0]);
+  
+  users = users.map(user => ({
+    username: user.username,
+    avatarUrl: user.profilePicture,
+    display_name: user.display_name,
+    followers: user.followers.length,
+    following: user.followings.length
+  }));
+  
+  return res.json({users });
 }
 
 const handlegetsettings = async (req, res) => {
