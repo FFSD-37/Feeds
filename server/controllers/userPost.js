@@ -16,6 +16,7 @@ const handlePostupload=async(req,res)=>{
         id,
         title:req.body.title,
         url:req.body.url,
+        type:req.body.type,
         content:req.body.content,
         author:authorDetails.data[0],
         avatarUrl:authorDetails.data[2]

@@ -15,10 +15,15 @@ const channelSchema = new mongoose.Schema({
     },
 
     channelCategory: {
-        type: String,
-        enum: ["Kids","Student","Public"],
-        default: 'Public',
-        required: [true, "Channel category is required"]
+        type: [String],
+        required: true,
+        validate: {
+            validator: function(categories) {
+                const validOptions = ["Education","Kids","Student","Public","Games"];
+                return categories.every(cat => validOptions.includes(cat));
+            },
+            message: "Invalid category found in the list"
+        }
     },
 
     channelLogo: {
@@ -36,10 +41,6 @@ const channelSchema = new mongoose.Schema({
         username: {
             type: String,
             required: true
-        },
-        avatarUrl: {
-            type: String,
-            default: process.env.DEFAULT_USER_IMG
         }
     }],
 

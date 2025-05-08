@@ -634,15 +634,16 @@ const signupChannel = async (req, res) => {
 
 const registerChannel = async (req, res) => {
   const {data} = req.userDetails;
-  console.log(req.body);
-  const user = {
+  console.log(req.body.selectedCategories);
+  const user = await User.findOne({ username: data[0] });
+  const channel = {
     channelName: req.body.channelName,
     channelDescription: req.body.channelDescription,
     channelCategory: JSON.parse(req.body.selectedCategories),
     channelLogo: req.body.profileImageUrl,
-    channelAdmin: data[0],
+    channelAdmin: user._id,
   };
-  await Channel.create(user);
+  await Channel.create(channel);
   return res.render("channelregistration", {msg: null, img: data[2], currUser: data[0]})
 }
 
