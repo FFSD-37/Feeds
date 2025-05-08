@@ -369,20 +369,27 @@ const fetchOverlayUser = async (req, res) => {
 const handlegetHome = async (req, res) => {
   const { data } = req.userDetails;
   const createdAt = req.query.createdAt || new Date();
-  if (data[3] === "Kids"){
-    const posts = channelPost.find({
+  let posts;
+  (data[3] === "Kids")?
+    posts= channelPost.find({
       createdAt: { $lt: createdAt },
-    }).sort({ createdAt: -1 }).limit(5);
-
-    if (!posts) return res.status(404).json({ err: "Post not found" });
-    return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3]});
-  } else
-  {const posts = await Post.find({
-    createdAt: { $lt: createdAt },
-  }).sort({ createdAt: -1 }).limit(5);
+    }).sort({ createdAt: -1 }).limit(5).lean():
+    await Post.find({
+      createdAt: { $lt: createdAt },
+    }).sort({ createdAt: -1 }).limit(5).lean()
 
   if (!posts) return res.status(404).json({ err: "Post not found" });
-  return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3]});}
+
+  const user = await User.findOne({ username: userDetails.data[0] }).lean();
+  posts.map((post) => {
+    if (user.likeIds.includes(post.id)) {
+      post = { ...post, liked: true };
+    }
+    if (user.savedPostsIds.includes(post.id)) {
+      post = { ...post, saved: true };
+    }
+  })
+  return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3] });
 }
 
 const handlegetpayment = (req, res) => {
@@ -415,8 +422,8 @@ const handlegetprofile = async (req, res) => {
     return res.render("profile", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
   }
   else {
-    if(profUser.isPremium){
-      await Notification.create({mainUser: u.username, msgSerial: 5, userInvolved: data[0], coin: 1 });
+    if (profUser.isPremium) {
+      await Notification.create({ mainUser: u.username, msgSerial: 5, userInvolved: data[0], coin: 1 });
     }
     return res.render("profile_others", { img: data[2], myUser: profUser, currUser: data[0], posts: postObjects, saved: savedObjects, liked: likedObjects, archived: archivedObjects, isFollower, isFriend, isRequested });
   }
@@ -445,7 +452,7 @@ const handlegetconnect = async (req, res) => {
     });
 
     const mutualFollowersArrays = await Promise.all(mutualFollowersPromises);
-    
+
     let metualFollowers = [...new Set(
       mutualFollowersArrays.flat().map(user => user.username)
     )];
@@ -460,9 +467,9 @@ const handlegetconnect = async (req, res) => {
       following: user.followings.length
     }));
 
-    return res.render("connect", { 
-      img: data[2], 
-      currUser: data[0], 
+    return res.render("connect", {
+      img: data[2],
+      currUser: data[0],
       users: metualFollowers
     });
   } catch (error) {
@@ -584,7 +591,7 @@ const followSomeone = async (req, res) => {
         }
       }
     )
-    await Notification.create({mainUser: username, msgSerial: 1, userInvolved: data[0], coin: 1 });
+    await Notification.create({ mainUser: username, msgSerial: 1, userInvolved: data[0], coin: 1 });
     return res.json({ success: true, message: null });
   }
   catch (err) {
@@ -615,7 +622,7 @@ const unfollowSomeone = async (req, res) => {
         }
       }
     )
-    await Notification.create({mainUser: username, msgSerial: 7, userInvolved: data[0], coin: 1 });
+    await Notification.create({ mainUser: username, msgSerial: 7, userInvolved: data[0], coin: 1 });
     return res.json({ success: true, message: null });
   }
   catch (err) {
@@ -626,20 +633,20 @@ const unfollowSomeone = async (req, res) => {
 
 const handlegetnotification = async (req, res) => {
   const { data } = req.userDetails;
-  const allNotifications = await Notification.find({mainUser: data[0]}).lean();
+  const allNotifications = await Notification.find({ mainUser: data[0] }).lean();
   return res.render("notifications", { img: data[2], currUser: data[0], allNotifications })
 }
 
 const getSearch = async (req, res) => {
   const { data } = req.userDetails;
   const { username } = req.params;
-  
+
   const usernameMatches = await User.find({
     username: { $regex: username, $options: "i" }
   }).limit(10);
-  
+
   const uniqueUsernames = new Set(usernameMatches.map(u => u.username));
-  
+
   let displayNameMatches = [];
   if (usernameMatches.length < 5) {
     displayNameMatches = await User.find({
@@ -647,14 +654,14 @@ const getSearch = async (req, res) => {
       username: { $nin: [...uniqueUsernames] }
     }).limit(5 - usernameMatches.length);
   }
-  
+
   const allUsers = [...usernameMatches, ...displayNameMatches];
   const userMap = new Map();
   allUsers.forEach(user => userMap.set(user.username, user));
-  
+
   let users = Array.from(userMap.values())
     .filter(user => user.username !== data[0]);
-  
+
   users = users.map(user => ({
     username: user.username,
     avatarUrl: user.profilePicture,
@@ -662,29 +669,29 @@ const getSearch = async (req, res) => {
     followers: user.followers.length,
     following: user.followings.length
   }));
-  
-  return res.json({users });
+
+  return res.json({ users });
 }
 
 const handlegetsettings = async (req, res) => {
   const { data } = req.userDetails;
-  const Meuser = await User.findOne({username: data[0]});
-  return res.render("settings", {img: data[2], currUser: data[0], Meuser})
+  const Meuser = await User.findOne({ username: data[0] });
+  return res.render("settings", { img: data[2], currUser: data[0], Meuser })
 }
 
 const togglePP = async (req, res) => {
   const { data } = req.userDetails;
-  await User.findOneAndUpdate({ username: data[0] }, [ { $set: { visibility: { $cond: [{ $eq: ["$visibility", "Public"] }, "Private", "Public"] } } } ], { new: true });
-  const Meuser = await User.findOne({username: data[0]});
+  await User.findOneAndUpdate({ username: data[0] }, [{ $set: { visibility: { $cond: [{ $eq: ["$visibility", "Public"] }, "Private", "Public"] } } }], { new: true });
+  const Meuser = await User.findOne({ username: data[0] });
 }
 
 const signupChannel = async (req, res) => {
   const { data } = req.userDetails;
-  return res.render("channelregistration", {msg: null, img: data[2], currUser: data[0]});
+  return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] });
 }
 
 const registerChannel = async (req, res) => {
-  const {data} = req.userDetails;
+  const { data } = req.userDetails;
   console.log(req.body.selectedCategories);
   const user = await User.findOne({ username: data[0] });
   const channel = {
@@ -695,7 +702,7 @@ const registerChannel = async (req, res) => {
     channelAdmin: user._id,
   };
   await Channel.create(channel);
-  return res.render("channelregistration", {msg: null, img: data[2], currUser: data[0]})
+  return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] })
 }
 
 export {

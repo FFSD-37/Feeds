@@ -1,6 +1,7 @@
 import { verify_JWTtoken } from "cookie-string-parser";
 import Post from "../models/postSchema.js";
 import User from "../models/users_schema.js";
+import channelPost from "../models/channelPost.js";
 
 const handlePostupload=async(req,res)=>{
     try {
@@ -84,9 +85,26 @@ const suggestedPost=async(req,res)=>{
         if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
         const userType=userDetails.data[3];
         
-        const posts=await Post.find({
+        let posts;
+        (data[3] === "Kids")?
+            posts= channelPost.find({
             createdAt: { $lt: createdAt },
-        }).sort({createdAt:-1}).limit(5);
+            }).sort({ createdAt: -1 }).limit(5).lean():
+            await Post.find({
+            createdAt: { $lt: createdAt },
+            }).sort({ createdAt: -1 }).limit(5).lean()
+
+        if (!posts) return res.status(404).json({ err: "Post not found" });
+
+        const user=await User.findOne({username:userDetails.data[0]}).lean();
+        posts.map((post)=>{
+            if(user.likeIds.includes(post.id)){
+                post={...post,liked:true};
+            }
+            if(user.savedPostsIds.includes(post.id)){
+                post={...post,saved:true};
+            }
+        })
 
         if(!posts) return res.status(404).json({ err: "Post not found" });
         
@@ -118,4 +136,68 @@ const suggestedReels=async(req,res)=>{
     }
 }
 
-export {handlePostupload, handlePostDelete, handleGetpost, suggestedPost, suggestedReels};
+const handleLikePost=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        if(!id) return res.status(400).json({ err: "Post ID is required" });
+        const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
+        if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
+        const userType=userDetails.data[3];
+
+        let user=await User.findOne({username:userDetails.data[0]});
+        let isUserliked=user.likedPostsIds.find((postId)=>postId===id);
+        if(isUserliked){
+            user=user.likedPostsIds.filter((postId)=>postId!==id);
+            await Post.findOneAndUpdate({id},{
+                $inc:{likes:-1}
+            })
+        }
+        else{
+            user=user.likedPostsIds.push(id);
+            await Post.findOneAndUpdate({id},{
+                $inc:{likes:1}
+            })
+        }
+
+        await user.save();
+        return res.json({success:true})
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({err:error.message})
+    }
+}
+
+const handleSavePost=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        if(!id) return res.status(400).json({ err: "Post ID is required" });
+        const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
+        if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
+        const userType=userDetails.data[3];
+
+        const post=await Post.findOne({id});
+        if(!post) return res.status(404).json({ err: "Post not found" });
+
+        let user=await User.findOne({username:userDetails.data[0]});
+        let isUserSaved=user.savedPostsIds.find((postId)=>postId===id);
+        (isUserSaved)?user=user.savedPostsIds.filter((postId)=>postId!==id):user.savedPostsIds.push(id);
+        
+        await user.save();
+        return res.json({success:true})
+    }
+    catch(error){
+        console.log(error);
+        return res.status(500).json({err:error.message})
+    }
+}
+
+export {
+    handlePostupload,
+    handlePostDelete,
+    handleGetpost,
+    suggestedPost,
+    suggestedReels,
+    handleLikePost,
+    handleSavePost
+};
