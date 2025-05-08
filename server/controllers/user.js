@@ -369,23 +369,23 @@ const fetchOverlayUser = async (req, res) => {
 const handlegetHome = async (req, res) => {
   const { data } = req.userDetails;
   const createdAt = req.query.createdAt || new Date();
-  let posts;
-  (data[3] === "Kids")?
-    posts= channelPost.find({
-      createdAt: { $lt: createdAt },
-    }).sort({ createdAt: -1 }).limit(5).lean():
-    await Post.find({
-      createdAt: { $lt: createdAt },
-    }).sort({ createdAt: -1 }).limit(5).lean()
+  const posts = await (
+    data[3] === "Kids"
+      ? channelPost.find({ createdAt: { $lt: createdAt } })
+      : Post.find({ createdAt: { $lt: createdAt } })
+  )
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .lean();
 
   if (!posts) return res.status(404).json({ err: "Post not found" });
 
-  const user = await User.findOne({ username: userDetails.data[0] }).lean();
+  const user = await User.findOne({ username: data[0] }).lean();
   posts.map((post) => {
-    if (user.likeIds.includes(post.id)) {
+    if (user.likeIds?.includes(post.id)) {
       post = { ...post, liked: true };
     }
-    if (user.savedPostsIds.includes(post.id)) {
+    if (user.savedPostsIds?.includes(post.id)) {
       post = { ...post, saved: true };
     }
   })
