@@ -608,7 +608,7 @@ const handlecreatepost = async (req, res) => {
     return res.redirect("home");
   }
   if (req.body.postType === "reel" || req.body.postType === "Img"){
-    return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl})
+    return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl, type: req.body.postType})
   }
   // return res.render("create_post_second", { img2: image, img: data[2], currUser: data[0] });
 }

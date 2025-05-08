@@ -11,10 +11,6 @@ const linkSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
-  },
-  avatarUrl: {
-    type: String,
-    required: true
   }
 }, {
   timestamps: true 
