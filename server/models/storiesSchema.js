@@ -1,4 +1,3 @@
-// const mongoose = require('mongoose');
 import mongoose from 'mongoose';
 
 const linkSchema = new mongoose.Schema({
@@ -16,6 +15,5 @@ const linkSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-const Story = mongoose.model("Story", linkSchema);
-
+const Story = mongoose.model('stories', linkSchema);
 export default Story;

@@ -530,11 +530,6 @@ const handlegetgames = (req, res) => {
   return res.render("games", { img: data[2], currUser: data[0] });
 }
 
-const handlegetstories = (req, res) => {
-  const { data } = req.userDetails;
-  return res.render("stories", { img: data[2], currUser: data[0] });
-}
-
 const handlegetdelacc = (req, res) => {
   const { data } = req.userDetails;
   return res.render("delacc", { img: data[2], msg: null, currUser: data[0] });
@@ -544,9 +539,22 @@ const handlegetadmin = (req, res) => {
   return res.render("admin", { msg: null });
 }
 
-const handlegetreels = (req, res) => {
+const handlegetreels = async(req, res) => {
   const { data } = req.userDetails;
-  return res.render("reels", { img: data[2], currUser: data[0] });
+
+  const userType = data[3];
+  let posts = await Post.find({
+    type: "Reels",
+  }).sort({ createdAt: -1 }).lean();
+
+  if (!posts) return res.status(404).json({ err: "Post not found" });
+  posts = await Promise.all(posts.map(async(post) => {
+    const author= await User.findOne({ username: post.author }).lean();
+    const isLiked=author.likedPostsIds?.includes(post.id) || false;
+    return { ...post, avatar: author.profilePicture, liked: isLiked };
+  }))
+
+  return res.render("reels", { img: data[2], currUser: data[0], posts });
 }
 
 const handlegethelp = (req, res) => {
@@ -771,6 +779,12 @@ const createPostfinalize = async (req, res) => {
   return res.render("create_post3", {img: data[2], currUser: data[0], post: url, type: "Img"})
 }
 
+const handlegetlog = async (req, res) => {
+  const {data} = req.userDetails;
+  const allLogs = await ActivityLog.find({username: data[0]}).lean().sort({createdAt: -1});
+  return res.render("activityLog", {img: data[2], currUser: data[0], allLogs})
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -791,7 +805,6 @@ export {
   handlegethelp,
   handlegetreels,
   handlegetdelacc,
-  handlegetstories,
   handlegetgames,
   handlegetadmin,
   handleadminlogin,
@@ -813,5 +826,6 @@ export {
   togglePP,
   signupChannel,
   registerChannel,
+  handlegetlog,
   createPostfinalize,
 };

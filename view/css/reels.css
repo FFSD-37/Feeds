@@ -163,3 +163,71 @@ body {
         display: none;
     }
 }
+
+video {
+    /* Ensure controls remain visible */
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Custom controls styling */
+  video::-webkit-media-controls-panel {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  video::-webkit-media-controls-play-button,
+  video::-webkit-media-controls-mute-button {
+    display: block !important;
+  }
+  
+  video::-webkit-media-controls-current-time-display,
+  video::-webkit-media-controls-time-remaining-display {
+    display: none;
+  }
+  
+  /* Custom mute/unmute button */
+  .mute-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reels-feed {
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  .reel-video {
+    height: 100vh;
+    scroll-snap-align: start;
+    position: relative;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mute-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+  }

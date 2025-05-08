@@ -33,7 +33,7 @@ app.use('/',router);
 app.use('/post', post);
 app.use('/channel', channelRouter);
 app.use('/notification', notificationRouter);
-app.use('/', channelPost);
+app.use('/channel', channelPost);
 
 const server=http.createServer(app);
 const io=new Server(server,{

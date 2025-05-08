@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Stories</title>
+    <title>Stories</title>
     <link rel="stylesheet" href="../css/stories.css">
+    <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
 </head>
 <body>
     <%- include('sidebar') %>
-    <div class="stories-grid" id="stories-grid"></div>
+    <div class="stories-grid" id="stories-grid">
+        <% stories.forEach(user => { %>
+            <div class="story-avatar-border">
+                <img src="${user.avatar}" alt="${user.username}" class="story-avatar">
+            </div>
+            <div class="story-username"><%= user.username %></div>
+        <% }) %>
+    </div>
     
     <div class="story-viewer" id="story-viewer">
         <div class="close-story" onclick="closeStory()">✕</div>

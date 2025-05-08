@@ -15,7 +15,6 @@ import {
   handlegetcontact,
   handlegetconnect,
   handlegetgames,
-  handlegetstories,
   handlegetdelacc,
   handlegetreels,
   handlegethelp,
@@ -40,6 +39,7 @@ import {
   togglePP,
   signupChannel,
   registerChannel,
+  handlegetlog,
   createPostfinalize,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
@@ -47,6 +47,7 @@ import { isAuthuser } from "../middleware/isAuthuser.js";
 import { checkOut, verify_payment } from "../controllers/payment.js";
 import { getChat, getChatpage } from "../controllers/chat.js";
 import { getDailyusage } from "../controllers/timout.js";
+import { handlegetstories } from "../controllers/userStory.js";
 
 const router = express.Router();
 
@@ -156,5 +157,7 @@ router.get("/create_channel", isAuthuser, signupChannel);
 router.post("/signupChannel", isAuthuser, registerChannel);
 
 router.post("/finalSubmit", isAuthuser, createPostfinalize)
+
+router.get("/activityLog", isAuthuser, handlegetlog);
 
 export default router;
