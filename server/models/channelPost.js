@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const channelPostschema = new mongoose.Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId,
+    id: {
+        type: String,
         required: true,
-        auto: true
+        unique: true
     },
     type: {
         type: String,
