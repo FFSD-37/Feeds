@@ -40,6 +40,7 @@ import {
   togglePP,
   signupChannel,
   registerChannel,
+  createPostfinalize,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -153,5 +154,7 @@ router.post("/togglePublicPrivate", isAuthuser, togglePP);
 router.get("/create_channel", isAuthuser, signupChannel);
 
 router.post("/signupChannel", isAuthuser, registerChannel);
+
+router.post("/finalSubmit", isAuthuser, createPostfinalize)
 
 export default router;
