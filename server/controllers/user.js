@@ -539,9 +539,22 @@ const handlegetadmin = (req, res) => {
   return res.render("admin", { msg: null });
 }
 
-const handlegetreels = (req, res) => {
+const handlegetreels = async(req, res) => {
   const { data } = req.userDetails;
-  return res.render("reels", { img: data[2], currUser: data[0] });
+
+  const userType = data[3];
+  let posts = await Post.find({
+    type: "Reels",
+  }).sort({ createdAt: -1 }).lean();
+
+  if (!posts) return res.status(404).json({ err: "Post not found" });
+  posts = await Promise.all(posts.map(async(post) => {
+    const author= await User.findOne({ username: post.author }).lean();
+    const isLiked=author.likedPostsIds?.includes(post.id) || false;
+    return { ...post, avatar: author.profilePicture, liked: isLiked };
+  }))
+
+  return res.render("reels", { img: data[2], currUser: data[0], posts });
 }
 
 const handlegethelp = (req, res) => {

@@ -6,7 +6,7 @@ const handlegetstories = async(req, res) => {
     const { data } = req.userDetails;
     const user = await User.findOne({ username: data[0] });
 
-    let friends = user.followings.filter(f => user.followers.some(fr => fr.username === f.username));console.log(friends, user);
+    let friends = user.followings.filter(f => user.followers.some(fr => fr.username === f.username));
     
     friends = await User
         .find({ username: { $in: friends.map(f => f.username) } })
@@ -27,7 +27,7 @@ const handlegetstories = async(req, res) => {
     return res.render("stories", { img: data[2], currUser: data[0],  stories:mapFrient_story});
     }catch(err){
         console.log(err);
-        return res.status(500).json({err:error.message})
+        return res.status(500).json({err:err.message})
     }
 }
 
