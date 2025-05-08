@@ -773,6 +773,12 @@ const registerChannel = async (req, res) => {
   return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] })
 }
 
+const handlegetlog = async (req, res) => {
+  const {data} = req.userDetails;
+  const allLogs = await ActivityLog.find({username: data[0]}).lean().sort({createdAt: -1});
+  return res.render("activityLog", {img: data[2], currUser: data[0], allLogs})
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -814,4 +820,5 @@ export {
   togglePP,
   signupChannel,
   registerChannel,
+  handlegetlog,
 };
