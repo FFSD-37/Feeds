@@ -206,7 +206,8 @@
         bottom: 0;
       }
 
-      .footer1,.footer2 {
+      .footer1,
+      .footer2 {
         height: 25px;
         display: flex;
         justify-content: center;
@@ -229,10 +230,7 @@
           <input type="checkbox" id="publicToggle" />
           <span class="profile-privacy-slider"></span>
           <span class="profile-privacy-label"
-            >Make my profile
-            <strong>
-              <% if(Meuser.visibility === "Private") { %>public<% } else { %>private<% } %>
-            </strong></span
+            >Change your profile visibility</span
           >
         </label>
       </div>
@@ -314,9 +312,13 @@
         </table>
       </div>
 
-      <div id="confirmModal" class="profile-privacy-modal-overlay">
+      <div
+        id="confirmModal"
+        class="profile-privacy-modal-overlay"
+        style="display: none"
+      >
         <div class="profile-privacy-modal">
-          <p class="profile-privacy-message">Are you sure ?</p>
+          <p class="profile-privacy-message">Are you sure?</p>
           <button
             id="confirmYes"
             class="profile-privacy-btn profile-privacy-confirm-btn"
@@ -334,105 +336,147 @@
     </div>
     <div class="footer">
       <div class="footer1">
-      <a href="#"
-        ><a href="/contact" style="text-decoration: none; color: black"
-          >About</a
-        ></a
-      >
-      •
-      <a href="#"
-        ><a href="/help" style="text-decoration: none; color: black"
-          >Help</a
-        ></a
-      >
-      •
-      <a href="#"
-        ><a href="/tandc" style="text-decoration: none; color: black"
-          >Terms</a
-        ></a
-      >
-      •
-      <a href="#"
-        ><a
-          href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor/@13.5555453,80.0240735,17z/data=!3m1!4b1!4m6!3m5!1s0x3a4d773f1e0f8721:0xadb0842ffc2719e4!8m2!3d13.5555453!4d80.0266484!16s%2Fm%2F0wbmm91?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoASAFQAw%3D%3D"
-          style="text-decoration: none; color: black"
-          target="_blank"
-          >Locations</a
-        ></a
-      >
+        <a href="#"
+          ><a href="/contact" style="text-decoration: none; color: black"
+            >About</a
+          ></a
+        >
+        •
+        <a href="#"
+          ><a href="/help" style="text-decoration: none; color: black"
+            >Help</a
+          ></a
+        >
+        •
+        <a href="#"
+          ><a href="/tandc" style="text-decoration: none; color: black"
+            >Terms</a
+          ></a
+        >
+        •
+        <a href="#"
+          ><a
+            href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor/@13.5555453,80.0240735,17z/data=!3m1!4b1!4m6!3m5!1s0x3a4d773f1e0f8721:0xadb0842ffc2719e4!8m2!3d13.5555453!4d80.0266484!16s%2Fm%2F0wbmm91?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoASAFQAw%3D%3D"
+            style="text-decoration: none; color: black"
+            target="_blank"
+            >Locations</a
+          ></a
+        >
       </div>
       <div class="footer2">
-      <p>
-        © 2025
-        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
-          >Feeds</a
-        >
-        from IIIT Sri-City
-      </p>
+        <p>
+          © 2025
+          <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
+            >Feeds</a
+          >
+          from IIIT Sri-City
+        </p>
       </div>
     </div>
 
     <script>
-      // Profile Privacy Toggle with Confirmation
-      const toggle = document.getElementById("publicToggle");
-      const modal = document.getElementById("confirmModal");
-      const yesBtn = document.getElementById("confirmYes");
-      const noBtn = document.getElementById("confirmNo");
-      let desiredState = toggle.checked;
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById("publicToggle");
+        const modal = document.getElementById("confirmModal");
+        const yesBtn = document.getElementById("confirmYes");
+        const noBtn = document.getElementById("confirmNo");
 
-      // prompt for confirmation whenever the user tries to toggle
-      toggle.addEventListener("change", (e) => {
-        desiredState = e.target.checked; // desired new state
-        toggle.checked = !desiredState; // revert until confirmed
-        modal.style.display = "flex"; // show confirmation
-      });
+        // Set initial toggle state based on user's current privacy setting
+        toggle.checked = "<%= Meuser.visibility %>" === "Public";
 
-      yesBtn.addEventListener("click", () => {
-        toggle.checked = desiredState; // apply desired state
-        modal.style.display = "none";
-        // TODO: send API request to update privacy to desiredState
-      });
-
-      noBtn.addEventListener("click", () => {
-        modal.style.display = "none"; // cancel, leave original state
-      });
-
-      // Profile Sharing & Copy URL actions
-      document
-        .getElementById("btnShareProfile")
-        .addEventListener("click", () => {
-          // implement share logic, e.g. navigator.share()
-        });
-      document
-        .getElementById("btnCopyProfileUrl")
-        .addEventListener("click", () => {
-          navigator.clipboard.writeText(window.location.href);
-          alert("Profile URL copied!");
+        toggle.addEventListener("change", function (e) {
+          // Show confirmation modal
+          modal.style.display = "flex";
         });
 
-      // Help form submit handler
-      document.querySelector(".help-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        // TODO: send help form data
-        alert("Help request submitted!");
-      });
+        yesBtn.addEventListener("click", function () {
+          // Hide modal
+          modal.style.display = "none";
 
-      function unblockUser(username) {
-        fetch(`/unblock/${username}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
+          // Send request to server
+          fetch("/togglePublicPrivate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
           })
-          .catch((error) => {
-            console.error(error);
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log("Success:", data);
+              // Reload the page to reflect changes
+              location.reload();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              // Revert the toggle if there was an error
+              toggle.checked = !toggle.checked;
+            });
+        });
+
+        noBtn.addEventListener("click", function () {
+          // Hide modal and revert the toggle
+          modal.style.display = "none";
+          toggle.checked = !toggle.checked;
+        });
+
+        // Profile Sharing & Copy URL actions
+        document
+          .getElementById("btnShareProfile")
+          .addEventListener("click", function () {
+            if (navigator.share) {
+              navigator
+                .share({
+                  title: "My Profile",
+                  url: "http://localhost:3000/profile/<%= Meuser.username %>",
+                })
+                .catch((err) => {
+                  console.log("Error sharing:", err);
+                });
+            } else {
+              // Fallback for browsers that don't support Web Share API
+              alert("Share this URL: " + window.location.href);
+            }
           });
-        location.reload();
-      }
+
+        document
+          .getElementById("btnCopyProfileUrl")
+          .addEventListener("click", function () {
+            navigator.clipboard
+              .writeText(window.location.href)
+              .then(() => alert("Profile URL copied!"))
+              .catch((err) => console.error("Could not copy text: ", err));
+          });
+
+        // Make unblockUser function available globally
+        window.unblockUser = function (username) {
+          if (confirm(`Are you sure you want to unblock ${username}?`)) {
+            fetch(`/unblock/${username}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.json();
+              })
+              .then((data) => {
+                console.log("Success:", data);
+                window.location.reload();
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
+        };
+      });
     </script>
   </body>
 </html>

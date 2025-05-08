@@ -12,6 +12,7 @@ import bcrypt, { compare } from 'bcrypt';
 import Feedback from '../models/feedbackForm.js';
 import DelUser from '../models/SoftDelUsers.js';
 import Notification from '../models/notification_schema.js';
+import Channel from "../models/channelSchema.js"
 
 
 async function storeOtp(email, otp) {
@@ -620,6 +621,31 @@ const handlegetsettings = async (req, res) => {
   return res.render("settings", {img: data[2], currUser: data[0], Meuser})
 }
 
+const togglePP = async (req, res) => {
+  const { data } = req.userDetails;
+  await User.findOneAndUpdate({ username: data[0] }, [ { $set: { visibility: { $cond: [{ $eq: ["$visibility", "Public"] }, "Private", "Public"] } } } ], { new: true });
+  const Meuser = await User.findOne({username: data[0]});
+}
+
+const signupChannel = async (req, res) => {
+  const { data } = req.userDetails;
+  return res.render("channelregistration", {msg: null, img: data[2], currUser: data[0]});
+}
+
+const registerChannel = async (req, res) => {
+  const {data} = req.userDetails;
+  console.log(req.body);
+  const user = {
+    channelName: req.body.channelName,
+    channelDescription: req.body.channelDescription,
+    channelCategory: JSON.parse(req.body.selectedCategories),
+    channelLogo: req.body.profileImageUrl,
+    channelAdmin: data[0],
+  };
+  await Channel.create(user);
+  return res.render("channelregistration", {msg: null, img: data[2], currUser: data[0]})
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -658,5 +684,8 @@ export {
   unfollowSomeone,
   handlegetnotification,
   getSearch,
-  handlegetsettings
+  handlegetsettings,
+  togglePP,
+  signupChannel,
+  registerChannel,
 };

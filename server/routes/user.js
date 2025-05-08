@@ -37,6 +37,9 @@ import {
   getSearch,
   handlegetnotification,
   handlegetsettings,
+  togglePP,
+  signupChannel,
+  registerChannel,
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -144,5 +147,11 @@ router.get("/search/:username",isAuthuser, getSearch);
 router.get("/dailyUsage",isAuthuser,getDailyusage);
 
 router.get("/settings", isAuthuser, handlegetsettings);
+
+router.post("/togglePublicPrivate", isAuthuser, togglePP);
+
+router.get("/create_channel", isAuthuser, signupChannel);
+
+router.post("/signupChannel", isAuthuser, registerChannel);
 
 export default router;

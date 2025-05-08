@@ -166,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(p.type);
         div.innerHTML = `
           <div class="post-header">
-            <div class="user-avatar"></div>
             <a href="/profile/${p.author}" style="text-decoration:none;color:black">
               <span class="username">${p.author}</span>
             </a>
@@ -204,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <video
               class="post-on-home-page"
               src="${p.url}&&tr=w-640,h-640"
-              muted
               loop
               preload="metadata"
             ></video>
@@ -285,5 +283,12 @@ document.querySelectorAll('.post-on-home-page').forEach(video => {
   video.addEventListener('mouseleave', () => {
     video.pause();
     video.currentTime = 0; // optional: reset to start
+  });
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".post-time").forEach(el => {
+    const createdAt = el.dataset.created;
+    el.textContent = `• ${timeAgo(createdAt)}`;
   });
 });

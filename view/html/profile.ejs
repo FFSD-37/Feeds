@@ -41,9 +41,11 @@
             <button class="edit-profile"><a href="/edit_profile" style="text-decoration: none; color: black;">Edit Profile</a></button>
             <button class="archive"><a href="/settings" style="text-decoration: none; color: black">Settings</a></button>
           </div>
+          <% if(myUser.isPremium === true) { %>
           <div class="profile-info-header">
             <button class="edit-profile"><a href="/create_channel" style="text-decoration: none; color: black;">Create Channel</a></button>
           </div>
+          <% } %>
         </div>
       </header>
 
