@@ -180,8 +180,12 @@ const handleSavePost=async(req,res)=>{
         if(!post) return res.status(404).json({ err: "Post not found" });
 
         let user=await User.findOne({username:userDetails.data[0]});
-        let isUserSaved=user.savedPostsIds.find((postId)=>postId===id);
-        (isUserSaved)?user=user.savedPostsIds.filter((postId)=>postId!==id):user.savedPostsIds.push(id);
+        const isUserSaved = user.savedPostsIds?.includes(id);
+
+        user.savedPostsIds = isUserSaved
+          ? user.savedPostsIds.filter(postId => postId !== id)
+          : [...(user.savedPostsIds || []), id];
+        
         
         await user.save();
         return res.json({success:true})
