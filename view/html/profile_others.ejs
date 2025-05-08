@@ -30,7 +30,7 @@
         }
 
         .overlay-content {
-            background: #aa9393;
+            background: #fff;
             padding: 20px;
             width: 300px;
             max-height: 80vh;
@@ -45,11 +45,6 @@
             right: 15px;
             font-size: 20px;
             cursor: pointer;
-        }
-
-        #overlay-list{
-        cursor: pointer;
-
         }
 
         .overlay-list {
@@ -83,16 +78,7 @@
             font-size: 24px;
             cursor: pointer;
             padding: 5px;
-            margin-left: 60px; /* Added margin-left */
-        }
-
-        li{
-            list-style-type: none;
-        }
-
-        a{
-            text-decoration: none;
-            color: black;
+            margin-left: 70px; /* Added margin-left */
         }
 
     </style>
@@ -244,7 +230,7 @@
                 <li onclick="blockUser('<%- myUser.username %>')">Block User</li>
                 <li onclick="shareTo('<%- myUser.username %>')">Share Profile</li>
                 <li onclick="copyURL('<%- myUser.username %>')">Copy Profile Link</li>
-                <li><a href="/about">About This Account</a></li>
+                <li onclick="AboutOverlay()">About This Account</li>
                 <li onclick="closeOverlay()">Cancel</li>
             </ul>
         </div>
@@ -254,6 +240,17 @@
             <span class="close-btn" onclick="closeOverlay2()">×</span>
             <h2 id="overlay-title2"></h2>
             <ul id="overlay-list2"></ul>
+        </div>
+    </div>
+    <div id="aboutOverlay" class="overlay" style="display: none;">
+        <div class="overlay-content">
+            <span class="close-btn" onclick="closeAboutOverlay()">×</span>
+            <h2 id="about-overlay-title">About This Account</h2>
+            <ul id="about-overlay-list">
+                <li><strong>Username:</strong> <%- myUser.username %></li>
+                <li><strong>Full Name:</strong> <%- myUser.fullName %></li>
+                <li><strong>Email:</strong> <%- myUser.email %></li>
+                <li><strong>Joined:</strong> <%= new Date(myUser.createdAt).toLocaleDateString() %></li>            </ul>
         </div>
     </div>
     <script src="../js/profile.js"></script>
@@ -310,7 +307,14 @@
               .catch((err) => console.error("Could not copy text: ", err));
           }
 
+        function AboutOverlay() {
+            document.getElementById("aboutOverlay").style.display = "flex";
+            closeOverlay();
+        }
 
+        function closeAboutOverlay() {
+            document.getElementById("aboutOverlay").style.display = "none";
+        }
 
         function openOverlay2(type) {
             const overlay = document.getElementById("overlay2");
