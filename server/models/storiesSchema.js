@@ -11,9 +11,15 @@ const linkSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  avatarUrl: {
+    type: String,
+    required: true
   }
 }, {
   timestamps: true 
 });
 
-module.exports = mongoose.model('Link', linkSchema);
+const Story = mongoose.model("Story", linkSchema);
+
+export default Story;

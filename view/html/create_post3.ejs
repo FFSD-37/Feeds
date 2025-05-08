@@ -12,6 +12,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places"></script>
   </head>
   <body>
+    <%- include("sidebar") %>
     <div class="create-post3">
       <div class="header">
         <div class="header-title">Create new post</div>
@@ -21,7 +22,7 @@
           <img
             id="post-image"
             class="post-image"
-            src="./pfp.png"
+            src="<%- img %>"
             alt="Post image preview"
           />
         </div>
@@ -32,10 +33,11 @@
                 <img
                   class="create_post_user_avatar3"
                   id="create_post_user_avatar3"
-                  src="./pfp.png"
+                  src="<%- post %>"
                   alt="User avatar"
                 />
-                <div class="username">Ayush</div>
+                <input type="hidden" id="avatar" name="avatar" value="<%- post %>"/>
+                <div class="username"><%= currUser %></div>
               </div>
               <div class="caption-area">
                 <div class="caption-wrapper">

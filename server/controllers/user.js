@@ -14,7 +14,7 @@ import DelUser from '../models/SoftDelUsers.js';
 import Notification from '../models/notification_schema.js';
 import Channel from "../models/channelSchema.js"
 import channelPost from '../models/channelPost.js';
-
+import Story from "../models/storiesSchema.js";
 
 async function storeOtp(email, otp) {
   try {
@@ -594,10 +594,23 @@ const handlegetcreatepost = (req, res) => {
   return res.render("create_post", { img: data[2], currUser: data[0] });
 }
 
-const handlecreatepost = (req, res) => {
-  const image = req.body.profileImageUrl;
+const handlecreatepost = async (req, res) => {
+  console.log(req.body);
   const { data } = req.userDetails;
-  return res.render("create_post_second", { img2: image, img: data[2], currUser: data[0] });
+  if (req.body.postType === "story"){
+    const meUser = await User.findOne({username: data[0]});
+    const user = {
+      username: data[0],
+      url: req.body.profileImageUrl,
+      avatarUrl: meUser.profilePicture
+    }
+    await Story.create(user);
+    return res.redirect("home");
+  }
+  if (req.body.postType === "reel" || req.body.postType === "Img"){
+    return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl})
+  }
+  // return res.render("create_post_second", { img2: image, img: data[2], currUser: data[0] });
 }
 
 const handlegetcreatepost2 = (req, res) => {
