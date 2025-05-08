@@ -41,24 +41,24 @@ let storyLikes = {};
 
 function generateStoryCircles() {
     const storiesGrid = document.getElementById('stories-grid');
-    storiesGrid.innerHTML = '';
+    // storiesGrid.innerHTML = '';
 
-    Object.keys(users).forEach(userId => {
-        const user = users[userId];
+    // Object.keys(users).forEach(userId => {
+    //     const user = users[userId];
 
-        const storyCircle = document.createElement('div');
-        storyCircle.className = 'story-circle';
-        storyCircle.onclick = () => openStory(userId);
+    //     const storyCircle = document.createElement('div');
+    //     storyCircle.className = 'story-circle';
+    //     storyCircle.onclick = () => openStory(userId);
 
-        storyCircle.innerHTML = `
-            <div class="story-avatar-border">
-                <img src="${user.avatar}" alt="${user.username}" class="story-avatar">
-            </div>
-            <div class="story-username">${user.username}</div>
-        `;
+    //     storyCircle.innerHTML = `
+    //         <div class="story-avatar-border">
+    //             <img src="${user.avatar}" alt="${user.username}" class="story-avatar">
+    //         </div>
+    //         <div class="story-username">${user.username}</div>
+    //     `;
 
-        storiesGrid.appendChild(storyCircle);
-    });
+    //     storiesGrid.appendChild(storyCircle);
+    // });
 }
 
 window.addEventListener('load', generateStoryCircles);

@@ -530,11 +530,6 @@ const handlegetgames = (req, res) => {
   return res.render("games", { img: data[2], currUser: data[0] });
 }
 
-const handlegetstories = (req, res) => {
-  const { data } = req.userDetails;
-  return res.render("stories", { img: data[2], currUser: data[0] });
-}
-
 const handlegetdelacc = (req, res) => {
   const { data } = req.userDetails;
   return res.render("delacc", { img: data[2], msg: null, currUser: data[0] });
@@ -772,7 +767,6 @@ export {
   handlegethelp,
   handlegetreels,
   handlegetdelacc,
-  handlegetstories,
   handlegetgames,
   handlegetadmin,
   handleadminlogin,

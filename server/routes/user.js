@@ -15,7 +15,6 @@ import {
   handlegetcontact,
   handlegetconnect,
   handlegetgames,
-  handlegetstories,
   handlegetdelacc,
   handlegetreels,
   handlegethelp,
@@ -46,6 +45,7 @@ import { isAuthuser } from "../middleware/isAuthuser.js";
 import { checkOut, verify_payment } from "../controllers/payment.js";
 import { getChat, getChatpage } from "../controllers/chat.js";
 import { getDailyusage } from "../controllers/timout.js";
+import { handlegetstories } from "../controllers/userStory.js";
 
 const router = express.Router();
 
