@@ -114,7 +114,7 @@ router.post("/createpost", isAuthuser, handlecreatepost);
 
 router.post("/updatepass", updatepass);
 
-router.get("/imagKitauth",isAuthuser, handleimagKitauth);
+router.get("/imagKitauth", handleimagKitauth);
 
 router.get("/fpadmin", handlefpadmin);
 
