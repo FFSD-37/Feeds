@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Home – Feed</title>
+    <title>Home-Feed</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- your CSS, etc. -->
   </head>
@@ -19,7 +19,7 @@
             style="text-decoration: none; color: black"
             ><span class="username"><%= post.author %></span></a
           >
-          <span class="post-time" data-created="<%= post.createdAt %>">• loading...</span>
+          <span class="post-time" data-created="<%= post.createdAt %>">• 1d</span>
 
           <div
             class="post-options"
@@ -45,14 +45,14 @@
           </div>
         </div>
         <% if(post.type === "Img") { %>
-          <div class="post-content" onclick="postOverlay()">
+          <div class="post-content" onclick="postOverlay('<%= encodeURIComponent(post.url) %>', '<%= encodeURIComponent(post.content) %>', '<%= post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%= encodeURIComponent(post.author) %>')">
             <img
               class="post-on-home-page"
               src="<%= post.url %>&&tr=w-640,h-640"
             />
           </div>
         <% } else { %>
-          <div class="post-content" onclick="postOverlay()">
+          <div class="post-content" onclick="reelOpen('<%= post.url %>', '<%= post.content %>')">
             <video
               class="post-on-home-page"
               src="<%= post.url %>&&tr=w-640,h-640"
@@ -61,6 +61,7 @@
             ></video>
           </div>          
         <% } %>
+        <% if (type !== "Kids" || type !== "Student") { %>
         <div class="post-actions">
           <div class="action-icon">
             <svg
@@ -119,6 +120,7 @@
             </svg>
           </div>
         </div>
+        <% } %>
       </div>
       <% }); %> <% } %>
     </div>
