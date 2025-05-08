@@ -94,6 +94,18 @@ socket.on("receiveMessage", (msg) => {
   }
 });
 
+messageInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    sendBtn.click();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && emojiPicker.style.display === "block") {
+    emojiPicker.style.display = "none";
+  }
+});
+
 toggleBtn.addEventListener("click", () => {
   body.classList.toggle("dark");
   document.querySelector(".chatList").classList.toggle("dark");
