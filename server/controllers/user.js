@@ -632,7 +632,7 @@ const handlegetnotification = async (req, res) => {
 
 const getSearch = async (req, res) => {
   const { data } = req.userDetails;
-  const { username } = req.params;console.log(username);
+  const { username } = req.params;
   
   const usernameMatches = await User.find({
     username: { $regex: username, $options: "i" }
