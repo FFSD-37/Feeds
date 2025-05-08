@@ -167,8 +167,8 @@ async function handleUpload() {
 
   const authData = await authResponse.json();
   var imagekit = new ImageKit({
-    publicKey: "public_wnJ6iUhf4XCA3x6A/XV68fTEU4Y=",
-    urlEndpoint: "https://ik.imagekit.io/FFSD0037/",
+    publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
+    urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
   });
 
   var file = document.getElementById("pfp");
