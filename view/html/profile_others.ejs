@@ -47,14 +47,40 @@
             cursor: pointer;
         }
 
-        li{
-            list-style-type: none;
+        .overlay-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
         }
 
-        a{
-            text-decoration: none;
-            color: black;
+        .overlay-list li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s;
+            text-align: left;
         }
+
+        .overlay-list li:last-child {
+            border-bottom: none;
+        }
+
+        .overlay-list li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .overlay-list li a{
+            color: #000;
+            text-decoration: none;
+        }
+
+        .more-options-icon {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 70px; /* Added margin-left */
+        }
+
     </style>
 </head>
 <body>
@@ -81,48 +107,53 @@
                         </svg>
                         <% } %>
                     </h2>
-                    <% if (isFriend) { %>
-                    <button
-                        id="unfollow-btn"
-                        class="unfollow-btn"
-                        onclick="unfollowUser('<%- myUser.username %>')"
-                    >
-                        Unfollow
-                    </button>
-                    <% } else if (isFollower) { %>
-                    <button
-                        id="follow-btn"
-                        class="follow-btn"
-                        onclick="followUser('<%- myUser.username %>')"
-                    >
-                        Follow Back
-                    </button>
-                    <% } else if (isRequested) { %>
-                    <button id="unfollow-btn"
+                    <div style="display: flex; align-items: center;">
+                        <% if (isFriend) { %>
+                        <button
+                            id="unfollow-btn"
                             class="unfollow-btn"
-                            onclick="unfollowUser('<%- myUser.username %>')">
-                        Requested
-                    </button>
-                    <% } else { %>
-                    <button
-                        id="follow-btn"
-                        class="follow-btn"
-                        onclick="followUser('<%- myUser.username %>')"
-                    >
-                        Follow
-                    </button>
-                    <% } %>
+                            onclick="unfollowUser('<%- myUser.username %>')"
+                        >
+                            Unfollow
+                        </button>
+                        <% } else if (isFollower) { %>
+                        <button
+                            id="follow-btn"
+                            class="follow-btn"
+                            onclick="followUser('<%- myUser.username %>')"
+                        >
+                            Follow Back
+                        </button>
+                        <% } else if (isRequested) { %>
+                        <button id="unfollow-btn"
+                                class="unfollow-btn"
+                                onclick="unfollowUser('<%- myUser.username %>')">
+                            Requested
+                        </button>
+                        <% } else { %>
+                        <button
+                            id="follow-btn"
+                            class="follow-btn"
+                            onclick="followUser('<%- myUser.username %>')"
+                        >
+                            Follow
+                        </button>
+                        <% } %>
+                        <div class="more-options-icon" onclick="openOverlay()">
+                            ⋮
+                        </div>
+                    </div>
                 </div>
                 <div class="profile-stats">
                     <div class="stat">
                         <span><%- (myUser && myUser.postIds) ? myUser.postIds.length : 0 %></span>
                         posts
                     </div>
-                    <div class="stat clickable" onclick="openOverlay('followers')">
+                    <div class="stat clickable" onclick="openOverlay2('followers')">
                         <span><%- (myUser && myUser.followers) ? myUser.followers.length : 0 %></span>
                         followers
                     </div>
-                    <div class="stat clickable" onclick="openOverlay('following')">
+                    <div class="stat clickable" onclick="openOverlay2('following')">
                         <span><%- (myUser && myUser.followings) ? myUser.followings.length : 0 %></span>
                         following
                     </div>
@@ -190,11 +221,36 @@
             from IIIT Sri-City
         </p>
     </div>
-     <div id="overlay" class="overlay">
+    <div id="overlay" class="overlay">
         <div class="overlay-content">
             <span class="close-btn" onclick="closeOverlay()">×</span>
-            <h2 id="overlay-title"></h2>
-            <ul id="overlay-list"></ul>
+            <h2 id="overlay-title">Options</h2>
+            <ul id="overlay-list">
+                <li onclick="reportUser('<%- myUser.username %>')">Report User</li>
+                <li onclick="blockUser('<%- myUser.username %>')">Block User</li>
+                <li onclick="shareTo('<%- myUser.username %>')">Share Profile</li>
+                <li onclick="copyURL('<%- myUser.username %>')">Copy Profile Link</li>
+                <li onclick="AboutOverlay()">About This Account</li>
+                <li onclick="closeOverlay()">Cancel</li>
+            </ul>
+        </div>
+    </div>
+     <div id="overlay2" class="overlay">
+        <div class="overlay-content">
+            <span class="close-btn" onclick="closeOverlay2()">×</span>
+            <h2 id="overlay-title2"></h2>
+            <ul id="overlay-list2"></ul>
+        </div>
+    </div>
+    <div id="aboutOverlay" class="overlay" style="display: none;">
+        <div class="overlay-content">
+            <span class="close-btn" onclick="closeAboutOverlay()">×</span>
+            <h2 id="about-overlay-title">About This Account</h2>
+            <ul id="about-overlay-list">
+                <li><strong>Username:</strong> <%- myUser.username %></li>
+                <li><strong>Full Name:</strong> <%- myUser.fullName %></li>
+                <li><strong>Email:</strong> <%- myUser.email %></li>
+                <li><strong>Joined:</strong> <%= new Date(myUser.createdAt).toLocaleDateString() %></li>            </ul>
         </div>
     </div>
     <script src="../js/profile.js"></script>
@@ -211,10 +267,59 @@
             document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
         }
 
-        function openOverlay(type) {
-            const overlay = document.getElementById("overlay");
-            const title = document.getElementById("overlay-title");
-            const list = document.getElementById("overlay-list");
+        function openOverlay() {
+            document.getElementById("overlay").classList.add("show");
+        }
+
+        function closeOverlay() {
+            document.getElementById("overlay").classList.remove("show");
+        }
+
+        function reportUser(username) {
+            alert(`Reporting user: ${username}`);
+            closeOverlay();
+        }
+
+        function blockUser(username) {
+            alert(`Blocking user: ${username}`);
+            closeOverlay();
+        }
+
+        function shareTo(uname) {
+            if (navigator.share) {
+              navigator
+                .share({
+                  title: "My Profile",
+                  url: `http://localhost:3000/profile/${uname}`,
+                })
+                .catch((err) => {
+                  console.log("Error sharing:", err);
+                });
+            } else {
+              alert("Share this URL: " + window.location.href);
+            }
+          }
+
+        function copyURL(uname) {
+            navigator.clipboard
+              .writeText(window.location.href)
+              .then(() => alert("Profile URL copied!"))
+              .catch((err) => console.error("Could not copy text: ", err));
+          }
+
+        function AboutOverlay() {
+            document.getElementById("aboutOverlay").style.display = "flex";
+            closeOverlay();
+        }
+
+        function closeAboutOverlay() {
+            document.getElementById("aboutOverlay").style.display = "none";
+        }
+
+        function openOverlay2(type) {
+            const overlay = document.getElementById("overlay2");
+            const title = document.getElementById("overlay-title2");
+            const list = document.getElementById("overlay-list2");
             list.innerHTML = "";
 
             if (type === "followers") {
@@ -252,8 +357,8 @@
             overlay.classList.add("show");
         }
 
-        function closeOverlay() {
-            document.getElementById("overlay").classList.remove("show");
+        function closeOverlay2() {
+            document.getElementById("overlay2").classList.remove("show");
         }
     </script>
 </body>
