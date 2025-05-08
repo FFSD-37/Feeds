@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create new post</title>
-    <link rel="stylesheet" href="../css/create_post3.css">
+    <link rel="stylesheet" href="../css/create_post3.css" />
     <script
       type="module"
       src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.6.3/index.js"
@@ -12,18 +12,26 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places"></script>
   </head>
   <body>
+    <%- include("sidebar") %>
     <div class="create-post3">
       <div class="header">
         <div class="header-title">Create new post</div>
       </div>
       <div class="content">
         <div class="image-create-post3">
+          <% if (type === "reel") { %>
+          <video id="post-video" class="post-image">
+            <source src="<%- img %>" type="video/mp4" />
+          </video>
+          <% } else { %>
           <img
             id="post-image"
             class="post-image"
-            src="./pfp.png"
+            src="<%- img %>"
             alt="Post image preview"
           />
+          <% } %>
+          <input type="hidden" id="avatar" name="avatar" value="<%- post %>" />
         </div>
         <div class="right-side">
           <form action="/shareFinalPost" method="POST" id="create-post3">
@@ -32,10 +40,10 @@
                 <img
                   class="create_post_user_avatar3"
                   id="create_post_user_avatar3"
-                  src="./pfp.png"
+                  src="<%- img %>"
                   alt="User avatar"
                 />
-                <div class="username">Ayush</div>
+                <div class="username"><%= currUser %></div>
               </div>
               <div class="caption-area">
                 <div class="caption-wrapper">
@@ -44,7 +52,12 @@
                     class="caption-input"
                     placeholder="Add a caption"
                   ></textarea>
-                  <a id="emoji-button" class="emoji-button" style="text-decoration: none;">😊</a>
+                  <a
+                    id="emoji-button"
+                    class="emoji-button"
+                    style="text-decoration: none"
+                    >😊</a
+                  >
                   <emoji-picker id="emoji-picker"></emoji-picker>
                 </div>
               </div>

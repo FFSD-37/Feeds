@@ -367,3 +367,10 @@ h2 {
 .report-options span {
   font-size: 18px;
 }
+
+.fas.text-red {
+  color: red;
+}
+.saved {
+  color: #2b7a78;
+}

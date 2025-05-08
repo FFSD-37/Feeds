@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let div = document.createElement("div");
         div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        
+        console.log(p);
         // Start building the HTML string
         let html = `
           <div class="post-header">
@@ -171,10 +171,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if ('<%- type %>' !== "Kids" && '<%- type %>' !== "Student") {
           html += `
             <div class="post-actions">
-              <div class="action-icon">
-                <i class="far fa-heart"></i>
-              </div>`;
+              <div class="action-icon">`
           
+          if (p.liked){
+            html += `<i class="fas fa-heart" onclick="likePost('${p.id}', this)"></i>`;
+          }else{
+            html +=
+                `<i class="far fa-heart" onclick="likePost('${p.id}', this)"></i>
+              </div>`;
+          }
           if (p.type === "Img") {
             html += `
               <div class="action-icon" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
@@ -187,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <i class="fas fa-share" onclick="shareTo('${p.author}')"></i>
               </div>
               <div class="last-action-icon">
-                <i class="fa-solid fa-floppy-disk"></i>
+                <i class="fa-solid fa-floppy-disk" onclick="savePost('${p._id}', this)"></i>
               </div>
             </div>`;
         }
@@ -218,3 +223,45 @@ window.addEventListener("DOMContentLoaded", () => {
     el.textContent = `• ${timeAgo(createdAt)}`;
   });
 });
+
+async function likePost(postId, el) {
+  const icon = el.tagName === "I" ? el : el.querySelector("i");
+
+  try {
+    const res = await fetch(`/post/liked/${postId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include' // Important if you’re using cookies (auth)
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      icon.classList.toggle("far");       // Outline heart
+      icon.classList.toggle("fas");       // Solid heart
+      icon.classList.toggle("text-red");  // Optional styling
+    } else {
+      alert(data.err || "Unable to like post.");
+    }
+  } catch (error) {
+    console.error("Like error:", error);
+  }
+}
+
+async function savePost(postId, el) {
+  try {
+    const res = await fetch(`/saved/${postId}`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if (data.success) {
+      const icon = el.tagName === "I" ? el : el.querySelector("i");
+      icon.classList.toggle("saved"); // You can define this class in CSS
+    } else {
+      alert(data.err || "Unable to save post.");
+    }
+  } catch (err) {
+    console.error("Save error:", err);
+  }
+}

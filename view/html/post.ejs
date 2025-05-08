@@ -16,7 +16,7 @@
       <% if (!posts || posts.length === 0) { %>
       <p>No posts to display.</p>
       <% } else { %> <% posts.forEach(function(post) { %>
-      <div class="post" data-createdat="<%= post.createdAt.toISOString() %>">
+      <div class="post" data-id="<%= post.id %>" data-createdat="<%= post.createdAt.toISOString() %>">
         <div class="post-header">
           <a
             href="/profile/<%= post.author %>"
@@ -85,8 +85,12 @@
         </div>
         <% } %> <% if (type !== "Kids" || type !== "Student") { %>
         <div class="post-actions">
-          <div class="action-icon">
+          <div class="action-icon" onclick="likePost('<%= post.id %>', this)">
+            <% if(post.liked) { %>
+            <i class="fas fa-heart"></i>
+            <% } else { %>
             <i class="far fa-heart"></i>
+            <% } %>
           </div>
           <% if(post.type === "Img") { %>
           <div
@@ -100,7 +104,7 @@
           <div class="action-icon">
             <i class="fas fa-share" onclick="shareTo('<%= post.author %>')"></i>
           </div>
-          <div class="last-action-icon">
+          <div class="last-action-icon" onclick="savePost('<%= post.id %>', this)">
             <i class="fa-solid fa-floppy-disk"></i>
           </div>
         </div>

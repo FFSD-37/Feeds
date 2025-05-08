@@ -1,5 +1,10 @@
 // Initialize imagefile as an array
+const buttonSpan = document.getElementsByClassName("button-text");
+const lodingSpinner = document.getElementsByClassName("loading-spinner");
+const continueBtn = document.getElementById('continueBtn');
+
 var imagefile = [];
+
 
 function showPreview(event) {
     if (event.target.files.length > 0) {
@@ -28,7 +33,7 @@ async function getAuth() {
 function continueEditing() {
     async function handleUpload() {
         try {
-            // Check if we have any images to upload
+
             if (!imagefile || imagefile.length === 0) {
                 console.error("No image selected");
                 return;
@@ -58,6 +63,7 @@ function continueEditing() {
                         console.log("Upload error:", err);
                     } else {
                         document.getElementById("profileImageUrl").value = result.url;
+                        console.log(result.url);
                         document.getElementById("createPostForm").submit();
                     }
                 }
@@ -72,8 +78,11 @@ function continueEditing() {
     handleUpload();
 }
 
-document.getElementById("continueBtn").addEventListener("click", function (event) {
+continueBtn.addEventListener("click", function (event) {
     // Prevent the default form submission
     event.preventDefault();
+    this.classList.add('loading');
+    this.querySelector('.button-text').style.display = 'none';
+    this.querySelector('.loading-spinner').style.display = 'inline-flex';
     continueEditing();
 });

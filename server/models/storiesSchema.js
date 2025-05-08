@@ -15,5 +15,4 @@ const linkSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-const Story = mongoose.model('Story', linkSchema);
-export default Story;
+module.exports = mongoose.model('Story', linkSchema);
