@@ -601,8 +601,7 @@ const handlecreatepost = async (req, res) => {
     const meUser = await User.findOne({username: data[0]});
     const user = {
       username: data[0],
-      url: req.body.profileImageUrl,
-      avatarUrl: meUser.profilePicture
+      url: req.body.profileImageUrl
     }
     await Story.create(user);
     return res.redirect("home");
