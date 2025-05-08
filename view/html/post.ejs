@@ -91,7 +91,7 @@
           <% if(post.type === "Img") { %>
           <div
             class="action-icon"
-            onclick="postOverlay()"
+            onclick="postOverlay('<%= encodeURIComponent(post.url) %>', '<%= encodeURIComponent(post.content) %>', '<%= post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%= encodeURIComponent(post.author) %>')"
             id="comment-button-post"
           >
             <i class="far fa-comment"></i>

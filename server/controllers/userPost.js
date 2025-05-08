@@ -69,12 +69,12 @@ const handleGetpost=async(req,res)=>{
     });
 
     if(!postDetails) return res.status(404).json({ err: "Post not found" });
-
     }
     catch(error){
         console.log(error);
         return res.status(500).json({err:error.message})
     }
+
 }
 
 const suggestedPost=async(req,res)=>{

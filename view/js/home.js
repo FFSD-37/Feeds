@@ -116,14 +116,14 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       newPosts.forEach((p) => {
-        const div = document.createElement("div");
+        let div = document.createElement("div");
         div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        div.innerHTML = `
+        
+        // Start building the HTML string
+        let html = `
           <div class="post-header">
-            <a href="/profile/${
-              p.author
-            }" style="text-decoration:none;color:black">
+            <a href="/profile/${p.author}" style="text-decoration:none;color:black">
               <span class="username">${p.author}</span>
             </a>
             <span class="post-time">• ${timeAgo(new Date(p.createdAt))}</span>
@@ -134,97 +134,68 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="menu-item danger" onclick="openReportModal()">
                 Report
               </div>
-              <div class="menu-item normal" onclick="postOverlay(${p.url}, ${p.content}, ${p.createdAt}, ${p.author})">
+              <div class="menu-item normal" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
                 Go to post
               </div>
-              <div class="menu-item normal" id="btnShareProfile" onclick="shareTo(${p.author})">Share to...</div>
-              <div class="menu-item normal" onclick="copyURL(${p.author})">Copy link</div>
-              <div class="menu-item normal"><a href="/settings" style="text-decoration: none; color: white">About this account</a></div>
+              <div class="menu-item normal" id="btnShareProfile" onclick="shareTo('${p.author}')">
+                Share to...
+              </div>
+              <div class="menu-item normal" onclick="copyURL('${p.author}')">
+                Copy link
+              </div>
+              <div class="menu-item normal">
+                <a href="/settings" style="text-decoration: none; color: white">
+                  About this account
+                </a>
+              </div>
               <div class="menu-item normal" onclick="closepostdropdown()">
                 Cancel
               </div>
             </div>
           </div>`;
+        
+        // Add content based on type
         if (p.type === "Img") {
-          div.innerHTML += `
-          <div class="post-content" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
-            <img
-              class="post-on-home-page"
-              src="${p.url}&&tr=w-640,h-640"
-            />
-          </div>`;
+          html += `
+            <div class="post-content" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
+              <img class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" />
+            </div>`;
         } else {
-          div.innerHTML += `
-          <div class="post-content" onclick="reelOpen('${p.url}')">
-            <video
-              class="post-on-home-page"
-              src="${p.url}&&tr=w-640,h-640"
-              loop
-              preload="metadata"
-            ></video>
-          </div>`;
+          html += `
+            <div class="post-content" onclick="reelOpen('${p.url}')">
+              <video class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" loop preload="metadata"></video>
+            </div>`;
         }
-        div.innerHTML += `<div class="post-actions">
-            <div class="action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="M480-147q-14 0-28.5-5T426-168l-69-63q-106-97-191.5-192.5T80-634q0-94 63-157t157-63q53 0 100 22.5t80 61.5q33-39 80-61.5T660-854q94 0 157 63t63 157q0 115-85 211T602-230l-68 62q-11 11-25.5 16t-28.5 5Zm-38-543q-29-41-62-62.5T300-774q-60 0-100 40t-40 100q0 52 37 110.5T285.5-410q51.5 55 106 103t88.5 79q34-31 88.5-79t106-103Q726-465 763-523.5T800-634q0-60-40-100t-100-40q-47 0-80 21.5T518-690q-7 10-17 15t-21 5q-11 0-21-5t-17-15Zm38 189Z"
-                />
-              </svg>
-            </div>
-            <div
-              class="action-icon"
-              onclick="postOverlay()"
-              id="comment-button-post"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="m240-240-92 92q-19 19-43.5 8.5T80-177v-623q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240Zm-34-80h594v-480H160v525l46-45Zm-46 0v-480 480Z"
-                />
-              </svg>
-            </div>
-            <div class="action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="M792-443 176-183q-20 8-38-3.5T120-220v-520q0-22 18-33.5t38-3.5l616 260q25 11 25 37t-25 37ZM200-280l474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
-                />
-              </svg>
-            </div>
-            <div class="last-action-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#000000"
-              >
-                <path
-                  d="m480-240-168 72q-40 17-76-6.5T200-241v-519q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v519q0 43-36 66.5t-76 6.5l-168-72Zm0-88 200 86v-518H280v518l200-86Zm0-432H280h400-200Z"
-                />
-              </svg>
-            </div>
-          </div>
-        `;
+        
+        // Add actions if needed
+        if ('<%- type %>' !== "Kids" && '<%- type %>' !== "Student") {
+          html += `
+            <div class="post-actions">
+              <div class="action-icon">
+                <i class="far fa-heart"></i>
+              </div>`;
+          
+          if (p.type === "Img") {
+            html += `
+              <div class="action-icon" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
+                <i class="far fa-comment"></i>
+              </div>`;
+          }
+          
+          html += `
+              <div class="action-icon">
+                <i class="fas fa-share" onclick="shareTo('${p.author}')"></i>
+              </div>
+              <div class="last-action-icon">
+                <i class="fa-solid fa-floppy-disk"></i>
+              </div>
+            </div>`;
+        }
+        
+        // Assign the complete HTML string at once
+        div.innerHTML = html;
         container.appendChild(div);
-      });
+    });      
     } catch (err) {
       console.error("Fetch error:", err);
     } finally {
