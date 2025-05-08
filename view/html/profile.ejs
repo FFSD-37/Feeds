@@ -1,150 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Instagram Profile</title>
     <link rel="stylesheet" href="../css/profile.css" />
-  </head>
-  <body>
+
+</head>
+<body>
     <%- include('sidebar') %>
     <div class="container">
-      <header class="profile-header">
-        <div class="profile-pic">
-          <img src="<%- myUser.profilePicture %>" alt="Profile Picture" />
+        <header class="profile-header">
+            <div class="profile-pic">
+                <img src="<%- myUser.profilePicture %>" alt="Profile Picture" />
+            </div>
+            <div class="profile-info">
+                <div class="profile-info-header">
+                    <h2 class="username">
+                        <%- myUser.display_name %>
+                        <% if (myUser.isPremium === true) { %>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+                            <path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z"/>
+                        </svg>
+                        <% } %>
+                    </h2>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span><%- (myUser && myUser.postIds) ? myUser.postIds.length : 0 %></span> posts
+                    </div>
+                    <div class="stat clickable" onclick="openOverlay('followers')">
+                        <span><%- myUser.followers ? myUser.followers.length : 0 %></span> followers
+                    </div>
+                    <div class="stat clickable" onclick="openOverlay('following')">
+                        <span><%- myUser.followings ? myUser.followings.length : 0 %></span> following
+                    </div>
+                </div>
+                <div class="profile-bio">
+                    <strong><%- myUser.bio %></strong><br />
+                </div>
+                <div class="profile-info-header">
+                    <button class="edit-profile">
+                        <a href="/edit_profile" style="text-decoration: none; color: black;">Edit Profile</a>
+                    </button>
+                    <button class="archive">
+                        <a href="/settings" style="text-decoration: none; color: black">Settings</a>
+                    </button>
+                </div>
+                <% if (myUser.isPremium === true) { %>
+                <div class="profile-info-header">
+                    <button class="edit-profile">
+                        <a href="/create_channel" style="text-decoration: none; color: black;">Create Channel</a>
+                    </button>
+                </div>
+                <% } %>
+            </div>
+        </header>
+        <nav class="posts-nav">
+            <div class="nav-item2 active" data-tab="posts" onclick="showTab('posts')">
+                📷 Posts
+            </div>
+            <div class="nav-item2" data-tab="saved" onclick="showTab('saved')">
+                🔖 Saved
+            </div>
+            <div class="nav-item2" data-tab="liked" onclick="showTab('liked')">
+                💕 Liked
+            </div>
+            <div class="nav-item2" data-tab="archive" onclick="showTab('archive')">
+                📁 Archive
+            </div>
+        </nav>
+        <div id="posts" class="posts-grid">
+            <% if (posts && posts.length > 0) { %>
+            <% posts.forEach(post => { %>
+                <div class="post">
+                    <img src="<%= post.url %>" alt="Post image" />
+                </div>
+            <% }) %>
+            <% } else { %>
+                <div class="no-posts-msg">No posts yet.</div>
+            <% } %>
         </div>
-        <div class="profile-info">
-          <div class="profile-info-header">
-            <h2 class="username">
-              <%- myUser.display_name %>
-              <% if(myUser.isPremium === true) { %>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z"/></svg>
-              <% } %>
-            </h2>
-          </div>
-          <div class="profile-stats">
-            <div class="stat">
-              <span><%- (myUser && myUser.postIds) ? myUser.postIds.length : 0 %></span> posts
-            </div>
-            <div class="stat">
-              <span><%- (myUser && myUser.followers) ? myUser.followers.length : 0 %></span> followers
-            </div>
-            <div class="stat">
-              <span><%- (myUser && myUser.followings) ? myUser.followings.length : 0 %></span> following
-            </div>
-          </div>
-          
-          <div class="profile-bio">
-            <strong><%- myUser.bio %></strong><br />
-          </div>
-          <div class="profile-info-header">
-            <button class="edit-profile"><a href="/edit_profile" style="text-decoration: none; color: black;">Edit Profile</a></button>
-            <button class="archive"><a href="/settings" style="text-decoration: none; color: black">Settings</a></button>
-          </div>
-          <% if(myUser.isPremium === true) { %>
-          <div class="profile-info-header">
-            <button class="edit-profile"><a href="/create_channel" style="text-decoration: none; color: black;">Create Channel</a></button>
-          </div>
-          <% } %>
+        <div id="saved" class="posts-grid hidden">
+            <% if (saved && saved.length > 0) { %>
+            <% saved.forEach(save => { %>
+                <div class="post">
+                    <img src="<%= save.url %>" alt="Saved image" />
+                </div>
+            <% }) %>
+            <% } else { %>
+                <div class="no-posts-msg">No saved posts yet.</div>
+            <% } %>
         </div>
-      </header>
-
-      <nav class="posts-nav">
-        <div
-          class="nav-item2 active"
-          data-tab="posts"
-          onclick="showTab('posts')"
-        >
-          📷 Posts
+        <div id="liked" class="posts-grid hidden">
+            <% if (liked && liked.length > 0) { %>
+            <% liked.forEach(like => { %>
+                <div class="post">
+                    <img src="<%= like.url %>" alt="Liked image" />
+                </div>
+            <% }) %>
+            <% } else { %>
+                <div class="no-posts-msg">No liked posts yet.</div>
+            <% } %>
         </div>
-        <div class="nav-item2" data-tab="saved" onclick="showTab('saved')">
-          🔖 Saved
+        <div id="archive" class="posts-grid hidden">
+            <% if (archived && archived.length > 0) { %>
+            <% archived.forEach(archive => { %>
+                <div class="post">
+                    <img src="<%= archive.url %>" alt="Archived image" />
+                </div>
+            <% }) %>
+            <% } else { %>
+                <div class="no-posts-msg">No archived posts yet.</div>
+            <% } %>
         </div>
-        <div class="nav-item2" data-tab="liked" onclick="showTab('liked')">
-          💕 Liked
-        </div>
-        <div class="nav-item2" data-tab="archive" onclick="showTab('archive')">
-          📁 Archive
-        </div>
-      </nav>
-      <div id="posts" class="posts-grid">
-        <% if (posts && posts.length > 0) { %>
-          <% posts.forEach(post => { %>
-            <div class="post">
-              <img src="<%= post.url %>" alt="Post image" />
-            </div>
-          <% }) %>
-        <% } else { %>
-          <div class="no-posts-msg">No posts yet.</div>
-        <% } %>
-      </div>      
-      <div id="saved" class="posts-grid hidden">
-        <% if (saved && saved.length > 0) { %>
-          <% saved.forEach(save => { %>
-            <div class="post">
-              <img src="<%= save.url %>" alt="Post image" />
-            </div>
-          <% }) %>
-        <% } else { %>
-          <div class="no-posts-msg">No saved posts yet.</div>
-        <% } %>
-      </div>
-      <div id="liked" class="posts-grid hidden">
-        <% if (liked && liked.length > 0) { %>
-          <% liked.forEach(like => { %>
-            <div class="post">
-              <img src="<%= like.url %>" alt="Post image" />
-            </div>
-          <% }) %>
-        <% } else { %>
-          <div class="no-posts-msg">No liked posts yet.</div>
-        <% } %>
-      </div>
-      <div id="archive" class="posts-grid hidden">
-        <% if (archived && archived.length > 0) { %>
-          <% archived.forEach(archive => { %>
-            <div class="post">
-              <img src="<%= archive.url %>" alt="Post image" />
-            </div>
-          <% }) %>
-        <% } else { %>
-          <div class="no-posts-msg">No archived posts yet.</div>
-        <% } %>
-      </div>
     </div>
     <div class="footer">
-      <a href="#"
-        ><a href="/contact" style="text-decoration: none; color: black"
-          >About</a
-        ></a
-      >
-      •
-      <a href="#"
-        ><a href="/help" style="text-decoration: none; color: black">Help</a></a
-      >
-      •
-      <a href="#"
-        ><a href="/tandc" style="text-decoration: none; color: black"
-          >Terms</a
-        ></a
-      >
-      •
-      <a href="#"
-        ><a
-          href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor/@13.5555453,80.0240735,17z/data=!3m1!4b1!4m6!3m5!1s0x3a4d773f1e0f8721:0xadb0842ffc2719e4!8m2!3d13.5555453!4d80.0266484!16s%2Fm%2F0wbmm91?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoASAFQAw%3D%3D"
-          style="text-decoration: none; color: black"
-          target="_blank"
-          >Locations</a
-        ></a
-      >
-      <p>
-        © 2025
-        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
-          >Feeds</a
+        <a href="#"
+            ><a href="/contact" style="text-decoration: none; color: black">About</a></a
         >
-        from IIIT Sri-City
-      </p>
+        •
+        <a href="#"
+            ><a href="/help" style="text-decoration: none; color: black">Help</a></a
+        >
+        •
+        <a href="#"
+            ><a href="/tandc" style="text-decoration: none; color: black">Terms</a></a
+        >
+        •
+        <a href="#"
+            ><a
+                href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor/@13.5555453,80.0240735,17z/data=!3m1!4b1!4m6!3m5!1s0x3a4d773f1e0f8721:0xadb0842ffc2719e4!8m2!3d13.5555453!4d80.0266484!16s%2Fm%2F0wbmm91?entry=ttu&g_ep=EgoyMDI1MDIxOS4xIKXMDSoASAFQAw%3D%3D"
+                style="text-decoration: none; color: black"
+                target="_blank"
+                >Locations</a
+            ></a
+        >
+        <p>
+            © 2025
+            <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
+                >Feeds</a
+            >
+            from IIIT Sri-City
+        </p>
     </div>
-    <script src="../js/profile.js"></script>
-  </body>
+    <div id="overlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close-btn" onclick="closeOverlay()">×</span>
+            <h2 id="overlay-title"></h2>
+            <ul id="overlay-list"></ul>
+        </div>
+    </div>
+    <script>
+        const myUser = JSON.parse('<%- JSON.stringify(myUser) %>');
+
+        function showTab(tabId) {
+            const tabs = ['posts', 'saved', 'liked', 'archive'];
+            tabs.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.querySelector(`[data-tab="${id}"]`).classList.remove('active');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+        }
+
+        function openOverlay(type) {
+            const overlay = document.getElementById("overlay");
+            const title = document.getElementById("overlay-title");
+            const list = document.getElementById("overlay-list");
+            list.innerHTML = "";       
+
+            if (type === "followers") {
+                title.textContent = "Followers";
+                if (myUser.followers && myUser.followers.length > 0) {
+                    for (let i = 0; i < myUser.followers.length; i++) {
+                        const follower = myUser.followers[i];
+                        console.log(follower);
+                        const li = document.createElement("li");
+                        const a = document.createElement("a");
+                        a.href = `/profile/${follower.username}`;
+                        a.textContent = follower.username
+
+                        li.appendChild(a);
+                        list.appendChild(li);
+                    }
+                } else {
+                    list.innerHTML = "<li>No followers yet.</li>";
+                }
+            } else if (type === "following") {
+                title.textContent = "Following";
+                if (myUser.followings && myUser.followings.length > 0) {
+                    for (let i = 0; i < myUser.followings.length; i++) {
+                        const following = myUser.followings[i];
+                        const li = document.createElement("li");
+                        const a = document.createElement("a");
+                        a.href = `/profile/${following.username}`;
+                        a.textContent = following.username
+                        li.appendChild(a);
+                        list.appendChild(li);
+                    }
+                } else {
+                    list.innerHTML = "<li>Not following anyone.</li>";
+                }
+            }
+
+            overlay.classList.add("show");
+        }
+
+        function closeOverlay() {
+            document.getElementById("overlay").classList.remove("show");
+        }
+    </script>
+</body>
 </html>
