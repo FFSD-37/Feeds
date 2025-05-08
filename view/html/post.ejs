@@ -86,7 +86,11 @@
         <% } %> <% if (type !== "Kids" || type !== "Student") { %>
         <div class="post-actions">
           <div class="action-icon" onclick="likePost('<%= post.id %>', this)">
+            <% if(post.liked) { %>
+            <i class="fas fa-heart"></i>
+            <% } else { %>
             <i class="far fa-heart"></i>
+            <% } %>
           </div>
           <% if(post.type === "Img") { %>
           <div

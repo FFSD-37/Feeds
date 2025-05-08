@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let div = document.createElement("div");
         div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        
+        console.log(p);
         // Start building the HTML string
         let html = `
           <div class="post-header">
@@ -171,10 +171,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if ('<%- type %>' !== "Kids" && '<%- type %>' !== "Student") {
           html += `
             <div class="post-actions">
-              <div class="action-icon">
-                <i class="far fa-heart" onclick="likePost('${p._id}', this)"></i>
-              </div>`;
+              <div class="action-icon">`
           
+          if (p.liked){
+            html += `<i class="fas fa-heart" onclick="likePost('${p.id}', this)"></i>`;
+          }else{
+            html +=
+                `<i class="far fa-heart" onclick="likePost('${p.id}', this)"></i>
+              </div>`;
+          }
           if (p.type === "Img") {
             html += `
               <div class="action-icon" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
@@ -223,7 +228,7 @@ async function likePost(postId, el) {
   const icon = el.tagName === "I" ? el : el.querySelector("i");
 
   try {
-    const res = await fetch(`/liked/${postId}`, {
+    const res = await fetch(`/post/liked/${postId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include' // Important if you’re using cookies (auth)

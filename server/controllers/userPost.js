@@ -85,7 +85,7 @@ const suggestedPost=async(req,res)=>{
         if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
         const userType=userDetails.data[3];
         
-        const posts = await (
+        let posts = await (
             userType === "Kids"
               ? channelPost.find({ createdAt: { $lt: createdAt } })
               : Post.find({ createdAt: { $lt: createdAt } })
@@ -97,13 +97,17 @@ const suggestedPost=async(req,res)=>{
         if (!posts) return res.status(404).json({ err: "Post not found" });
 
         const user=await User.findOne({username:userDetails.data[0]}).lean();
-        posts.map((post)=>{
-            if(user.likeIds?.includes(post.id)){
+        posts=posts.map((post)=>{console.log(post,user.likedPostsIds?.includes(post.id));
+        
+            if(user.likedPostsIds?.includes(post.id)){
                 post={...post,liked:true};
+                console.log('post',post);
+                
             }
             if(user.savedPostsIds?.includes(post.id)){
                 post={...post,saved:true};
             }
+            return post;
         })
 
         if(!posts) return res.status(404).json({ err: "Post not found" });
@@ -139,6 +143,7 @@ const suggestedReels=async(req,res)=>{
 const handleLikePost=async(req,res)=>{
     try{
         const {id}=req.params;
+        console.log(id);
         if(!id) return res.status(400).json({ err: "Post ID is required" });
         const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
         if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
@@ -147,13 +152,13 @@ const handleLikePost=async(req,res)=>{
         let user=await User.findOne({username:userDetails.data[0]});
         let isUserliked=user.likedPostsIds.find((postId)=>postId===id);
         if(isUserliked){
-            user=user.likedPostsIds.filter((postId)=>postId!==id);
+            user.likedPostsIds=user.likedPostsIds.filter((postId)=>postId!==id);
             await Post.findOneAndUpdate({id},{
                 $inc:{likes:-1}
             })
         }
         else{
-            user=user.likedPostsIds.push(id);
+            user.likedPostsIds.push(id);
             await Post.findOneAndUpdate({id},{
                 $inc:{likes:1}
             })
