@@ -8,8 +8,8 @@
 .dark {
   --bg: #1e1e1e;
   --fg: #f5f5f5;
-  --bubble-sent: #1a73e8;
-  --bubble-recv: #333;
+  --bubble-sent: #d44219;
+  --bubble-recv: #58f609;
 }
 
 body {
@@ -38,6 +38,18 @@ body {
   gap: 10px;
   padding: 10px;
   cursor: pointer;
+}
+
+.user.active {
+  background-color: #d0eaff;
+  border-left: 4px solid #007bff;
+  font-weight: bold;
+}
+
+.chatList.dark .user.active {
+  background-color: #374151;
+  border-left: 4px solid #3b82f6;
+  color: #f5f5f5;
 }
 
 .user img {
@@ -130,3 +142,21 @@ body {
   border-radius: 12px;
   cursor: pointer;
 }
+
+.back-button {
+    display: block;
+    text-align: center;
+    margin-top: auto;
+    padding: 10px;
+    background: #ddd;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  
+  .chatList.dark .back-button {
+    background: #444;
+    color: #fff;
+  }
+  

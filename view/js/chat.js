@@ -9,13 +9,17 @@ const sendBtn = document.getElementById("send-btn");
 const toggleBtn = document.getElementById("toggle-theme");
 const body = document.getElementById("body");
 const users = document.querySelectorAll('.user');
+const chatControls = document.getElementById("chat-controls");
 
 users.forEach(user => {
   user.addEventListener('click', () => {
+    users.forEach(u => u.classList.remove('active'));
+    user.classList.add('active');
     activeUser = user.children[1].textContent;
+    chatControls.style.display = "block";
     loadMessages(activeUser);
-  })
-})
+  });
+});
 
 const socket = io("http://localhost:8000", {
   withCredentials: true
@@ -35,13 +39,23 @@ function appendMessage(text, type, time) {
 
 async function loadMessages(activeUser) {
   chatBox.innerHTML = "";
+
   const res = await fetch(
     `http://localhost:3000/chat/${activeUser}`,
     { method: "GET", credentials: "include", headers: { 'Content-Type': 'application/json' } }
   );
-  let messages = await res.json(); console.log(messages.chats);
+
+  let messages = await res.json();
   messages = messages.chats;
-  if (!messages.length) return;
+
+  if (!messages.length) {
+    chatBox.innerHTML = `
+      <div style="text-align: center; margin-top: 50px; color: var(--fg); opacity: 0.5;">
+        No messages yet. Start the conversation!
+      </div>`;
+    return;
+  }
+
   messages
     .filter((m) => m.from === activeUser || m.from === currentUser)
     .forEach((m) =>
@@ -53,23 +67,26 @@ async function loadMessages(activeUser) {
     );
 }
 
+
 sendBtn.addEventListener("click", () => {
   const text = messageInput.value.trim();
-  if (!text) return;
+  if (!text || !activeUser) return;
+
   const time = new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
+
   socket.emit("sendMessage", {
     to: activeUser,
     text,
     time,
   });
-  appendMessage(text, "sent", time);
-  console.log(activeUser);
 
+  appendMessage(text, "sent", time);
   messageInput.value = "";
 });
+
 
 socket.on("receiveMessage", (msg) => {
   if (msg.from === activeUser) {
