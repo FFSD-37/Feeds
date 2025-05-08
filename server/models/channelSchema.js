@@ -10,8 +10,7 @@ const channelSchema = new mongoose.Schema({
 
     channelDescription: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     },
 
     channelCategory: {
@@ -19,7 +18,7 @@ const channelSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function(categories) {
-                const validOptions = ["Education","Kids","Student","Public","Games"];
+                const validOptions = ["All","Entertainment","Education","Animations","Games","Memes","News","Tech","Vlog","Sports","Nature","Music","Marketing","Fitness","Lifestyle"];
                 return categories.every(cat => validOptions.includes(cat));
             },
             message: "Invalid category found in the list"

@@ -62,6 +62,12 @@ const userSchema = new mongoose.Schema({
         }
     }],
 
+    requested: [{
+        username:{
+            type:String
+        }
+    }],
+
     followings: [{
         username:{
             type:String

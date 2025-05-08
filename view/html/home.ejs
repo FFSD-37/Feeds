@@ -10,41 +10,64 @@
     <%- include('sidebar') %>
     <div class="container" id="container">
       <div class="left-section">
-        <h2><a href="/reels" style="text-decoration: none; color: black;">Suggested Reels</a></h2>
+        <h2>
+          <a href="/reels" style="text-decoration: none; color: black"
+            >Suggested Reels</a
+          >
+        </h2>
         <div class="divider3"></div>
         <div class="reels-grid">
-          <div class="reel"><img src="Done/reel.jpg" /></div>
-          <div class="reel"><img src="Done/reel.jpg" /></div>
-          <div class="reel"><img src="Done/reel.jpg" /></div>
+          <div class="reel">
+            <img
+              src="https://ik.imagekit.io/FFSD0037/Screenshot%202025-05-08%20160123.png?updatedAt=1746700386144"
+            />
+          </div>
+          <div class="reel">
+            <img
+              src="https://ik.imagekit.io/FFSD0037/Screenshot%202025-05-08%20160513.png?updatedAt=1746700535422"
+            />
+          </div>
+          <div class="reel">
+            <img
+              src="https://ik.imagekit.io/FFSD0037/Screenshot%202025-05-08%20160615.png?updatedAt=1746700594336"
+            />
+          </div>
         </div>
         <div class="divider3"></div>
         <div class="reels-grid2">
-          <div class="reel"><img src="Done/reel.jpg" /></div>
-          <div class="reel"><img src="Done/reel.jpg" /></div>
-          <div class="reel"><img src="Done/reel.jpg" /></div>
+          <div class="reel">
+            <img
+              onclick="reelOpen()"
+              src="https://ik.imagekit.io/FFSD0037/Screenshot%202025-05-08%20160714.png?updatedAt=1746700653758"
+            />
+          </div>
+          <div class="reel">
+            <img
+              src="https://ik.imagekit.io/FFSD0037/Screenshot%202025-05-08%20160808.png?updatedAt=1746700705543"
+            />
+          </div>
+          <div class="reel">
+            <img
+              src="https://ik.imagekit.io/FFSD0037/Screenshot%202025-05-08%20160854.png?updatedAt=1746700751255"
+            />
+          </div>
         </div>
         <div class="divider2"></div>
         <div class="footer">
           <a href="#"
-            ><a
-              href="/contact"
-              style="text-decoration: none; color: black"
+            ><a href="/contact" style="text-decoration: none; color: black"
               >About</a
             ></a
           >
           •
           <a href="#"
-            ><a
-              href="/help"
-              style="text-decoration: none; color: black"
+            ><a href="/help" style="text-decoration: none; color: black"
               >Help</a
             ></a
           >
           •
           <a href="#"
-            ><a
-              href="/tandc"
-              style="text-decoration: none; color: black"
+            ><a href="/tandc" style="text-decoration: none; color: black"
               >Terms</a
             ></a
           >
@@ -59,7 +82,9 @@
           >
           <p>
             © 2025
-            <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
+            <a
+              href="/home"
+              style="text-decoration: none; color: rgb(216, 24, 24)"
               >Feeds</a
             >
             from IIIT Sri-City
@@ -70,27 +95,51 @@
       <div class="right-section" id="postsContainer">
         <h1>Feeds : The Personalized Social Platform</h1>
         <div class="divider2"></div>
-      <%- include('post') %>
-      <div id="report-modal" class="report-overlay">
-        <div class="modal-content">
-          <div class="modal-header">
-            <span>Report</span>
-            <button class="close-btn" onclick="closeReportModal()">&times;</button>
+        <%- include('post') %>
+        <div id="report-modal" class="report-overlay">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span>Report</span>
+              <button class="close-btn" onclick="closeReportModal()">
+                &times;
+              </button>
+            </div>
+            <p class="modal-title">Why are you reporting this post?</p>
+            <ul class="report-options">
+              <li onclick="selectReason('I just don\'t like it')">
+                I just don't like it <span>&#8250;</span>
+              </li>
+              <li onclick="selectReason('Bullying or unwanted contact')">
+                Bullying or unwanted contact <span>&#8250;</span>
+              </li>
+              <li
+                onclick="selectReason('Suicide, self-injury or eating disorders')"
+              >
+                Suicide, self-injury or eating disorders <span>&#8250;</span>
+              </li>
+              <li onclick="selectReason('Violence, hate or exploitation')">
+                Violence, hate or exploitation <span>&#8250;</span>
+              </li>
+              <li
+                onclick="selectReason('Selling or promoting restricted items')"
+              >
+                Selling or promoting restricted items <span>&#8250;</span>
+              </li>
+              <li onclick="selectReason('Nudity or sexual activity')">
+                Nudity or sexual activity <span>&#8250;</span>
+              </li>
+              <li onclick="selectReason('Scam, fraud or spam')">
+                Scam, fraud or spam <span>&#8250;</span>
+              </li>
+              <li onclick="selectReason('False information')">
+                False information <span>&#8250;</span>
+              </li>
+            </ul>
           </div>
-          <p class="modal-title">Why are you reporting this post?</p>
-          <ul class="report-options">
-            <li onclick="selectReason('I just don\'t like it')">I just don't like it <span>&#8250;</span></li>
-            <li onclick="selectReason('Bullying or unwanted contact')">Bullying or unwanted contact <span>&#8250;</span></li>
-            <li onclick="selectReason('Suicide, self-injury or eating disorders')">Suicide, self-injury or eating disorders <span>&#8250;</span></li>
-            <li onclick="selectReason('Violence, hate or exploitation')">Violence, hate or exploitation <span>&#8250;</span></li>
-            <li onclick="selectReason('Selling or promoting restricted items')">Selling or promoting restricted items <span>&#8250;</span></li>
-            <li onclick="selectReason('Nudity or sexual activity')">Nudity or sexual activity <span>&#8250;</span></li>
-            <li onclick="selectReason('Scam, fraud or spam')">Scam, fraud or spam <span>&#8250;</span></li>
-            <li onclick="selectReason('False information')">False information <span>&#8250;</span></li>
-          </ul>
         </div>
       </div>
-      <%- include('post_overlay') %>
+    </div>
+    <%- include('post_overlay') %>
     <script src="../js/background.js"></script>
     <script src="../js/home.js"></script>
   </body>

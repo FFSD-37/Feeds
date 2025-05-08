@@ -2,10 +2,29 @@ function openpostdropdown(e) {
   document.getElementById("socialDropdown").style.display = "block";
 }
 
-function postOverlay(e) {
+function postOverlay(url, caption, time, author) {
+  // Hide social dropdown and display main div
   document.getElementById("socialDropdown").style.display = "none";
   document.getElementById("maindiv").style.display = "grid";
   document.getElementById("maindiv").style.opacity = "1";
+  
+  // Set the image source in the overlay
+  const overlayImage = document.getElementById("overlayImage");
+  if (overlayImage) {
+    overlayImage.src = url + "&&tr=w-1080,h-1080"; // Using higher resolution for the overlay
+  }
+
+  const postAuthor = document.getElementById("postAuthor");
+  postAuthor.innerHTML = author;
+  const overlayPostCaption = document.getElementById("overlayPostCaption");
+  if (caption){
+    overlayPostCaption.innerHTML = caption;
+  }
+  else{
+    overlayPostCaption.innerHTML = "";
+  }
+  const overlayPostTime = document.getElementById("overlayPostTime");
+  overlayPostTime.innerHTML = time;
 }
 
 // document.getElementById("comment-button-post").addEventListener("click", (e) => {
@@ -191,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`;
           if(p.type === "Img") {
           div.innerHTML += `
-          <div class="post-content" onclick="postOverlay()">
+          <div class="post-content" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
             <img
               class="post-on-home-page"
               src="${p.url}&&tr=w-640,h-640"
@@ -199,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`
         } else {
           div.innerHTML += `
-          <div class="post-content" onclick="postOverlay()">
+          <div class="post-content" onclick="reelOpen('${p.url}')">
             <video
               class="post-on-home-page"
               src="${p.url}&&tr=w-640,h-640"

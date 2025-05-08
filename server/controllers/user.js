@@ -13,6 +13,7 @@ import Feedback from '../models/feedbackForm.js';
 import DelUser from '../models/SoftDelUsers.js';
 import Notification from '../models/notification_schema.js';
 import Channel from "../models/channelSchema.js"
+import channelPost from '../models/channelPost.js';
 
 
 async function storeOtp(email, otp) {
@@ -368,13 +369,20 @@ const fetchOverlayUser = async (req, res) => {
 const handlegetHome = async (req, res) => {
   const { data } = req.userDetails;
   const createdAt = req.query.createdAt || new Date();
-  const posts = await Post.find({
+  if (data[3] === "Kids"){
+    const posts = channelPost.find({
+      createdAt: { $lt: createdAt },
+    }).sort({ createdAt: -1 }).limit(5);
+
+    if (!posts) return res.status(404).json({ err: "Post not found" });
+    return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3]});
+  } else
+  {const posts = await Post.find({
     createdAt: { $lt: createdAt },
   }).sort({ createdAt: -1 }).limit(5);
 
   if (!posts) return res.status(404).json({ err: "Post not found" });
-
-  return res.render("home", { img: data[2], currUser: data[0], posts });
+  return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3]});}
 }
 
 const handlegetpayment = (req, res) => {
