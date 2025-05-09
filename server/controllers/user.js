@@ -432,11 +432,11 @@ const handlegetprofile = async (req, res) => {
   }
 
   const savedIds = profUser.savedPostsIds || [];
-  const savedObjects = await Post.find({ _id: { $in: savedIds } });
+  const savedObjects = await Post.find({ id: { $in: savedIds } });
   const likeIds = profUser.likedPostsIds || [];
-  const likedObjects = await Post.find({ _id: { $in: likeIds } });
+  const likedObjects = await Post.find({ id: { $in: likeIds } });
   const archiveIds = profUser.archivedPostsIds || [];
-  const archivedObjects = await Post.find({ _id: { $in: archiveIds } });
+  const archivedObjects = await Post.find({ id: { $in: archiveIds } });
 
   if (isOwnProfile) {
     return res.render("profile", {
