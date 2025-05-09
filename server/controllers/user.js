@@ -599,7 +599,7 @@ const handlegetpostoverlay = (req, res) => {
 
 const handlegetcreatepost = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("create_post", { img: data[2], currUser: data[0] });
+  return res.render("create_post", { img: data[2], currUser: data[0], msg: null });
 }
 
 const handlecreatepost = async (req, res) => {
@@ -611,7 +611,8 @@ const handlecreatepost = async (req, res) => {
       url: req.body.profileImageUrl
     }
     await Story.create(user);
-    return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl, type: req.body.postType})
+    // alert("story uploaded successfully!!");
+    return res.render("create_post", {img: data[2], currUser: data[0], msg: "story uploaded successfully"})
   }
   if (req.body.postType === "reel"){
     return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl, type: req.body.postType})
@@ -773,6 +774,17 @@ const registerChannel = async (req, res) => {
   return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] })
 }
 
+const createPostfinalize = async (req, res) => {
+  console.log(req.body);
+  return res.render("create_post3", {img: data[2], currUser: data[0], post: url, type: "Img"})
+}
+
+const handlegetlog = async (req, res) => {
+  const {data} = req.userDetails;
+  const allLogs = await ActivityLog.find({username: data[0]}).lean().sort({createdAt: -1});
+  return res.render("activityLog", {img: data[2], currUser: data[0], allLogs})
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -814,4 +826,6 @@ export {
   togglePP,
   signupChannel,
   registerChannel,
+  handlegetlog,
+  createPostfinalize,
 };
