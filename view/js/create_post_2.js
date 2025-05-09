@@ -107,7 +107,7 @@ async function getAuth() {
 	return res;
 }
 
-document.getElementById("downloadBtn").addEventListener("click", function () {
+function uploadImageand() {
 	const img = document.getElementById("img");
 	const canvas = document.createElement("canvas");
 	const ctx = canvas.getContext("2d");
@@ -145,12 +145,12 @@ document.getElementById("downloadBtn").addEventListener("click", function () {
 			}
 
 			try {
-				const authResponse = await fetch("/get-auth"); // assumes your backend gives auth creds
+				const authResponse = await getAuth();
 				const authData = await authResponse.json();
 
 				const imagekit = new ImageKit({
 					publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
-               		urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
+					urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
 				});
 
 				imagekit.upload(
@@ -168,23 +168,9 @@ document.getElementById("downloadBtn").addEventListener("click", function () {
 							console.error("Upload error:", err);
 						} else {
 							console.log("Upload successful:", result.url);
-
-							const postUrl = document.getElementById("postUrl").value;
-
-							fetch("/finalSubmit", {
-								method: "POST",
-								headers: { "Content-Type": "application/json" },
-								body: JSON.stringify({ imageUrl: result.url }),
-							})
-								.then((res) => res.json())
-								.then((data) => {
-									console.log("Final submit response:", data);
-									alert("Image uploaded and submitted successfully!");
-									window.location.href = "/dashboard"; // or any page you want
-								})
-								.catch((err) =>
-									console.error("Final submit error:", err)
-								);
+							console.log(result.url);
+							document.getElementById("profileImageUrl").value = result.url;
+							document.getElementById("secondUpload").submit();
 						}
 					}
 				);
@@ -193,4 +179,9 @@ document.getElementById("downloadBtn").addEventListener("click", function () {
 			}
 		}, "image/jpeg", 0.95);
 	};
+}
+
+document.getElementById("downloadBtn").addEventListener("click", function (e) {
+	e.preventDefault();
+	uploadImageand();
 });

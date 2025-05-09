@@ -269,8 +269,8 @@
             </tr>
           </thead>
           <tbody>
+            <% allReports.forEach(function(report) { %>
             <tr>
-              <% allReports.forEach(function(report) { %>
               <td><%= report._id %></td>
               <td><%= report.post_id %></td>
               <td><%= report.post_author %></td>
@@ -298,8 +298,8 @@
                   <i class="fas fa-check-circle"></i>
                 </button>
               </td>
-              <% }); %>
             </tr>
+            <% }); %>
           </tbody>
         </table>
         <% } else { %>

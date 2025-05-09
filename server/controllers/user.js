@@ -402,7 +402,7 @@ const handlegetprofile = async (req, res) => {
   const { data } = req.userDetails;
   const profUser = await User.findOne({ username: u.username });
 
-  if (!profUser) {
+  if (!profUser || profUser.blockedUsers.includes(data[0])) {
     return res.render("Error_page", {
       img: data[2],
       currUser: data[0],
@@ -611,7 +611,6 @@ const handlecreatepost = async (req, res) => {
       url: req.body.profileImageUrl
     }
     await Story.create(user);
-    // alert("story uploaded successfully!!");
     return res.render("create_post", {img: data[2], currUser: data[0], msg: "story uploaded successfully"})
   }
   if (req.body.postType === "reel"){
@@ -774,15 +773,47 @@ const registerChannel = async (req, res) => {
   return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] })
 }
 
-const createPostfinalize = async (req, res) => {
+const createPostfinalize = (req, res) => {
+  try{
+  const {data} = req.userDetails
   console.log(req.body);
-  return res.render("create_post3", {img: data[2], currUser: data[0], post: url, type: "Img"})
+  return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl, type: req.body.type});
+} catch(err){ console.log(err)}
 }
 
 const handlegetlog = async (req, res) => {
   const {data} = req.userDetails;
   const allLogs = await ActivityLog.find({username: data[0]}).lean().sort({createdAt: -1});
   return res.render("activityLog", {img: data[2], currUser: data[0], allLogs})
+}
+
+const uploadFinalPost = async (req, res) => {
+  const {data} = req.userDetails;
+  const idd = `${data[0]}-${Date.now()}`;
+  const postObj = {
+    id: idd,
+    type: req.body.type?"Img":"Reels",
+    url: req.body.avatar,
+    content: req.body.caption,
+    author: data[0],
+  }
+  await Post.create(postObj);
+  const post = await Post.findOne({id: idd}).lean();
+  await User.findOneAndUpdate({username: data[0]}, {$push: {postIds: post._id}}, {new: true, upsert: false});
+  return res.render("create_post", {img: data[2], currUser: data[0], msg: "post uploaded successfully"})
+}
+
+const reportAccount = async (req, res) => {
+  const {data} = req.userDetails;
+  const {username} = req.params;
+  const report = {
+    post_id: "On account",
+    post_author: username,
+    report_number: Number(Date.now()),
+    user_reported: data[0],
+  }
+  await Report.create(report);
+  return res.json({data: true});
 }
 
 export {
@@ -828,4 +859,6 @@ export {
   registerChannel,
   handlegetlog,
   createPostfinalize,
+  uploadFinalPost,
+  reportAccount
 };

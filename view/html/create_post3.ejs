@@ -9,7 +9,6 @@
       type="module"
       src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.6.3/index.js"
     ></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_API_KEY&libraries=places"></script>
     <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
   </head>
   <body>
@@ -21,21 +20,20 @@
       <div class="content">
         <div class="image-create-post3">
           <% if (type === "reel") { %>
-          <video id="post-video" class="post-image">
-            <source src="<%- img %>" type="video/mp4" />
-          </video>
+            <div></div>
           <% } else { %>
           <img
             id="post-image"
             class="post-image"
-            src="<%- img %>"
+            src="<%- post %>"
             alt="Post image preview"
           />
           <% } %>
-          <input type="hidden" id="avatar" name="avatar" value="<%- post %>" />
         </div>
         <div class="right-side">
           <form action="/shareFinalPost" method="POST" id="create-post3">
+            <input type="hidden" id="avatar" name="avatar" value="<%- post %>" />
+            <input type="hidden" id="type" name="type" value="<%- type %>" />
             <div>
               <div class="user-info">
                 <img
@@ -52,6 +50,7 @@
                     id="caption"
                     class="caption-input"
                     placeholder="Add a caption"
+                    name="caption"
                   ></textarea>
                   <a
                     id="emoji-button"
@@ -73,11 +72,12 @@
                   id="location"
                   class="location-input"
                   placeholder="Type a place..."
+                  name="location"
                 />
               </div>
 
               <div class="comments-toggle">
-                <input type="checkbox" id="toggle-comments" checked />
+                <input type="checkbox" id="toggle-comments" name="toggle" checked />
                 <label for="toggle-comments">Enable comments</label>
               </div>
             </div>
@@ -85,7 +85,7 @@
               <button class="share-button" type="submit">Share</button>
             </div>
           </form>
-        </div>
+          </div>
       </div>
     </div>
     <script src="../js/create_post3.js"></script>
