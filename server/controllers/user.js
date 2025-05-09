@@ -335,7 +335,7 @@ const handleContact = (req, res) => {
       console.log("Error is writing file", err);
     }
     else {
-      return res.render("contact", { img: data[2], msg: "Your response is noted, we'll get back to you soon." })
+      return res.render("contact", { img: data[2], msg: "Your response is noted, we'll get back to you soon." ,currUser: data[0]})
     }
   })
 }
@@ -351,7 +351,7 @@ const handleadminlogin = async (req, res) => {
     orders.forEach(async order => {
       if (order.status !== "Pending") {
         revenue += Number(order.amount);
-        await User.findOneAndUpdate({ username: data[0] }, {$set : {isPremium: true}});
+        await User.findOneAndUpdate({ username: order.username }, {$exists: false},{$set : {isPremium: true}});
       }
     });
     return res.render("adminPortal", { total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders, allUsers: totalUsers, allReports: tickets, allReviews: reviews });
