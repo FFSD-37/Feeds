@@ -55,7 +55,7 @@ function createStoryElement(story) {
     container.className = 'story-media-container';
 
         const video = document.createElement('video');
-        video.src = story.url;
+        video.src = `${story.url}?&&tr=w-640,h-640`;
         video.className = 'story-media';
         video.controls = false;
         video.autoplay = true;
