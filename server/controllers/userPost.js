@@ -97,7 +97,7 @@ const suggestedPost=async(req,res)=>{
         if (!posts) return res.status(404).json({ err: "Post not found" });
 
         const user=await User.findOne({username:userDetails.data[0]}).lean();
-        posts=posts.map((post)=>{console.log(post,user.likedPostsIds?.includes(post.id));
+        posts=posts.map((post)=>{
         
             if(user.likedPostsIds?.includes(post.id)){
                 post={...post,liked:true};

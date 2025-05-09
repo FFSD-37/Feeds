@@ -10,14 +10,20 @@
 <body>
     <%- include('sidebar') %>
     <div class="stories-grid" id="stories-grid">
-        <% stories.forEach(user => { %>
-            <div class="story-avatar-border">
-                <img src="${user.avatar}" alt="${user.username}" class="story-avatar">
-            </div>
-            <div class="story-username"><%= user.username %></div>
+        <% const seenUsernames = {}; %>
+        <% stories.forEach((story) => { %>
+            <% if (!seenUsernames[story.username]) { %>
+                <% seenUsernames[story.username] = true; %>
+                <div class="story-container" onclick="openStory('<%= story.username %>')">
+                    <div class="story-avatar-border">
+                        <img src="<%= story.avatarUrl %>" alt="<%= story.username %>" class="story-avatar">
+                    </div>
+                    <div class="story-username"><%= story.username %></div>
+                </div>
+            <% } %>
         <% }) %>
     </div>
-    
+
     <div class="story-viewer" id="story-viewer">
         <div class="close-story" onclick="closeStory()">✕</div>
         
@@ -27,7 +33,7 @@
             <div class="user-info" id="story-user-info">
                 <img src="/api/placeholder/64/64" alt="User profile" class="user-avatar-small" id="story-user-avatar">
                 <span class="username" id="story-username">username</span>
-                <span class="post-time">2h</span>
+                <span class="post-time" id="story-time"></span>
             </div>
             <div class="story-actions" onclick="toggleOptionsMenu()">⋮
                 <div class="options-menu" id="options-menu">
@@ -43,7 +49,40 @@
             <div class="nav-left" onclick="previousStory()"></div>
             <div class="nav-right" onclick="nextStory()"></div>
         </div>
+        
+        <div class="story-interaction-bar">
+            <input type="text" class="message-input" placeholder="Send message" id="story-message-input">
+            <div class="interaction-buttons">
+                <div class="interaction-button" onclick="shareStory()">↗</div>
+            </div>
+        </div>
     </div>
+
+<script>
+
+const stories = JSON.parse('<%- JSON.stringify(stories) %>');
+  const users = {};
+
+  stories.forEach(story => {
+    const username = story.username;
+    
+    if (!users[username]) {
+      users[username] = {
+        username: username,
+        avatar: story.avatarUrl ,
+        stories: []
+      };
+    }
+
+    users[username].stories.push(story.url); 
+  });
+
+    const storiesData = {
+        currentUser: "<%= currUser %>",
+        userStories: stories
+    };
+</script>
+    
     <script src="../js/stories.js"></script>
     <script src="../js/background.js"></script>
 </body>
