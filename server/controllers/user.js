@@ -348,9 +348,10 @@ const handleadminlogin = async (req, res) => {
     const orders = await Payment.find({}).lean();
     const reviews = await Feedback.find({});
     var revenue = 0;
-    orders.forEach(order => {
+    orders.forEach(async order => {
       if (order.status !== "Pending") {
         revenue += Number(order.amount);
+        await User.findOneAndUpdate({ username: data[0] }, {$set : {isPremium: true}});
       }
     });
     return res.render("adminPortal", { total_revenue: revenue, total_users: totalUsers.length, total_posts: totalPosts.length, allUsersInOrder: totalUsers, total_tickets: tickets.length, allOrders: orders, allUsers: totalUsers, allReports: tickets, allReviews: reviews });
@@ -816,6 +817,26 @@ const reportAccount = async (req, res) => {
   return res.json({data: true});
 }
 
+const handlegetloginchannel = async (req, res) => {
+  const {data} = req.userDetails;
+  return res.render("channellogin", {img: data[2], currUser: data[0]});
+}
+
+const handleloginchannel = async (req, res) => {
+  const {data} = req.userDetails;
+  const {channelName, channelPassword} = req.body;
+  const channel = await Channel.findOne({channelName: channelName});
+  const user = await User.findOne({username: data[0]});
+  if(channel && channel.channelAdmin == user._id){
+    if(channel.channelPassword == channelPassword){
+      return res.render("channel", {img: data[2], currUser: data[0], channel});
+    }
+    else{
+      return res.render("channellogin", {img: data[2], currUser: data[0], msg: "Channel do not exists."});
+    }
+  }
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -860,5 +881,7 @@ export {
   handlegetlog,
   createPostfinalize,
   uploadFinalPost,
-  reportAccount
+  reportAccount,
+  handlegetloginchannel,
+  handleloginchannel
 };

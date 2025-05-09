@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+    }
+
+    .login-container input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .login-container button:hover {
+      background-color: #45a049;
+    }
+
+    #error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+    <%- include('sidebar') %>
+  <div class="login-container">
+    <h2>Channel Login</h2>
+    <form id="loginForm" action="/postloginchannel" method="POST">
+      <input type="text" id="username" name="channelName" placeholder="Name" required />
+      <input type="password" id="password" name="channelPassword" placeholder="Password" required />
+      <button type="submit">Login</button>
+      <p id="error-message"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("error-message");
+
+      const validUser = "admin";
+      const validPass = "1234";
+
+      if (username === validUser && password === validPass) {
+        errorMessage.style.color = "green";
+        errorMessage.textContent = "Login successful!";
+      } else {
+        errorMessage.style.color = "red";
+        errorMessage.textContent = "Invalid username or password.";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Profile</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* [Styles remain unchanged] */
+      /* All your existing CSS code here */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: #262626;
+        background-color: bisque;
+      }
+
+      .container {
+        height: 100dvh;
+        max-width: 1050px;
+        margin: 0 0;
+        margin-bottom: 40px;
+        padding: 30px 20px;
+        text-align: center;
+      }
+
+      .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .profile-pic {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        margin-right: 30px;
+        overflow: hidden;
+      }
+
+      .profile-pic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .profile-info {
+        flex: 1;
+        text-align: left;
+      }
+
+      .profile-info-header {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .username {
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 10px;
+      }
+
+      .edit-profile,
+      .archive {
+        background: transparent;
+        border: 1px solid #dbdbdb;
+        color: #262626;
+        border-radius: 4px;
+        padding: 5px 9px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 0 5px;
+      }
+
+      .settings {
+        margin-left: 10px;
+        cursor: pointer;
+      }
+
+      .profile-stats {
+        display: flex;
+        margin-bottom: 10px;
+      }
+
+      .stat {
+        margin-right: 20px;
+      }
+
+      .stat span {
+        font-weight: 600;
+      }
+
+      .footer {
+        font-size: 15px;
+        color: #0c0c0c;
+        text-align: center;
+        font-weight: bold;
+        position: fixed;
+        bottom: 0;
+      }
+
+      .footer a {
+        color: #090808;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+
+      .profile-bio p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .posts-nav {
+        display: flex;
+        justify-content: center;
+        border-top: 1px solid #dbdbdb;
+        margin-bottom: 10px;
+      }
+
+      .nav-item2 {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        padding: 15px 0;
+        font-size: 12px;
+        font-weight: 600;
+        color: #8e8e8e;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      .nav-item2.active {
+        color: #262626;
+        border-top: 1px solid #262626;
+        margin-top: -1px;
+      }
+
+      .nav-item2 i {
+        margin-right: 6px;
+      }
+
+      .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-gap: 10px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .post {
+        width: 100%;
+        position: relative;
+        padding-bottom: 100%;
+      }
+
+      .post img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      .no-posts-msg {
+        grid-column: 1 / -1;
+        text-align: center;
+        font-style: italic;
+        color: gray;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 735px) {
+        .profile-header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .profile-pic {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+
+        .profile-info-header {
+          justify-content: center;
+        }
+
+        .profile-stats {
+          justify-content: center;
+        }
+
+        .posts-grid {
+          grid-gap: 3px;
+          max-height: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('sidebar') %>
+    <div class="container">
+      <header class="profile-header">
+        <div class="profile-pic">
+          <img src="<%- channel.channelLogo %>" alt="Channel Logo" />
+          <img src="https://via.placeholder.com/200" alt="Profile Picture" />
+        </div>
+        <div class="profile-info">
+          <div class="profile-info-header">
+            <h2 class="username"><%- channel.channelName %></h2>
+            <h2 class="username">
+              <i class="fa-solid fa-check-circle" style="color: #0095f6"></i>
+            </h2>
+          </div>
+          <div class="profile-stats">
+            <div class="stat">
+              <span><%- (channel && channel.postIds) ? channel.postIds.length : 0 %></span>
+              <span>5</span> posts
+            </div>
+            <div class="stat">
+              <span><%- (channel && channel.members) ? channel.members.length : 0 %></span>
+              <span>150</span> members
+            </div>
+          </div>
+
+          <div class="profile-bio">
+            <strong><%- channel.bio %></strong>
+            <strong>This is a sample about of a channel.</strong><br />
+          </div>
+          <div class="profile-info-header">
+            <button class="edit-profile">
+              <a
+                href="/edit_profile"
+                style="text-decoration: none; color: black"
+                >Edit Profile</a
+              >
+            </button>
+            <button class="archive">
+              <a href="/settings" style="text-decoration: none; color: black"
+                >Settings</a
+              >
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <nav class="posts-nav">
+        <div
+          class="nav-item2 active"
+          data-tab="posts"
+          onclick="showTab('posts')"
+        >
+          📷 Posts
+        </div>
+        <div class="nav-item2" data-tab="archive" onclick="showTab('archive')">
+          📁 Archive
+        </div>
+      </nav>
+
+      <div id="posts" class="posts-grid">
+        <!-- <% if (posts && posts.length > 0) { %> <% posts.forEach(post => { %> -->
+        <div class="post">
+          <img src="<%= post.url %>" alt="Post image" />
+          <img src="https://via.placeholder.com/150" alt="Post image" />
+        </div>
+        <div class="post">
+          <img src="https://via.placeholder.com/150" alt="Post image" />
+        </div>
+        <div class="post">
+          <img src="https://via.placeholder.com/150" alt="Post image" />
+        </div>
+        <div class="post">
+          <img src="https://via.placeholder.com/150" alt="Post image" />
+        </div>
+        <!-- <% }) %> <% } else { %> -->
+        <div class="no-posts-msg">No posts yet.</div>
+        <!-- <% } %> -->
+      </div>
+
+      <div id="archive" class="posts-grid hidden">
+        <!-- <% if (archived && archived.length > 0) { %> <% archived.forEach(archive => { %> -->
+        <div class="post">
+          <img src="https://via.placeholder.com/150" alt="Post image" />
+        </div>
+        <!-- <% }) %> <% } else { %> -->
+        <div class="no-posts-msg">No archived posts yet.</div>
+        <!-- <% } %> -->
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="/contact" style="text-decoration: none; color: black">About</a> •
+      <a href="/help" style="text-decoration: none; color: black">Help</a> •
+      <a href="/tandc" style="text-decoration: none; color: black">Terms</a> •
+      <a
+        href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor"
+        style="text-decoration: none; color: black"
+        target="_blank"
+        >Locations</a
+      >
+      <p>
+        © 2025
+        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
+          >Feeds</a
+        >
+        from IIIT Sri-City
+      </p>
+    </div>
+
+    <script>
+      function showTab(tabName) {
+        document.querySelectorAll(".posts-grid").forEach((grid) => {
+          grid.classList.add("hidden");
+        });
+        document.querySelectorAll(".nav-item2").forEach((header) => {
+          header.classList.remove("active");
+        });
+        document.getElementById(tabName).classList.remove("hidden");
+        document
+          .querySelector(`[data-tab="${tabName}"]`)
+          .classList.add("active");
+      }
+
+      function openSettings() {
+        window.location.href = "/settings";
+      }
+    </script>
+  </body>
+</html>

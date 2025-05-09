@@ -43,6 +43,8 @@ import {
   createPostfinalize,
   uploadFinalPost,
   reportAccount,
+  handlegetloginchannel,
+  handleloginchannel
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -165,5 +167,9 @@ router.get("/activityLog", isAuthuser, handlegetlog);
 router.post("/shareFinalPost", isAuthuser, uploadFinalPost);
 
 router.post("/report/:username", isAuthuser, reportAccount);
+
+router.get("/login_channel",isAuthuser, handlegetloginchannel);
+
+router.post("/postloginchannel",isAuthuser, handleloginchannel);
 
 export default router;
