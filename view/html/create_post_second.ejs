@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Editor Using HTML, CSS, and JavaScript - ByteWebster</title>
+    <title>Post Creation</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -14,6 +14,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/create_post_2.css" />
+    <link
+      rel="icon"
+      type="image/*"
+      href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780"
+    />
   </head>
   <body>
     <div class="right">
@@ -193,17 +198,15 @@
         <button class="btn btn" type="button" id="restoreBtn">
           Reset Filters
         </button>
-        <button id="downloadBtn">
-          <i class="bx bx-download"></i> Download Image
-        </button>
+        <form id="secondUpload" action="/finalSubmit" method="POST">
+          <input type="hidden" id="profileImageUrl" name="profileImageUrl" />
+          <input type="hidden" id="type" name="type" value="<%- type %>" />
+          <button type="submit" id="downloadBtn">Proceed</button>
+        </form>
       </div>
     </div>
     <div class="left">
-      <img
-        id="img"
-        src="<%- img2 %>"
-        alt="Image not found"
-      />
+      <img id="img" src="<%- img2 %>" alt="Image not found" />
     </div>
     <%- include('sidebar') %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>CSS Progress Bar</title>
+    <title>Post Creation</title>
     <link rel="stylesheet" href="../css/create_post.css">
+    <link rel="stylesheet" href="../css/alert.css">
     <style>
       /* Dropdown Styles */
       .post-type-selector {
@@ -79,10 +80,17 @@
         100% { transform: rotate(360deg); }
       }
     </style>
+    <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
 </head>
 <body>
-    <div class="center">
-      <div class="form-input">
+  <div class="center">
+    <div class="form-input">
+        <% if (msg) { %>
+          <div class="alert" role="alert">
+            <div class="alert-text"><%= msg %></div>
+            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+          </div>
+        <% } %>
         <h4 style="padding: 5px; font-size: 20px">Create New Post</h4>
         
         <!-- Post Type Selector Dropdown -->

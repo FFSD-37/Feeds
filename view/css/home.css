@@ -88,7 +88,8 @@ h2 {
   font-size: 12px;
   text-align: center;
   margin: 0; /* Clean margins */
-  justify-self: start; /* Align items to the left of their grid cell */
+  justify-self: start;
+  cursor: pointer; /* Align items to the left of their grid cell */
 }
 
 .reels-grid img {

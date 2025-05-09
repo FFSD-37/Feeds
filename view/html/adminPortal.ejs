@@ -10,6 +10,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
   </head>
   <body>
     <!-- Navbar -->
@@ -268,8 +269,8 @@
             </tr>
           </thead>
           <tbody>
+            <% allReports.forEach(function(report) { %>
             <tr>
-              <% allReports.forEach(function(report) { %>
               <td><%= report._id %></td>
               <td><%= report.post_id %></td>
               <td><%= report.post_author %></td>
@@ -297,8 +298,8 @@
                   <i class="fas fa-check-circle"></i>
                 </button>
               </td>
-              <% }); %>
             </tr>
+            <% }); %>
           </tbody>
         </table>
         <% } else { %>
