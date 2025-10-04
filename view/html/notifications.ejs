@@ -2,43 +2,212 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Notification Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications</title>
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
         padding: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
       }
 
-      .table-wrapper {
-        width: 80%;
-        max-width: 1000px;
-        height: 600px;
-        overflow-y: auto;
-        border-radius: 5px;
-      }
-
-      table {
+      .container {
         width: 100%;
-        border-collapse: collapse;
+        max-width: 900px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        animation: fadeIn 0.5s ease;
       }
 
-      thead {
-        background-color: #aaa3a3;
-        position: sticky;
-        top: 0;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
-      th,
-      td {
-        padding: 8px;
-        text-align: center;
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
       }
 
-      tr:nth-child(even) {
-        background-color: #f9f9f9;
+      .header-icon {
+        font-size: 2rem;
+        animation: swing 2s ease-in-out infinite;
+      }
+
+      @keyframes swing {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(15deg); }
+        75% { transform: rotate(-15deg); }
+      }
+
+      .header h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+      }
+
+      .header-badge {
+        background: rgba(255, 255, 255, 0.25);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        margin-left: auto;
+      }
+
+      .notifications-wrapper {
+        max-height: 600px;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .notifications-wrapper::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .notifications-wrapper::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      .notifications-wrapper::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 10px;
+      }
+
+      .notifications-wrapper::-webkit-scrollbar-thumb:hover {
+        background: #764ba2;
+      }
+
+      .notification-item {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+        animation: slideIn 0.4s ease;
+        border-left: 4px solid transparent;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .notification-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        border-left-color: #667eea;
+      }
+
+      .notification-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .notification-content {
+        flex: 1;
+      }
+
+      .notification-message {
+        font-size: 0.95rem;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+
+      .notification-message a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+      }
+
+      .notification-message a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+      }
+
+      .notification-time {
+        font-size: 0.8rem;
+        color: #999;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .notification-action {
+        flex-shrink: 0;
+      }
+
+      .btn-follow {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-follow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-follow:active {
+        transform: translateY(0);
+      }
+
+      .btn-follow.followed {
+        background: #4CAF50;
+        cursor: default;
+      }
+
+      .btn-follow.followed::after {
+        content: ' ✓';
       }
 
       .no-data {
@@ -46,21 +215,71 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 2rem;
-        color: #555;
-        font-size: 1.125rem;
-        font-weight: 500;
+        padding: 80px 20px;
+        color: #999;
+        text-align: center;
       }
 
-      .no-data .icon {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        color: #bbb;
+      .no-data-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+      }
+
+      .no-data h2 {
+        font-size: 1.5rem;
+        color: #666;
+        margin-bottom: 10px;
       }
 
       .no-data p {
-        margin: 0;
-        line-height: 1.4;
+        font-size: 1rem;
+        color: #999;
+      }
+
+      .coin-badge {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          border-radius: 15px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 1.5rem;
+        }
+
+        .notification-item {
+          padding: 15px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .notification-action {
+          width: 100%;
+        }
+
+        .btn-follow {
+          width: 100%;
+        }
       }
     </style>
     <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
@@ -68,88 +287,86 @@
 
   <body>
     <%- include('sidebar') %>
-    <div class="table-wrapper">
-      <% if(allNotifications && allNotifications.length > 0){ %>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Notification</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="messageBody">
-          <% allNotifications.forEach(function(noti) { %>
-          <tr>
-            <td><%= new Date(noti.createdAt).toDateString() %></td>
-            <td><%= new Date(noti.createdAt).toLocaleTimeString() %></td>
-            <% if(noti.msgSerial === 1) { %>
-            <td>
-              <a href="/profile/<%= noti.userInvolved %>"
-                ><%= noti.userInvolved %></a
-              >
-              <pre> started following you.</pre>
-            </td>
-            <td></td>
-            <% } else if(noti.msgSerial === 2){ %>
-            <td>
-              <a href="/profile/<%= noti.userInvolved %>"
-                ><%= noti.userInvolved %></a
-              >
-              <pre> liked your comment.</pre>
-            </td>
-            <td></td>
-            <% } else if(noti.msgSerial === 3){ %>
-            <td>
-              <a href="/profile/<%= noti.userInvolved %>"
-                ><%= noti.userInvolved %></a
-              >
-              <pre> liked your post.</pre>
-            </td>
-            <td></td>
-            <% } else if(noti.msgSerial === 4){ %>
-            <td>
-              <a href="/profile/<%= noti.userInvolved %>"
-                ><%= noti.userInvolved %></a
-              >
-              <pre> requested to follow you.</pre>
-            </td>
-            <td>
-              <button onclick="followback('<%= noti.userInvolved %>')">
+    
+    <div class="container">
+      <div class="header">
+        <span class="header-icon">🔔</span>
+        <h1>Notifications</h1>
+        <% if(allNotifications && allNotifications.length > 0){ %>
+        <span class="header-badge">Total: <%= allNotifications.length %></span>
+        <% } %>
+      </div>
+
+      <div class="notifications-wrapper">
+        <% if(allNotifications && allNotifications.length > 0){ %>
+          <% allNotifications.forEach(function(noti) { 
+            let icon = '📩';
+            let message = '';
+            
+            if(noti.msgSerial === 1) {
+              icon = '👤';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> started following you.';
+            } else if(noti.msgSerial === 2) {
+              icon = '❤️';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> liked your comment.';
+            } else if(noti.msgSerial === 3) {
+              icon = '👍';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> liked your post.';
+            } else if(noti.msgSerial === 4) {
+              icon = '🤝';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> requested to follow you.';
+            } else if(noti.msgSerial === 5) {
+              icon = '👁️';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> has viewed your profile.';
+            } else if(noti.msgSerial === 6) {
+              icon = '🪙';
+              message = 'You\'ve received <span class="coin-badge">🪙 ' + noti.coin + ' coins</span>';
+            } else if(noti.msgSerial === 7) {
+              icon = '👋';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> has unfollowed you.';
+            }
+          %>
+          
+          <div class="notification-item">
+            <div class="notification-icon">
+              <%= icon %>
+            </div>
+            <div class="notification-content">
+              <div class="notification-message">
+                <%- message %>
+              </div>
+              <div class="notification-time">
+                <span>📅</span>
+                <%= new Date(noti.createdAt).toLocaleDateString() %>
+                <span>•</span>
+                <span>🕐</span>
+                <%= new Date(noti.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+              </div>
+            </div>
+            <% if(noti.msgSerial === 4) { %>
+            <div class="notification-action">
+              <button class="btn-follow" onclick="followback('<%= noti.userInvolved %>', this)">
                 Follow back
               </button>
-            </td>
-            <% } else if(noti.msgSerial === 5){ %>
-            <td>
-              <a href="/profile/<%= noti.userInvolved %>"
-                ><%= noti.userInvolved %></a
-              >
-              <pre> has viewed your profile.</pre>
-            </td>
-            <td></td>
-            <% } else if(noti.msgSerial === 6){ %>
-            <td><pre>You've got <%= noti.coin %> coins.</pre></td>
-            <td></td>
-            <% } else if(noti.msgSerial === 7){ %>
-              <td><a href="/profile/<%= noti.userInvolved %>"><%= noti.userInvolved %></a>
-                <pre>has unfollowed you.</pre>
-              </td>
-              <td></td>
+            </div>
             <% } %>
-          </tr>
+          </div>
           <% }); %>
-        </tbody>
-      </table>
-      <% } else { %>
-      <div class="no-data">
-        <span class="icon">🔔</span>
-        <p>No notifications found</p>
+        <% } else { %>
+          <div class="no-data">
+            <div class="no-data-icon">🔔</div>
+            <h2>No notifications yet</h2>
+            <p>When you get notifications, they'll show up here</p>
+          </div>
+        <% } %>
       </div>
-      <% } %>
     </div>
+
     <script>
-      function followback(username) {
+      function followback(username, button) {
+        button.disabled = true;
+        button.textContent = 'Following...';
+        
         fetch(`/followback/${username}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -157,8 +374,22 @@
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
+            button.textContent = 'Following';
+            button.classList.add('followed');
+            
+            setTimeout(() => {
+              button.closest('.notification-item').style.animation = 'slideOut 0.4s ease';
+              setTimeout(() => {
+                button.closest('.notification-item').style.display = 'none';
+              }, 400);
+            }, 1500);
           })
-          .catch((error) => console.error(error));
+          .catch((error) => {
+            console.error(error);
+            button.disabled = false;
+            button.textContent = 'Follow back';
+            alert('Failed to follow. Please try again.');
+          });
       }
     </script>
   </body>
