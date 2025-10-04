@@ -2,74 +2,281 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Activity log</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activity Log</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/*"
+      href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780"
+    />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        height: 100vh; /* lock full page height */
+        overflow: hidden; /* prevent body scroll */
         padding: 20px;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        height: 100%; /* use full height */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        color: #1a202c;
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .stats-bar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        justify-content: space-between;
         align-items: center;
       }
 
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .stat-value {
+        color: #667eea;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
       .table-wrapper {
-        width: 80%;
-        max-width: 1000px;
-        height: 600px;
-        overflow-y: auto;
-        border: 2px solid black;
-        border-radius: 5px;
+        flex: 1; /* take remaining space */
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .table-container {
+        flex: 1;
+        overflow-y: auto; /* scroll only inside table */
+        min-height: 0; /* fix flex overflow issue */
+      }
+
+      .table-container::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .table-container::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 4px;
       }
 
       table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0;
       }
 
       thead {
-        background-color: #f2f2f2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         position: sticky;
         top: 0;
+        z-index: 10;
       }
 
-      th,
+      th {
+        padding: 14px 16px;
+        text-align: left;
+        color: white;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
       td {
-        border: 1px solid #999;
-        padding: 8px;
-        text-align: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #2d3748;
+        font-size: 0.9rem;
       }
 
-      tr:nth-child(even) {
-        background-color: #f9f9f9;
+      tbody tr {
+        background: white;
+        transition: background 0.2s ease;
+      }
+
+      tbody tr:hover {
+        background: #f7fafc;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .id-cell {
+        font-weight: 600;
+        color: #667eea;
+        font-family: "Courier New", monospace;
+      }
+
+      .message-cell {
+        max-width: 500px;
+      }
+
+      .time-cell {
+        color: #718096;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: #718096;
+      }
+
+      .no-data-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+
+      .no-data-text {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        .header h1 {
+          font-size: 1.5rem;
+        }
+
+        .stats-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .table-container {
+          max-height: 500px;
+        }
+
+        th,
+        td {
+          padding: 10px 12px;
+          font-size: 0.8rem;
+        }
+
+        .message-cell {
+          max-width: 200px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     </style>
-    <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
   </head>
 
   <body>
     <%- include("sidebar") %>
-    <div class="table-wrapper">
+    <div class="container">
+      <div class="header">
+        <h1>📋 Activity Log</h1>
+      </div>
+
       <% if (allLogs && allLogs.length > 0) { %>
-        <table>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Message</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody id="messageBody">
-            <% allLogs.forEach(function(log) { %>
-            <tr>
-              <td><%- log.id %></td>
-              <td><%- log.message %></td>
-              <td><%- log.createdAt %></td>
-            </tr>
-            <% }); %>
-          </tbody>
-        </table>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-label">Total Activities:</span>
+          <span class="stat-value"><%= allLogs.length %></span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Latest:</span>
+          <span class="stat-value time-cell"><%= allLogs[0].createdAt %></span>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 60px">#</th>
+                <th>Activity</th>
+                <th style="width: 180px">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="messageBody">
+              <% allLogs.forEach(function(log, index) { %>
+              <tr>
+                <td class="id-cell"><%= index + 1 %></td>
+                <td class="message-cell"><%- log.message %></td>
+                <td class="time-cell"><%- log.createdAt %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <% } else { %>
-        <div class="no-data">No orders found</div>
+      <div class="table-wrapper">
+        <div class="no-data">
+          <div class="no-data-icon">📝</div>
+          <div class="no-data-text">No activity logs found</div>
+        </div>
+      </div>
       <% } %>
     </div>
   </body>
