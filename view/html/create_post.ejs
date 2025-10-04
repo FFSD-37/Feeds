@@ -93,7 +93,6 @@
         <% } %>
         <h4 style="padding: 5px; font-size: 20px">Create New Post</h4>
         
-        <!-- Post Type Selector Dropdown -->
         <div class="post-type-selector">
           <div class="post-type-btn" id="postTypeBtn">
             <span id="selected-post-type">Image Post</span>
@@ -106,7 +105,6 @@
           </div>
         </div>
 
-        <!-- Rest of your form content remains the same -->
         <label class="preview" for="file-ip-1">
           <input type="file" id="file-ip-1" accept="image/*" onchange="showPreview(event);" />
           <div class="grid-line v-line-1"></div>
@@ -127,7 +125,6 @@
             <button type="submit" class="continue-button" id="continueBtn" style="text-decoration: none;">
               <span class="button-text">Continue Editing</span>
               <span class="loading-spinner" style="display: none;">
-                <!-- SVG spinner -->
                 <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/>
                   <path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
@@ -145,25 +142,21 @@
     <%- include('sidebar') %>
     
     <script>
-      // DOM Elements
       const postTypeBtn = document.getElementById('postTypeBtn');
       const postTypeDropdown = document.getElementById('postTypeDropdown');
       const selectedPostType = document.getElementById('selected-post-type');
       const fileInput = document.getElementById('file-ip-1');
       const postTypeInput = document.getElementById('postType');
       
-      // Toggle dropdown
       postTypeBtn.addEventListener('click', function(e) {
         e.stopPropagation(); // Prevent immediate closing
         postTypeDropdown.classList.toggle('active');
       });
       
-      // Close dropdown when clicking outside
       document.addEventListener('click', function() {
         postTypeDropdown.classList.remove('active');
       });
       
-      // Handle option selection
       document.querySelectorAll('.post-type-option').forEach(option => {
         option.addEventListener('click', function() {
           const type = this.getAttribute('data-type');
@@ -178,7 +171,6 @@
         });
       });
       
-      // Modified showPreview function
       function showPreview(event) {
         const input = event.target;
         const previewImg = document.getElementById('file-ip-1-preview');
@@ -186,7 +178,7 @@
         
         if (input.files && input.files[0]) {
           const file = input.files[0];
-          const fileType = file.type.split('/')[0]; // 'image' or 'video'
+          const fileType = file.type.split('/')[0];
           
           if (fileType === 'image') {
             previewImg.style.display = 'block';
