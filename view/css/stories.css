@@ -90,15 +90,31 @@ body {
 }
 
 /* Story Content Area */
-.story-view {
-    width: 100%;
-    height: calc(100% - 120px);
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
+
+.story-view { position: relative; overflow: hidden; }
+
+.story-image {
+  padding-top: 20%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
+
+.story-image.active-story {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.story-image.inactive-story {
+  opacity: 0;
+  pointer-events: none;
+}
+
 
 .story-media {
     max-width: 100%;
@@ -461,3 +477,48 @@ video.story-media {
     filter: blur(5px);
     opacity: 0.8;
 }
+
+/* Heart-like button overlay (inside each .story-image container) */
+.story-like-button {
+  position: absolute;
+  right: 18px;
+  bottom: 22px;
+  z-index: 25;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgb(166, 89, 89);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+  color: white;
+  outline: none;
+  padding: 6px;
+  backdrop-filter: blur(4px);
+}
+
+/* hide for non-active story frames (safety) */
+.story-image:not(.active-story) .story-like-button {
+  display: none;
+}
+
+/* hover / press states */
+.story-like-button:hover { transform: scale(1.06); background: rgba(255,255,255,0.12); }
+.story-like-button:active { transform: scale(0.98); }
+
+/* unliked heart: show outline, hide filled */
+.story-like-button .heart-filled { opacity: 0; transition: opacity .18s ease; }
+.story-like-button .heart-outline { stroke: currentColor; fill: none; transition: stroke .1s ease; }
+
+/* liked state: show filled, hide outline a bit */
+.story-like-button.liked {
+  transform: scale(1.08);
+  background: rgba(255,44,85,0.12);
+  color: #ff2c55;
+  box-shadow: 0 6px 18px rgba(255,44,85,0.12);
+}
+.story-like-button.liked .heart-filled { opacity: 1; transition: opacity .18s ease; }
+.story-like-button.liked .heart-outline { opacity: 0.0; transition: opacity .12s ease; }

@@ -35,12 +35,6 @@
                 <span class="username" id="story-username">username</span>
                 <span class="post-time" id="story-time"></span>
             </div>
-            <div class="story-actions" onclick="toggleOptionsMenu()">⋮
-                <div class="options-menu" id="options-menu">
-                    <div class="option-item" onclick="handleMute()">Mute</div>
-                    <div class="option-item danger" onclick="handleReport()">Report</div>
-                </div>
-            </div>
         </div>
         
         <div class="story-view" id="story-view-container"></div>
@@ -48,13 +42,6 @@
         <div class="navigation">
             <div class="nav-left" onclick="previousStory()"></div>
             <div class="nav-right" onclick="nextStory()"></div>
-        </div>
-        
-        <div class="story-interaction-bar">
-            <input type="text" class="message-input" placeholder="Send message" id="story-message-input">
-            <div class="interaction-buttons">
-                <div class="interaction-button" onclick="shareStory()">↗</div>
-            </div>
         </div>
     </div>
 
@@ -74,7 +61,7 @@ const stories = JSON.parse('<%- JSON.stringify(stories) %>');
       };
     }
 
-    users[username].stories.push(story.url); 
+    users[username].stories.push(story);
   });
 
     const storiesData = {

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const linkSchema = new mongoose.Schema({
+const storySchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -19,5 +19,7 @@ const linkSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-const Story = mongoose.model('stories', linkSchema);
+storySchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
+
+const Story = mongoose.model('stories', storySchema);
 export default Story;

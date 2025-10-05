@@ -102,7 +102,6 @@ const suggestedPost=async(req,res)=>{
             if(user.likedPostsIds?.includes(post.id)){
                 post={...post,liked:true};
                 console.log('post',post);
-                
             }
             if(user.savedPostsIds?.includes(post.id)){
                 post={...post,saved:true};

@@ -4,6 +4,20 @@ let currentStoryIndex = 0;
 let progressInterval;
 let progressDuration = 5000;
 
+function updateLikeButtonUI(btn, liked) {
+    if (!btn) return;
+    if (liked) {
+        btn.classList.add('liked');
+        btn.setAttribute('aria-pressed', 'true');
+        btn.title = 'Liked';
+        // reveal filled heart via CSS
+    } else {
+        btn.classList.remove('liked');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.title = 'Like';
+    }
+}
+
 function openStory(username) {
     currentUsername = username;
     currentStoryIndex = 0;
@@ -30,6 +44,7 @@ function openStory(username) {
     storyUserAvatar.src = currentStories[0].avatarUrl;
     storyUsername.textContent = username;
     storyTime.textContent = getTimeAgo(currentStories[0].createdAt);
+console.log(currentStories);
 
     currentStories.forEach((_, index) => {
         const progressBar = document.createElement('div');
@@ -53,38 +68,110 @@ function createStoryElement(story) {
 
     const container = document.createElement('div');
     container.className = 'story-media-container';
+    container.dataset.storyId = story._id;
+    const type=story.url.split("/")[4]==='Reels'?'video':'image';
+    let storyElement;
 
-        const video = document.createElement('video');
-        video.src = `${story.url}?&&tr=w-640,h-640`;
-        video.className = 'story-media';
-        video.controls = false;
-        video.autoplay = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.loop = false;
+    if(type === 'image'){
+        storyElement = document.createElement('img');
+        storyElement.src = story.url;
+        storyElement.className = 'story-media';
+    }
+
+    else{
+        storyElement = document.createElement('video');
+        storyElement.src = story.url;
+        storyElement.className = 'story-media';
+        storyElement.controls = false;
+        storyElement.autoplay = true;
+        storyElement.muted = true;
+        storyElement.playsInline = true;
+        storyElement.loop = false;
         
-        // Add video play/pause controls
-        video.addEventListener('click', function() {
-            if (video.paused) {
-                video.play();
+        // Add storyElement play/pause controls
+        storyElement.addEventListener('click', function() {
+            if (storyElement.paused) {
+                storyElement.play();
             } else {
-                video.pause();
+                storyElement.pause();
             }
         });
 
         // Auto-play when metadata loaded
-        video.addEventListener('loadedmetadata', function() {
-            video.play().catch(error => {
+        storyElement.addEventListener('loadedmetadata', function() {
+            storyElement.play().catch(error => {
                 console.log('Video autoplay failed:', error);
             });
         });
+    };
+    
+    container.appendChild(storyElement);
 
-        container.appendChild(video);
+    const likeBtn = document.createElement('button');
+    likeBtn.className = 'story-like-button';
+    likeBtn.type = 'button';
+    likeBtn.dataset.liking = 'false';
+    const isLiked = !!story.liked;
+    if (isLiked) likeBtn.classList.add('liked');
+
+    likeBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" class="heart-icon" width="20" height="20" aria-hidden="true" focusable="false">
+        <path class="heart-outline" d="M12.1 8.64l-.1.1-.11-.11C10.14 6.7 7.35 6.7 5.8 8.25 4.23 9.82 4.23 12.6 5.8 14.17L12 20.36l6.2-6.19c1.57-1.57 1.57-4.35 0-5.92-1.55-1.55-4.34-1.55-5.9 0z" fill="none" stroke="currentColor" stroke-width="1.2" />
+        <path class="heart-filled" d="M12 21s-7.5-5.5-9-8.4C1.9 9.1 4 6 7 6c1.7 0 3 1 4 2.3C12.9 7 14.3 6 16 6c3 0 5.1 3.1 4 6.6-1.5 2.9-9 8.4-9 8.4z" fill="currentColor" opacity="0"/>
+      </svg>
+    `;
+
+    likeBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (likeBtn.dataset.liking === 'true') return;
+
+        const storyId = container.dataset.storyId;
+        if (!storyId) return console.warn('Story id missing for like request');
+
+        const currentlyLiked = likeBtn.classList.contains('liked');
+        const newLike = !currentlyLiked;
+
+        updateLikeButtonUI(likeBtn, newLike);
+
+        likeBtn.dataset.liking = 'true';
+        likeBtn.disabled = true;
+
+        try {
+            const res = await fetch(`/stories/liked/${storyId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+            });
+
+            if (!res.ok) {
+                throw new Error(`Server returned ${res.status}`);
+            }
+
+            const data = await res.json();
+            const finalLiked = typeof data.liked !== 'undefined' ? !!data.liked : newLike;
+
+            const sIndex = currentStories.findIndex(s => (s._id || s.id) == storyId);
+            if (sIndex !== -1) currentStories[sIndex].liked = finalLiked;
+
+            updateLikeButtonUI(likeBtn, finalLiked);
+        } catch (err) {
+            console.error('Like request failed', err);
+            updateLikeButtonUI(likeBtn, currentlyLiked);
+        } finally {
+            likeBtn.dataset.liking = 'false';
+            likeBtn.disabled = false;
+        }
+    });
+
+    container.appendChild(likeBtn);
 
     return container;
 }
 
-function getTimeAgo(date) {
+function getTimeAgo(date) {console.log(date);
+
     const seconds = Math.floor((Date.now() -new Date(date).getTime()) / 1000);
     const intervals = {
       year: 31536000,
@@ -106,15 +193,6 @@ function closeStory() {
     storyViewer.style.display = 'none';
 
     clearInterval(progressInterval);
-
-    document.getElementById('options-menu').classList.remove('show');
-}
-
-function toggleOptionsMenu() {
-    const optionsMenu = document.getElementById('options-menu');
-    optionsMenu.classList.toggle('show');
-
-    event.stopPropagation();
 }
 
 function startProgress(storyIndex) {
@@ -152,8 +230,6 @@ function showStory(index) {
     const currentStoryElement = document.getElementById(`story-image-${index}`);
     currentStoryElement.className = 'story-image active-story fade-in';
 
-    document.getElementById('options-menu').classList.remove('show');
-
     startProgress(index);
 }
 
@@ -187,25 +263,3 @@ function previousStory() {
         }
     }
 }
-
-function handleMute() {
-    alert(`${users[currentUsername].username} has been muted`);
-    document.getElementById('options-menu').classList.remove('show');
-}
-
-function handleReport() {
-    alert(`Story reported`);
-    document.getElementById('options-menu').classList.remove('show');
-}
-
-function shareStory() {
-    alert(`Story shared`);
-}
-
-document.addEventListener('click', function () {
-    const optionsMenu = document.getElementById('options-menu');
-
-    if (optionsMenu.classList.contains('show') ) {
-        optionsMenu.classList.remove('show');
-    }
-});

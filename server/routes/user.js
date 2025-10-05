@@ -51,7 +51,7 @@ import { isAuthuser } from "../middleware/isAuthuser.js";
 import { checkOut, verify_payment } from "../controllers/payment.js";
 import { getChat, getChatpage } from "../controllers/chat.js";
 import { getDailyusage } from "../controllers/timout.js";
-import { handlegetstories } from "../controllers/userStory.js";
+import { handlegetstories, handleLikeStory } from "../controllers/userStory.js";
 
 const router = express.Router();
 
@@ -74,6 +74,8 @@ router.get("/connect",isAuthuser, handlegetconnect);
 router.get("/games",isAuthuser, handlegetgames);
 
 router.get("/stories",isAuthuser, handlegetstories);
+
+router.post("/stories/liked/:id",isAuthuser, handleLikeStory);
 
 router.get("/delacc",isAuthuser, handlegetdelacc);
 

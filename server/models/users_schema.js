@@ -124,6 +124,10 @@ const userSchema = new mongoose.Schema({
         type: String
     }],
 
+    likedStoriesIds: [{
+        type: String
+    }],
+
     archivedPostsIds: [{
         type: String
     }],
