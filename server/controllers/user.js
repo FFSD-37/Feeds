@@ -148,7 +148,7 @@ const handleLogin = async (req, res) => {
     const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isPasswordMatch) return res.render("login", { loginType: "Username", msg: "Incorrect password" });
 
-    const token = create_JWTtoken([user.username, user.email, user.profilePicture, user.type], process.env.USER_SECRET, '30d');
+    const token = create_JWTtoken([user.username, user.email, user.profilePicture, user.type, user.isPremium], process.env.USER_SECRET, '30d');
     res.cookie('uuid', token, { httpOnly: true });
     return res.redirect("/home");
   }
@@ -602,6 +602,7 @@ const handlegetpostoverlay = (req, res) => {
 
 const handlegetcreatepost = (req, res) => {
   const { data } = req.userDetails;
+  console.log(data);
   return res.render("create_post", { img: data[2], currUser: data[0], msg: null });
 }
 
