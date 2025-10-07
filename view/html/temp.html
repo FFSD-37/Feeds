@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Uploader (IndexedDB)</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    max-width: 550px;
+    width: 100%;
+  }
+  h2 { text-align: center; color: #333; }
+  select, input[type="file"], button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  button {
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  button:hover { background: #0056b3; }
+  .preview {
+    margin-top: 15px;
+    text-align: center;
+  }
+
+  /* Fixed media container */
+  .media-box {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    margin: 10px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .media-box img, .media-box video {
+    width: 100%;
+    height: 100%;
+    object-fit:contain;
+  }
+
+  /* Slider styles */
+  .slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .slider img {
+    width: 100%;
+    height: 100%;
+    display: none;
+    object-fit: contain;
+  }
+  .slider img.active {
+    display: block;
+  }
+  .slider button {
+    position: absolute;
+    top: 45%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 15px 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 12%;
+  }
+  .slider .prev { left: 5px; }
+  .slider .next { right: 5px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Create a New Post</h2>
+  <select id="postType">
+    <option value="">-- Select Type --</option>
+    <option value="post">Post Post (Images)</option>
+    <option value="reel">Post Reel (Video)</option>
+    <option value="story">Post Story (Image)</option>
+  </select>
+  <input type="file" id="mediaInput" hidden />
+  <div class="preview" id="preview"></div>
+  <button id="saveBtn">Next</button>
+  <button id="clearBtn">Clear</button>
+</div>
+
+<script>
+  const postType = document.getElementById('postType');
+  const input = document.getElementById('mediaInput');
+  const preview = document.getElementById('preview');
+  const saveBtn = document.getElementById('saveBtn');
+  const clearBtn = document.getElementById('clearBtn');
+
+  let db;
+  const request = indexedDB.open('MediaDB', 1);
+
+  request.onupgradeneeded = function(e) {
+    db = e.target.result;
+    db.createObjectStore('media', { keyPath: 'id', autoIncrement: true });
+  };
+  request.onsuccess = function(e) { db = e.target.result; };
+  request.onerror = function(e) { console.error('DB Error:', e); };
+
+  // Handle dropdown change
+  postType.addEventListener('change', () => {
+    preview.innerHTML = '';
+    input.value = '';
+    const type = postType.value;
+
+    if (type === 'post') {
+      input.multiple = true;
+      input.accept = 'image/*';
+      input.hidden = false;
+    } else if (type === 'reel') {
+      input.multiple = false;
+      input.accept = 'video/*';
+      input.hidden = false;
+    } else if (type === 'story') {
+      input.multiple = false;
+      input.accept = 'image/*';
+      input.hidden = false;
+    } else {
+      input.hidden = true;
+    }
+  });
+
+  // Preview selected media
+  input.addEventListener('change', () => {
+    preview.innerHTML = '';
+    const files = Array.from(input.files);
+    const type = postType.value;
+
+    if (type === 'post') {
+      createImageSlider(files);
+    } else if (type === 'reel') {
+      const file = files[0];
+      if (file.size > 25 * 1024 * 1024) {
+        alert('Video size should not exceed 25MB!');
+        input.value = '';
+        return;
+      }
+      const box = document.createElement('div');
+      box.classList.add('media-box');
+      const video = document.createElement('video');
+      video.src = URL.createObjectURL(file);
+      video.controls = true;
+      box.appendChild(video);
+      preview.appendChild(box);
+    } else if (type === 'story') {
+      const box = document.createElement('div');
+      box.classList.add('media-box');
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(files[0]);
+      box.appendChild(img);
+      preview.appendChild(box);
+    }
+  });
+
+  // Function: Image slider for multiple uploads
+  function createImageSlider(files) {
+    const box = document.createElement('div');
+    box.classList.add('media-box');
+
+    const slider = document.createElement('div');
+    slider.classList.add('slider');
+    let index = 0;
+
+    files.forEach((file, i) => {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      if (i === 0) img.classList.add('active');
+      slider.appendChild(img);
+    });
+
+    const prevBtn = document.createElement('button');
+    const nextBtn = document.createElement('button');
+    prevBtn.textContent = '<';
+    nextBtn.textContent = '>';
+    prevBtn.classList.add('prev');
+    nextBtn.classList.add('next');
+
+    prevBtn.onclick = () => changeSlide(-1);
+    nextBtn.onclick = () => changeSlide(1);
+
+    slider.appendChild(prevBtn);
+    slider.appendChild(nextBtn);
+    box.appendChild(slider);
+    preview.appendChild(box);
+
+    function changeSlide(dir) {
+      const imgs = slider.querySelectorAll('img');
+      imgs[index].classList.remove('active');
+      index = (index + dir + imgs.length) % imgs.length;
+      imgs[index].classList.add('active');
+    }
+  }
+
+  // Save media to IndexedDB
+  saveBtn.addEventListener('click', () => {
+    const files = Array.from(input.files);
+    if (files.length === 0) return alert('Please upload media first.');
+
+    const tx = db.transaction('media', 'readwrite');
+    const store = tx.objectStore('media');
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        store.add({ type: postType.value, fileType: file.type, data: e.target.result });
+      };
+      reader.readAsArrayBuffer(file);
+    });
+    alert('Media saved successfully!');
+  });
+
+  // Clear DB
+  clearBtn.addEventListener('click', () => {
+    const tx = db.transaction('media', 'readwrite');
+    tx.objectStore('media').clear();
+    preview.innerHTML = '';
+    input.value = '';
+  });
+</script>
+</body>
+</html>
