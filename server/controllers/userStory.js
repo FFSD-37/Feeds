@@ -27,7 +27,7 @@ const handlegetstories = async(req, res) => {
     }).sort({createdAt:-1}).lean();
 
     story=story.map((s)=>{
-        if(user.likedStoriesIds.includes(s._id.toString())){
+        if(user.likedStoriesIds?.includes(s._id.toString())){
             return {...s,liked:true};
         }
         else{
