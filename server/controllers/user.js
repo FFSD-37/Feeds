@@ -15,6 +15,7 @@ import Notification from '../models/notification_schema.js';
 import Channel from "../models/channelSchema.js"
 import channelPost from '../models/channelPost.js';
 import Story from "../models/storiesSchema.js";
+import Comment from '../models/comment_schema.js';
 
 async function storeOtp(email, otp) {
   try {
@@ -489,6 +490,19 @@ const handlegetcontact = (req, res) => {
   return res.render("contact", { img: data[2], msg: null, currUser: data[0] });
 }
 
+const handlegetcomment = async(req, res) => {
+  const postID = req.body.postID;
+  console.log(postID);
+  const post = await Post.findOne({ _id: postID });
+  console.log(post);
+  let comment_array = [];
+  for (let i = 0; i < post.comments.length; i++) {
+    comment_array.push(await Comment.findOne({ id: post.comments[i] }));
+  }
+  console.log(comment_array);
+  return comment_array;
+}
+
 const handlegetconnect = async (req, res) => {
   const { data } = req.userDetails;
 
@@ -886,5 +900,6 @@ export {
   uploadFinalPost,
   reportAccount,
   handlegetloginchannel,
-  handleloginchannel
+  handleloginchannel,
+  handlegetcomment
 };

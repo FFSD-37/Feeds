@@ -2,14 +2,20 @@ function openpostdropdown(e) {
   document.getElementById("socialDropdown").style.display = "block";
 }
 
-function postOverlay(url, caption, time, author) {
+function postOverlay(url,id, caption, time, author) {
+  console.log(url,id, caption, time, author);
   document.getElementById("socialDropdown").style.display = "none";
   document.getElementById("maindiv").style.display = "grid";
+  // document.getElementsByClassName("overlaypost-container").style.remove("display");
   document.getElementById("maindiv").style.opacity = "1";
+  
+  // checking ...
+  document.getElementById("check123").value = id;
 
   const overlayImage = document.getElementById("overlayImage");
+  console.log(overlayImage);
   if (overlayImage) {
-    overlayImage.src = url + "&&tr=w-1080,h-1080";
+    overlayImage.src = url;
   }
 
   const postAuthor = document.getElementById("postAuthor");

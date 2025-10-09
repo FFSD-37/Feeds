@@ -109,3 +109,25 @@ document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
         }
     });
 });
+
+function comm(postID) {
+    fetch("/userpost_comments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            postID: postID
+        })
+    }).then((res) => {
+        return res.json();
+    }).then((data) => {
+        console.log(data);
+    });
+}
+
+window.onload = function () {
+    const postID = document.getElementById("check123").value;
+    console.log(postID);
+    comm(postID);
+}
