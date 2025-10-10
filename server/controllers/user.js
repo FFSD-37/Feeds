@@ -16,6 +16,7 @@ import Channel from "../models/channelSchema.js"
 import channelPost from '../models/channelPost.js';
 import Story from "../models/storiesSchema.js";
 import Comment from '../models/comment_schema.js';
+import mongoose from 'mongoose';
 
 async function storeOtp(email, otp) {
   try {
@@ -497,10 +498,18 @@ const handlegetcomment = async(req, res) => {
   // console.log(post);
   let comment_array = [];
   for (let i = 0; i < post.comments.length; i++) {
-    comment_array.push(await Comment.findOne({ _id: post.comments[i] }));
+    const comment = await Comment.findOne({ _id: post.comments[i] });
+    // console.log(comment);
+    let reply_array = [];
+    if(comment.reply_array.length > 0){
+      for(let j = 0; j < comment.reply_array.length; j++){
+        reply_array.push(await Comment.findOne({ _id: comment.reply_array[j] }));
+      }
+    }
+    comment_array.push([comment, reply_array]);
   }
   
-  // console.log(comment_array);
+  console.log(comment_array[0][1]);
   return res.json(comment_array);
 }
 
@@ -855,6 +864,19 @@ const handleloginchannel = async (req, res) => {
   }
 }
 
+const handlepostreply = async (req, res) => {
+  const {data} = req.userDetails;
+  const {commentId, reply, postID} = req.body;
+  const user = await Comment.create({
+    text: reply,
+    parentCommntID: commentId,
+    username: data[0],
+    avatarUrl: data[2],
+  });
+  await Comment.findOneAndUpdate({_id: commentId}, {$push: {reply_array: user._id}});
+  return res.json({data: true});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -902,5 +924,6 @@ export {
   reportAccount,
   handlegetloginchannel,
   handleloginchannel,
-  handlegetcomment
+  handlegetcomment,
+  handlepostreply
 };

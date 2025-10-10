@@ -57,6 +57,10 @@ p {
   cursor: pointer;
 }
 
+.comment-replies{
+  color: white;
+}
+
 .username {
   font-weight: 600;
   color: white;

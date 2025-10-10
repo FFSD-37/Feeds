@@ -11,6 +11,7 @@ function postOverlay(url,id, caption, time, author) {
   
   // checking ...
   document.getElementById("check123").value = id;
+  console.log(document.getElementById("check123").value);
 
   const overlayImage = document.getElementById("overlayImage");
   console.log(overlayImage);
