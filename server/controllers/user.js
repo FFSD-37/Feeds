@@ -509,7 +509,7 @@ const handlegetcomment = async(req, res) => {
     comment_array.push([comment, reply_array]);
   }
   
-  console.log(comment_array[0][1]);
+  // console.log(comment_array[0][1]);
   return res.json(comment_array);
 }
 

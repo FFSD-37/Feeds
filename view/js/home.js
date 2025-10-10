@@ -2,35 +2,6 @@ function openpostdropdown(e) {
   document.getElementById("socialDropdown").style.display = "block";
 }
 
-function postOverlay(url,id, caption, time, author) {
-  console.log(url,id, caption, time, author);
-  document.getElementById("socialDropdown").style.display = "none";
-  document.getElementById("maindiv").style.display = "grid";
-  // document.getElementsByClassName("overlaypost-container").style.remove("display");
-  document.getElementById("maindiv").style.opacity = "1";
-  
-  // checking ...
-  document.getElementById("check123").value = id;
-  console.log(document.getElementById("check123").value);
-
-  const overlayImage = document.getElementById("overlayImage");
-  console.log(overlayImage);
-  if (overlayImage) {
-    overlayImage.src = url;
-  }
-
-  const postAuthor = document.getElementById("postAuthor");
-  postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
-  const overlayPostCaption = document.getElementById("overlayPostCaption");
-  if (caption) {
-    overlayPostCaption.innerHTML = caption;
-  } else {
-    overlayPostCaption.innerHTML = "";
-  }
-  const overlayPostTime = document.getElementById("overlayPostTime");
-  overlayPostTime.innerHTML = time;
-}
-
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     const reportModal = document.getElementById("report-modal");
@@ -126,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let div = document.createElement("div");
         div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        console.log(p);
+        // console.log(p);
         // Start building the HTML string
         let html = `
           <div class="post-header">
@@ -141,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="menu-item danger" onclick="openReportModal()">
                 Report
               </div>
-              <div class="menu-item normal" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
+              <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">
                 Go to post
               </div>
               <div class="menu-item normal" id="btnShareProfile" onclick="shareTo('${p.author}')">
@@ -164,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add content based on type
         if (p.type === "Img") {
           html += `
-            <div class="post-content" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
+            <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">
               <img class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" />
             </div>`;
         } else {
@@ -189,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           if (p.type === "Img") {
             html += `
-              <div class="action-icon" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
+              <div class="action-icon" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
                 <i class="far fa-comment"></i>
               </div>`;
           }

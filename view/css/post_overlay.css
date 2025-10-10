@@ -57,8 +57,29 @@ p {
   cursor: pointer;
 }
 
-.comment-replies{
-  color: white;
+.comment-replies {
+  margin-top: 8px;
+  margin-left: 42px; /* indent replies under main comment */
+  border-left: 2px solid #2a2a2a;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #ddd;
+  font-size: 13px;
+}
+
+.comment-reply-block {
+  display: flex;
+  flex-direction: column;
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  padding: 8px 10px;
+  transition: background-color 0.3s ease;
+}
+
+.comment-reply-block:hover {
+  background-color: #2a2a2a;
 }
 
 .username {
@@ -147,6 +168,24 @@ p {
 
 .comment-section .overlaypost-actions::-webkit-scrollbar-thumb {
   background: #888;
+}
+
+.reply-profile {
+  font-weight: 600;
+  color: #c13584;
+  margin-bottom: 2px;
+}
+
+.comment-reply-block span:nth-child(2) {
+  color: #f0f0f0;
+  margin-bottom: 4px;
+  word-wrap: break-word;
+}
+
+.comment-reply-block span:nth-child(3) {
+  font-size: 11px;
+  color: #8e8e8e;
+  align-self: flex-end;
 }
 
 .comment {
@@ -305,11 +344,75 @@ p {
   }
 }
 
+.reply-input {
+  display: block;
+  width: 90%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background-color: #1c1c1c;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.reply-input::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.reply-input:focus {
+  border-color: #c13584;
+  background-color: #222;
+}
+
+.reply-button {
+  margin-top: 6px;
+  padding: 6px 12px;
+  background-color: #c13584;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.reply-button:hover {
+  background-color: #e24799;
+}
+
+.reply-button:active {
+  transform: scale(0.96);
+}
+
 @media (max-width: 480px) {
   .main-imagepost {
     height: 50vh;
   }
   .comment-section {
     max-height: 30vh;
+  }
+
+  .comment-replies {
+    margin-left: 32px;
+    gap: 6px;
+  }
+  .comment-reply-block {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .reply-input {
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .reply-button {
+    width: 100%;
+    font-size: 12px;
   }
 }
