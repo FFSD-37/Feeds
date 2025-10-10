@@ -499,6 +499,7 @@ const handlegetcomment = async(req, res) => {
   for (let i = 0; i < post.comments.length; i++) {
     comment_array.push(await Comment.findOne({ _id: post.comments[i] }));
   }
+  
   // console.log(comment_array);
   return res.json(comment_array);
 }
