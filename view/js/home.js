@@ -28,15 +28,31 @@ function closepostdropdown(e) {
 }
 
 function openReportModal(e) {
+  console.log("Event: " + e);
   document.getElementById("report-modal").classList.add("show");
+  document.getElementById("postIdForReportPost").value = e;
 }
 
 function closeReportModal(e) {
   document.getElementById("report-modal").classList.remove("show");
+  document.getElementById("postIdForReportPost").value = "";
 }
 
-function selectReason(reason) {
-  alert("You selected: " + reason);
+async function selectReason(reason) {
+  await fetch("/report_post", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      reason,
+      post_id: document.getElementById("postIdForReportPost").value
+    })
+  }).then((res) => {
+    return res.json();
+  }).then((data) => {
+      alert("Your report has been received successfully. We'll review it shortly.");
+  })
   closeReportModal();
 }
 
@@ -109,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <a style="text-decoration:none;color:black">•••</a>
             </div>
             <div class="dropdown-menu" id="socialDropdown">
-              <div class="menu-item danger" onclick="openReportModal()">
+              <div class="menu-item danger" onclick="openReportModal('<%= post.id %>')">
                 Report
               </div>
               <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">

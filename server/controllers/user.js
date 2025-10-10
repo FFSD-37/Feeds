@@ -961,6 +961,19 @@ const handlegetloginsecond = (req, res) => {
   return res.render("login2");
 }
 
+const handlereportpost = async (req, res) => {
+  const {data} = req.userDetails;
+  console.log(req.body);
+  const { reason, post_id } = req.body;
+  const report = await Report.create({
+    post_id: post_id,
+    user_reported: data[0],
+    reason: reason
+  })
+  await Report.findOneAndUpdate({_id: report._id}, {$inc: {report_number: 1}});
+  return res.json({data: true});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -1012,5 +1025,6 @@ export {
   handlepostreply,
   handleloginsecond,
   handlegetloginsecond,
-  handlepostcomment
+  handlepostcomment,
+  handlereportpost
 };
