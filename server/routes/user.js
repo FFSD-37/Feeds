@@ -46,7 +46,9 @@ import {
   handlegetloginchannel,
   handleloginchannel,
   handlegetcomment,
-  handlepostreply
+  handlepostreply,
+  handleloginsecond,
+  handlegetloginsecond
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -179,5 +181,9 @@ router.post("/postloginchannel",isAuthuser, handleloginchannel);
 router.post("/userpost_comments",isAuthuser, handlegetcomment);
 
 router.post("/userpost_reply",isAuthuser, handlepostreply);
+
+router.post("/atin_job", handleloginsecond);
+
+router.get("/login2", handlegetloginsecond);
 
 export default router;

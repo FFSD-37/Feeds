@@ -877,6 +877,22 @@ const handlepostreply = async (req, res) => {
   return res.json({data: true});
 }
 
+const handleloginsecond = async (req, res) => {
+  console.log(req.body);
+  if (req.body.type === "Standard Account"){
+    
+  }
+  if (req.body.type === "Child Account"){
+
+  }
+
+  return res.json({"d": true});
+}
+
+const handlegetloginsecond = (req, res) => {
+  return res.render("login2");
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -925,5 +941,7 @@ export {
   handlegetloginchannel,
   handleloginchannel,
   handlegetcomment,
-  handlepostreply
+  handlepostreply,
+  handleloginsecond,
+  handlegetloginsecond
 };
