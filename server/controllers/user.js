@@ -595,12 +595,17 @@ const handlepostcomment = async (req, res) => {
 
     // Create notification for post author
     if (data[0] !== post.author) {
-      await Notification.create({
+      const noti8 = await Notification.create({
         mainUser: post.author,
-        msgSerial: 3,
-        userInvolved: data[0],
-        coin: 1
+        msgSerial: 8,
+        userInvolved: data[0]
       });
+
+      await Notification.findOneAndUpdate(
+        { _id: noti8._id },
+        { $inc: { coins: 1 } },
+        { new: true }
+      );
     }
 
     return res.status(200).json({
