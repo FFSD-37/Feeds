@@ -389,6 +389,66 @@ p {
   transform: scale(0.96);
 }
 
+.comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.comment-avatar img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.comment-body {
+  background: #1e1e1e;
+  padding: 6px 12px;
+  border-radius: 10px;
+  color: #fff;
+  max-width: 85%;
+}
+
+.comment-username {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.comment-text {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+}
+
+.add-comment {
+  display: flex;
+  align-items: center;
+  background: #111;
+  padding: 10px;
+  border-top: 1px solid #222;
+}
+
+.comment-input {
+  flex: 1;
+  background: transparent;
+  color: white;
+  border: none;
+  outline: none;
+  padding: 8px;
+}
+
+.overlaypost-button {
+  color: #3897f0;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.overlaypost-button:not(.disabled):hover {
+  opacity: 1;
+}
+
 @media (max-width: 480px) {
   .main-imagepost {
     height: 50vh;

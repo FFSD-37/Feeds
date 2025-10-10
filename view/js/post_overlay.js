@@ -1,35 +1,35 @@
 const commentHeart = document.querySelectorAll(".comment-heart");
 const commentInput = document.getElementById("message-input");
 const postButton = document.querySelector(".overlaypost-button");
+currentPostID = null;
 
 function postOverlay(url, id, caption, time, author) {
-//   console.log(url,id, caption, time, author);
-  document.getElementById("socialDropdown").style.display = "none";
-  document.getElementById("maindiv").style.display = "grid";
-  // document.getElementsByClassName("overlaypost-container").style.remove("display");
-  document.getElementById("maindiv").style.opacity = "1";
-  
-  // checking ...
-  document.getElementById("check123").value = id;
-//   console.log(document.getElementById("check123").value);
+    //   console.log(url,id, caption, time, author);
+    currentPostID = id;
 
-  const overlayImage = document.getElementById("overlayImage");
-  // console.log(overlayImage);
-  if (overlayImage) {
-    overlayImage.src = url;
-  }
+    document.getElementById("socialDropdown").style.display = "none";
+    document.getElementById("maindiv").style.display = "grid";
+    document.getElementById("maindiv").style.opacity = "1";
 
-  const postAuthor = document.getElementById("postAuthor");
-  postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
-  const overlayPostCaption = document.getElementById("overlayPostCaption");
-  if (caption) {
-    overlayPostCaption.innerHTML = caption;
-  } else {
-    overlayPostCaption.innerHTML = "";
-  }
-  const overlayPostTime = document.getElementById("overlayPostTime");
-  overlayPostTime.innerHTML = time;
-  fetch_comment(id);
+    // checking ...
+    document.getElementById("check123").value = id;
+
+    const overlayImage = document.getElementById("overlayImage");
+    if (overlayImage) {
+        overlayImage.src = url;
+    }
+
+    const postAuthor = document.getElementById("postAuthor");
+    postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
+    const overlayPostCaption = document.getElementById("overlayPostCaption");
+    if (caption) {
+        overlayPostCaption.innerHTML = caption;
+    } else {
+        overlayPostCaption.innerHTML = "";
+    }
+    const overlayPostTime = document.getElementById("overlayPostTime");
+    overlayPostTime.innerHTML = time;
+    fetch_comment(id);
 }
 
 commentInput.addEventListener("input", function () {
@@ -103,43 +103,52 @@ document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
     });
 });
 
-function postComment(e) {
-    if (e.type === "keydown" && e.key !== "Enter") return;
-    if (!postButton.classList.contains("disabled")) {
-        const commentSection = document.querySelector(".comment-section");
-        const existingP = commentSection.querySelector("p");
-        if (existingP) existingP.remove();
+// --- POST COMMENT FUNCTION ---
+async function postComment(postID) {
+    const input = document.getElementById("message-input");
+    const commentText = input.value.trim();
 
-        const newComment = document.createElement("div");
-        newComment.className = "comment";
-        newComment.innerHTML = `
-      <div class="comment-profile">U</div>
-      <div class="comment-content">
-          <div>
-              <p class="comment-username">user</p>
-              <p class="comment-text">${commentInput.value}</p>
-          </div>
-          <div class="comment-info">
-              <span class="comment-time">now</span>
-              <span class="comment-reply">Reply</span>
-              <span class="comment-heart" name="heart-comment" data-liked="false">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>
-              </span>
-          </div>
-      </div>
-    `;
-        commentSection.appendChild(newComment);
-        commentInput.value = "";
-        postButton.classList.add("disabled");
+    if (!commentText) return;
+
+    try {
+        const res = await fetch("/comment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ postID, commentText })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            input.value = "";
+
+            const commentSection = document.querySelector(".comment-section");
+
+            // Remove "No comments yet..." if it exists
+            const emptyMsg = commentSection.querySelector("p");
+            if (emptyMsg) emptyMsg.remove();
+
+            // Create a new comment element
+            const newComment = document.createElement("div");
+            newComment.classList.add("comment");
+            newComment.innerHTML = `
+        <div class="comment-avatar">
+          <img src="${data.comment.avatarUrl}" alt="${data.comment.username}">
+        </div>
+        <div class="comment-body">
+          <span class="comment-username">${data.comment.username}</span>
+          <p class="comment-text">${data.comment.text}</p>
+        </div>
+      `;
+            commentSection.appendChild(newComment);
+        } else {
+            alert(data.message || "Failed to post comment.");
+        }
+    } catch (err) {
+        console.error("Error posting comment:", err);
+        alert("Something went wrong while posting your comment.");
     }
 }
-
-postButton.addEventListener("click", postComment);
-postButton.addEventListener("keydown", postComment);
-
-commentInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") postComment(e);
-});
 
 function replyComment(commentId, postID) {
     const div = document.getElementById("comment-info");
@@ -178,9 +187,9 @@ function replyToComment(commentId, reply, postID) {
     }).then((res) => {
         return res.json();
     }).then((data) => {
-        if (data){
+        if (data) {
             // console.log(data);
-            fetch_comment(postID);    
+            fetch_comment(postID);
         }
     });
 }

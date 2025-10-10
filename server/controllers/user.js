@@ -555,6 +555,66 @@ const handlegetconnect = async (req, res) => {
   }
 };
 
+const handlepostcomment = async (req, res) => {
+  try {
+    const { data } = req.userDetails;
+    const { postID, commentText } = req.body;
+
+    if (!commentText || commentText.trim() === "") {
+      return res.status(400).json({ success: false, message: "Comment cannot be empty" });
+    }
+
+    // Find the target post
+    const post = await Post.findOne({ id: postID });
+    if (!post) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+
+    // Create the new comment document
+    const newComment = await Comment.create({
+      text: commentText,
+      username: data[0],
+      avatarUrl: data[2],
+      postID: post._id,
+      reply_array: [],
+    });
+
+    // Push this comment’s ID to the post’s comment array
+    await Post.findOneAndUpdate(
+      { id: postID },
+      { $push: { comments: newComment._id } },
+      { new: true }
+    );
+
+    // Add activity log entry
+    await ActivityLog.create({
+      username: data[0],
+      id: `#${Date.now()}`,
+      message: `You commented on a post by #${post.author}!`
+    });
+
+    // Create notification for post author
+    if (data[0] !== post.author) {
+      await Notification.create({
+        mainUser: post.author,
+        msgSerial: 3,
+        userInvolved: data[0],
+        coin: 1
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Comment added successfully",
+      comment: newComment
+    });
+  } catch (error) {
+    console.error("❌ Error in handlepostcomment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
   return res.render("games", { img: data[2], currUser: data[0] });
@@ -946,5 +1006,6 @@ export {
   handlegetcomment,
   handlepostreply,
   handleloginsecond,
-  handlegetloginsecond
+  handlegetloginsecond,
+  handlepostcomment
 };
