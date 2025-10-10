@@ -2,6 +2,36 @@ const commentHeart = document.querySelectorAll(".comment-heart");
 const commentInput = document.getElementById("message-input");
 const postButton = document.querySelector(".overlaypost-button");
 
+function postOverlay(url, id, caption, time, author) {
+//   console.log(url,id, caption, time, author);
+  document.getElementById("socialDropdown").style.display = "none";
+  document.getElementById("maindiv").style.display = "grid";
+  // document.getElementsByClassName("overlaypost-container").style.remove("display");
+  document.getElementById("maindiv").style.opacity = "1";
+  
+  // checking ...
+  document.getElementById("check123").value = id;
+//   console.log(document.getElementById("check123").value);
+
+  const overlayImage = document.getElementById("overlayImage");
+  // console.log(overlayImage);
+  if (overlayImage) {
+    overlayImage.src = url;
+  }
+
+  const postAuthor = document.getElementById("postAuthor");
+  postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
+  const overlayPostCaption = document.getElementById("overlayPostCaption");
+  if (caption) {
+    overlayPostCaption.innerHTML = caption;
+  } else {
+    overlayPostCaption.innerHTML = "";
+  }
+  const overlayPostTime = document.getElementById("overlayPostTime");
+  overlayPostTime.innerHTML = time;
+  fetch_comment(id);
+}
+
 commentInput.addEventListener("input", function () {
     if (this.value.trim() !== "") {
         postButton.classList.remove("disabled");
@@ -28,43 +58,6 @@ emojiPicker.addEventListener("keydown", (e) => {
         emojiPicker.style.display = "none";
     }
 })
-function postComment(e) {
-    if (e.type === "keydown" && e.key !== "Enter") return;
-    if (!postButton.classList.contains("disabled")) {
-        const commentSection = document.querySelector(".comment-section");
-        const existingP = commentSection.querySelector("p");
-        if (existingP) existingP.remove();
-
-        const newComment = document.createElement("div");
-        newComment.className = "comment";
-        newComment.innerHTML = `
-      <div class="comment-profile">U</div>
-      <div class="comment-content">
-          <div>
-              <p class="comment-username">user</p>
-              <p class="comment-text">${commentInput.value}</p>
-          </div>
-          <div class="comment-info">
-              <span class="comment-time">now</span>
-              <span class="comment-reply">Reply</span>
-              <span class="comment-heart" name="heart-comment" data-liked="false">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>
-              </span>
-          </div>
-      </div>
-    `;
-        commentSection.appendChild(newComment);
-        commentInput.value = "";
-        postButton.classList.add("disabled");
-    }
-}
-
-postButton.addEventListener("click", postComment);
-postButton.addEventListener("keydown", postComment);
-
-commentInput.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") postComment(e);
-});
 
 document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
     const trig = ele.getAttribute("name");
@@ -110,20 +103,66 @@ document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
     });
 });
 
+function postComment(e) {
+    if (e.type === "keydown" && e.key !== "Enter") return;
+    if (!postButton.classList.contains("disabled")) {
+        const commentSection = document.querySelector(".comment-section");
+        const existingP = commentSection.querySelector("p");
+        if (existingP) existingP.remove();
+
+        const newComment = document.createElement("div");
+        newComment.className = "comment";
+        newComment.innerHTML = `
+      <div class="comment-profile">U</div>
+      <div class="comment-content">
+          <div>
+              <p class="comment-username">user</p>
+              <p class="comment-text">${commentInput.value}</p>
+          </div>
+          <div class="comment-info">
+              <span class="comment-time">now</span>
+              <span class="comment-reply">Reply</span>
+              <span class="comment-heart" name="heart-comment" data-liked="false">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>
+              </span>
+          </div>
+      </div>
+    `;
+        commentSection.appendChild(newComment);
+        commentInput.value = "";
+        postButton.classList.add("disabled");
+    }
+}
+
+postButton.addEventListener("click", postComment);
+postButton.addEventListener("keydown", postComment);
+
+commentInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") postComment(e);
+});
+
 function replyComment(commentId, postID) {
     const div = document.getElementById("comment-info");
+    if (div.querySelector(".reply-input")) return;
+
     const replyInput = document.createElement("input");
     replyInput.type = "text";
-    replyInput.placeholder = "Reply to the comment";
-    replyInput.style.display = "block";
+    replyInput.placeholder = "Reply to this comment...";
+    replyInput.className = "reply-input";
+
     const replyButton = document.createElement("button");
-    replyButton.innerHTML = "Reply";
-    replyButton.onclick = () => replyToComment(commentId, replyInput.value, postID)
-    replyButton.style.display = "block";
-    replyButton.style.display = "block";
+    replyButton.textContent = "Reply";
+    replyButton.className = "reply-button";
+
+    replyButton.onclick = () => {
+        replyToComment(commentId, replyInput.value, postID);
+        replyInput.value = "";
+    };
+
     div.appendChild(replyInput);
     div.appendChild(replyButton);
 }
+
 
 function replyToComment(commentId, reply, postID) {
     fetch("/userpost_reply", {
@@ -140,8 +179,8 @@ function replyToComment(commentId, reply, postID) {
         return res.json();
     }).then((data) => {
         if (data){
-            console.log(data);
-            comm(postID);    
+            // console.log(data);
+            fetch_comment(postID);    
         }
     });
 }
@@ -163,7 +202,7 @@ function timeAgo(date) {
     return "just now";
 }
 
-function comm(postID) {
+function fetch_comment(postID) {
     fetch("/userpost_comments", {
         method: "POST",
         headers: {
@@ -177,7 +216,7 @@ function comm(postID) {
     }).then((data) => {
         const commentSection = document.querySelector(".comment-section");
         commentSection.innerHTML = "";
-        console.log(data);
+        // console.log(data);
         data.forEach((comment) => {
             const newComment = document.createElement("div");
             newComment.className = "comment";
@@ -198,7 +237,7 @@ function comm(postID) {
                     <div class="comment-replies">
                         ${comment[1].map(reply => `
                             <div class="comment-reply-block">
-                                <span class="reply-profile">${reply.username}</span>
+                                <span class="reply-profile"><a href="/profile/${reply.username}" style="text-decoration: none;">${reply.username}</a></span>
                                 <span>${reply.text}</span>
                                 <span>${timeAgo(new Date(reply.createdAt))}</span>
                             </div>
@@ -208,12 +247,12 @@ function comm(postID) {
             `;
             commentSection.appendChild(newComment);
         });
-        console.log(data);
+        // console.log(data);
     });
 }
 
-window.onload = function () {
-    const postID = document.getElementById("check123").value;
-    console.log(postID);
-    comm(postID);
-}
+// window.onload = function () {
+//     const postID = document.getElementById("check123").value;
+//     console.log(postID);
+//     fetch_comment(postID);
+// }

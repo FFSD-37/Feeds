@@ -20,7 +20,7 @@
     <div id="posts-container">
       <% if (!posts || posts.length === 0) { %>
       <p>No posts to display.</p>
-      <% } else { %> <% posts.forEach(function(post) { %>
+      <% } else { %> <% posts.forEach(function(post) { %> 
       <div
         class="post"
         data-id="<%= post.id %>"
@@ -49,7 +49,7 @@
             </div>
             <div
               class="menu-item normal"
-              onclick="postOverlay('<%- post.url %>',`<%- post.id %>` ,'<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+              onclick="postOverlay('<%- post.url %>','<%- post.id %>','<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
             >
               Go to post
             </div>
@@ -79,7 +79,7 @@
         <% if(post.type === "Img") { %>
         <div
           class="post-content"
-          onclick="postOverlay('<%- post.url %>',`<%- post.id %>`, '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+          onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
         >
           <img class="post-on-home-page" src="<%= post.url %>" />
         </div>
@@ -92,7 +92,7 @@
             preload="metadata"
           ></video>
         </div>
-        <% } %> <% if (type !== "Kids" || type !== "Student") { %>
+        <% } %> <% if (type !== "Kids" && type !== "Student") { %>
         <div class="post-actions">
           <div class="action-icon" onclick="likePost('<%= post.id %>', this)">
             <% if(post.liked) { %>
@@ -104,7 +104,7 @@
           <% if(post.type === "Img") { %>
           <div
             class="action-icon"
-            onclick="postOverlay('<%- post.url %>',`<%- post.id %>`, '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+            onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
             id="comment-button-post"
           >
             <i class="far fa-comment"></i>
