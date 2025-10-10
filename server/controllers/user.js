@@ -492,15 +492,15 @@ const handlegetcontact = (req, res) => {
 
 const handlegetcomment = async(req, res) => {
   const postID = req.body.postID;
-  console.log(postID);
-  const post = await Post.findOne({ _id: postID });
-  console.log(post);
+  // console.log(postID);
+  const post = await Post.findOne({ id: req.body.postID });
+  // console.log(post);
   let comment_array = [];
   for (let i = 0; i < post.comments.length; i++) {
-    comment_array.push(await Comment.findOne({ id: post.comments[i] }));
+    comment_array.push(await Comment.findOne({ _id: post.comments[i] }));
   }
-  console.log(comment_array);
-  return comment_array;
+  // console.log(comment_array);
+  return res.json(comment_array);
 }
 
 const handlegetconnect = async (req, res) => {

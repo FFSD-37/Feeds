@@ -110,6 +110,23 @@ document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
     });
 });
 
+function timeAgo(date) {
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    const intervals = {
+        year: 31536000,
+        month: 2592000,
+        week: 604800,
+        day: 86400,
+        hour: 3600,
+        minute: 60,
+    };
+    for (const [unit, sec] of Object.entries(intervals)) {
+        const count = Math.floor(seconds / sec);
+        if (count >= 1) return `${count}${unit.charAt(0)}`;
+    }
+    return "just now";
+}
+
 function comm(postID) {
     fetch("/userpost_comments", {
         method: "POST",
@@ -122,6 +139,29 @@ function comm(postID) {
     }).then((res) => {
         return res.json();
     }).then((data) => {
+        const commentSection = document.querySelector(".comment-section");
+        commentSection.innerHTML = "";
+        data.forEach((comment) => {
+            const newComment = document.createElement("div");
+            newComment.className = "comment";
+            newComment.innerHTML = `
+                <div class="comment-profile">${comment.username.charAt(0).toUpperCase()}</div>
+                <div class="comment-content">
+                    <div>
+                        <p class="comment-username" ><a href="/profile/${comment.username}" style="text-decoration: none; color: white">${comment.username}</a></p>
+                        <p class="comment-text">${comment.text}</p>
+                    </div>
+                    <div class="comment-info">
+                        <span class="comment-time">${timeAgo(new Date(comment.createdAt))}</span>
+                        <span class="comment-reply">Reply</span>
+                        <span class="comment-heart" name="heart-comment" data-liked="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>
+                        </span>
+                    </div>
+                </div>
+            `;
+            commentSection.appendChild(newComment);
+        });
         console.log(data);
     });
 }
