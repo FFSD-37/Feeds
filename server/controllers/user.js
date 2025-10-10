@@ -397,9 +397,12 @@ const handlegetHome = async (req, res) => {
   return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3] });
 }
 
-const handlegetpayment = (req, res) => {
+const handlegetpayment = async (req, res) => {
   const { data } = req.userDetails;
-  return res.render("payment", { img: data[2], currUser: data[0] });
+  const user = await User.findOne({username: data[0]});
+  const coins = user.coins;
+  console.log(user);
+  return res.render("payment", { img: data[2], currUser: data[0], coins: coins });
 }
 
 const handlegetprofile = async (req, res) => {
