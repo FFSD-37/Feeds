@@ -95,6 +95,7 @@
         </div>
 
         <div class="total-amount" style="text-align:center;">
+          <input type="hidden" id="coinshidden" value='<%- coins %>' />
           <div>Total Amount</div>
           <div style="color: rgb(25, 68, 240);">Your wallet has <%= coins %> coins !!!</div>
           <div>
@@ -137,51 +138,5 @@
 
     <script src="../js/background.js"></script>
     <script src="../js/payment.js"></script>
-
-    <script>
-      // plans data with monthly price and duration in months
-      const plans = [
-        { name: "Monthly", price: 199, months: 1 },
-        { name: "Semi-Annualy", price: 169, months: 6 },
-        { name: "Yearly", price: 149, months: 12 },
-      ];
-
-      // coins available (make sure coins variable is server injected correctly)
-      const coins = coins ;
-
-      function updateAmount(index) {
-        const plan = plans[index];
-        const original = plan.price * plan.months;
-        const discounted = Math.max(0, original - coins);
-
-        document.getElementById("original-amount").textContent = `₹${original.toFixed(
-          2
-        )}`;
-        document.getElementById("discounted-amount").textContent = `₹${discounted.toFixed(
-          2
-        )}`;
-        document.getElementById("amount-duration").textContent = `(${
-          plan.months
-        } month${plan.months > 1 ? "s" : ""})`;
-        document.getElementById("plan_name").value = plan.name;
-        document.getElementById("plan_price").value = discounted;
-      }
-
-      // initial selection (Semi-Annualy)
-      let selectedIndex = 1;
-      updateAmount(selectedIndex);
-
-      // Update selection on user click
-      document.querySelectorAll(".plan").forEach((el, idx) => {
-        el.addEventListener("click", function () {
-          document
-            .querySelectorAll(".plan")
-            .forEach((p) => p.classList.remove("selected"));
-          el.classList.add("selected");
-          selectedIndex = idx;
-          updateAmount(selectedIndex);
-        });
-      });
-    </script>
   </body>
 </html>

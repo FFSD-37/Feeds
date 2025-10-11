@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+body {
+    color: white;
+    height: 100vh;
+    display: flex;
+    background-color: #f4f4f4;
+    background: linear-gradient(45deg, #6b48ff, #6b48ff22);
+    transition: background-color 1s ease-in-out;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.reels-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.reels-feed {
+    width: 400px;
+    height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    position: relative;
+    border-radius: 10px;
+    border: 2px solid white;
+    background-color: black;
+}
+
+.reels-feed::-webkit-scrollbar {
+    display: none;
+}
+
+.reel-video {
+    height: 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.reel-video video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.video-info {
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.video-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.video-channel {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.channel-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #555;
+}
+
+.subscribe-button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 18px;
+    padding: 6px 12px;
+    font-weight: bold;
+    margin-left: 12px;
+    cursor: pointer;
+}
+
+.video-actions {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 20px;
+    bottom: 120px;
+    z-index: 2;
+    align-items: center;
+}
+
+.action-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    cursor: pointer;
+}
+
+.action-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.action-count {
+    font-size: 12px;
+}
+
+.reels-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-40%);
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.nav-arrow {
+    width: 48px;
+    height: 48px;
+    background-color: black;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+@media screen and (max-width: 768px) {
+    .nav-arrow{
+        display: none;
+    }
+}
+
+video {
+    /* Ensure controls remain visible */
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Custom controls styling */
+  video::-webkit-media-controls-panel {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  video::-webkit-media-controls-play-button,
+  video::-webkit-media-controls-mute-button {
+    display: block !important;
+  }
+  
+  video::-webkit-media-controls-current-time-display,
+  video::-webkit-media-controls-time-remaining-display {
+    display: none;
+  }
+  
+  /* Custom mute/unmute button */
+  .mute-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reels-feed {
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  .reel-video {
+    height: 100vh;
+    scroll-snap-align: start;
+    position: relative;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mute-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+  }

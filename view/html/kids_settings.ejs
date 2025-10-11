@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kids Settings</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/*"
+      href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        padding-bottom: 80px;
+      }
+
+      .main-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        color: #1a202c;
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .settings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .settings-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        background: #f7fafc;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #2d3748;
+        font-weight: 500;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .settings-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .settings-item-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .settings-item-content i {
+        color: #764ba2;
+      }
+      
+      .settings-item .arrow-icon {
+        color: #cbd5e0;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+          padding-bottom: 90px;
+        }
+        .header h1 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/kids_sidebar') %>
+
+    <div class="main-container">
+      <div class="header">
+        <h1>⚙️ Kids Account Settings</h1>
+      </div>
+
+      <div class="section">
+        <div class="settings-list">
+          
+          <a href="/kids_activityLog" class="settings-item">
+            <div class="settings-item-content">
+              <i class="fas fa-chart-line"></i>
+              <span>Activity Log</span>
+            </div>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </a>
+
+          <a href="/kids_deactivate" class="settings-item">
+            <div class="settings-item-content">
+              <i class="fas fa-user-slash"></i>
+              <span>Deactivate My Account</span>
+            </div>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </a>
+
+          <a href="/kids_timecontrol" class="settings-item">
+            <div class="settings-item-content">
+              <i class="fas fa-hourglass-half"></i>
+              <span>Time Control</span>
+            </div>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </a>
+
+          <a href="/kids_changepassword" class="settings-item">
+            <div class="settings-item-content">
+              <i class="fas fa-key"></i>
+              <span>Change Password</span>
+            </div>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </a>
+
+          <a href="/kids_parentalpassword" class="settings-item">
+            <div class="settings-item-content">
+              <i class="fas fa-user-shield"></i>
+              <span>Change Parental Control Password</span>
+            </div>
+            <i class="fas fa-chevron-right arrow-icon"></i>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

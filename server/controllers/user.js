@@ -401,7 +401,6 @@ const handlegetpayment = async (req, res) => {
   const { data } = req.userDetails;
   const user = await User.findOne({username: data[0]});
   const coins = user.coins;
-  console.log(user);
   return res.render("payment", { img: data[2], currUser: data[0], coins: coins });
 }
 
@@ -554,6 +553,71 @@ const handlegetconnect = async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
+const handlepostcomment = async (req, res) => {
+  try {
+    const { data } = req.userDetails;
+    const { postID, commentText } = req.body;
+
+    if (!commentText || commentText.trim() === "") {
+      return res.status(400).json({ success: false, message: "Comment cannot be empty" });
+    }
+
+    // Find the target post
+    const post = await Post.findOne({ id: postID });
+    if (!post) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+
+    // Create the new comment document
+    const newComment = await Comment.create({
+      text: commentText,
+      username: data[0],
+      avatarUrl: data[2],
+      postID: post._id,
+      reply_array: [],
+    });
+
+    // Push this comment’s ID to the post’s comment array
+    await Post.findOneAndUpdate(
+      { id: postID },
+      { $push: { comments: newComment._id } },
+      { new: true }
+    );
+
+    // Add activity log entry
+    await ActivityLog.create({
+      username: data[0],
+      id: `#${Date.now()}`,
+      message: `You commented on a post by #${post.author}!`
+    });
+
+    // Create notification for post author
+    if (data[0] !== post.author) {
+      const noti8 = await Notification.create({
+        mainUser: post.author,
+        msgSerial: 8,
+        userInvolved: data[0]
+      });
+
+      await Notification.findOneAndUpdate(
+        { _id: noti8._id },
+        { $inc: { coins: 1 } },
+        { new: true }
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Comment added successfully",
+      comment: newComment
+    });
+  } catch (error) {
+    console.error("❌ Error in handlepostcomment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
@@ -905,6 +969,19 @@ const handlelikereel = async (req, res) => {
   return res.json({likes: (u?.likedPostsIds || []).length});
 }
 
+const handlereportpost = async (req, res) => {
+  const {data} = req.userDetails;
+  console.log(req.body);
+  const { reason, post_id } = req.body;
+  const report = await Report.create({
+    post_id: post_id,
+    user_reported: data[0],
+    reason: reason
+  })
+  await Report.findOneAndUpdate({_id: report._id}, {$inc: {report_number: 1}});
+  return res.json({data: true});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -956,5 +1033,7 @@ export {
   handlepostreply,
   handleloginsecond,
   handlegetloginsecond,
-  handlelikereel
+  handlelikereel,
+  handlepostcomment,
+  handlereportpost
 };
