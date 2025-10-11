@@ -5,9 +5,24 @@ const continueBtn = document.getElementById('continueBtn');
 
 var imagefile = [];
 
+function storeFilesInLocalStorage(files) {
+    // clear previous stored images
+    Object.keys(localStorage).forEach(k => {
+        if (k.startsWith("uploadedFile_")) localStorage.removeItem(k);
+    });
+
+    Array.from(files).forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+        localStorage.setItem(`uploadedFile_${i}`, JSON.stringify({ name:file.name, data:e.target.result}));
+        };
+        reader.readAsDataURL(file);
+    });
+    }
 
 function showPreview(event) {
-    if (event.target.files.length > 0) {
+    if (event.target.files.length > 0) {console.log(event.target.files[0]);
+    
         var src = URL.createObjectURL(event.target.files[0]);
         var preview = document.getElementById("file-ip-1-preview");
         imagefile.push(event.target.files[0]);
@@ -22,60 +37,22 @@ function showPreview(event) {
             ".post-manipulation-buttons"
         );
         manipulation_buttons.style.display = "flex";
+        storeFilesInLocalStorage(event.target.files);
     }
 }
 
-async function getAuth() {
-    let res = await fetch("/imagKitauth");
-    return res;
-}
-
 function continueEditing() {
-    async function handleUpload() {
         try {
 
             if (!imagefile || imagefile.length === 0) {
                 console.error("No image selected");
                 return;
             }
-
-            const authResponse = await getAuth();
-            const authData = await authResponse.json();
-
-            var imagekit = new ImageKit({
-                publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
-                urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
-            });
-            const file = imagefile[imagefile.length - 1];
-
-            imagekit.upload(
-                {
-                    file: file,
-                    fileName: file.name || "sample-file.jpg",
-                    tags: ["tag1"],
-                    responseFields: "tags",
-                    token: authData.token,
-                    signature: authData.signature,
-                    expire: authData.expire,
-                },
-                function (err, result) {
-                    if (err) {
-                        console.log("Upload error:", err);
-                    } else {
-                        document.getElementById("profileImageUrl").value = result.url;
-                        console.log(result.url);
-                        document.getElementById("createPostForm").submit();
-                    }
-                }
-            );
+            
+            document.getElementById("createPostForm").submit();
         } catch (error) {
             console.error("Auth or upload failed:", error);
         }
-    }
-    
-    // Prevent default action in case this is triggered by a form submission
-    event.preventDefault();
-    handleUpload();
 }
 
 continueBtn.addEventListener("click", function (event) {

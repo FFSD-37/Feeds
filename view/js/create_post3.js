@@ -1,7 +1,25 @@
+async function getAuth() {
+    let res = await fetch("/imagKitauth");
+    return res;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const emojiButton = document.getElementById("emoji-button");
     const emojiPicker = document.getElementById("emoji-picker");
     const captionInput = document.getElementById("caption");
+    const dataDiv = document.getElementsByClassName("image-create-post3")[0];
+    const type = dataDiv.dataset.type;
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('uploadedFile_'));
+	if (!keys.length) return;
+    
+	keys.forEach(key => {
+		const {data:base64} = JSON.parse(localStorage.getItem(key));
+		const img = type==="image"?document.createElement('img'):document.createElement('video');
+		img.src = base64;
+		img.id = "post-image";
+        img.className = "post-image";
+        dataDiv.appendChild(img);
+	});
 
     emojiButton.addEventListener("click", () => {
         emojiPicker.style.display =
@@ -21,9 +39,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document
         .querySelector(".share-button")
-        .addEventListener("click", () => {
+        .addEventListener("click", async(e) => {
+            e.preventDefault();
             const caption = document.getElementById("caption").value;
             const location = document.getElementById("location").value;
+            const {data:bas64File, name} = JSON.parse(keys.map(key => localStorage.getItem(key))[0]);
+            
+            const authResponse = await getAuth();
+            const authData = await authResponse.json();
+            var imagekit = new ImageKit({
+                publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
+                urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
+            });
+            
+            imagekit.upload({
+                file: bas64File,
+                fileName: name,
+                tags: ["tag1"],
+                responseFields: "tags",
+                token: authData.token,
+                signature: authData.signature,
+                expire: authData.expire,
+            },async function (err, result) {
+            try{
+                if(err){
+                    console.log(err);
+                    return
+                }
+            
+            const res = await fetch("/shareFinalPost",{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({caption,avatar:result.url,type:type==="image"?"Img":"Reels"}),
+                credentials:'include'
+            });
+            const data = await res.json();
+            if(res.ok){
+                console.log(data);
+            }
+            }catch(err){
+                console.log(err);
+            }
+            });
+
             const commentsEnabled =
                 document.getElementById("toggle-comments").checked;
             alert(

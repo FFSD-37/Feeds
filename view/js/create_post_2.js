@@ -1,3 +1,16 @@
+window.onload = function () {
+	const keys = Object.keys(localStorage).filter(k => k.startsWith('uploadedFile_'));
+	if (!keys.length) return;
+
+	keys.forEach(key => {
+		const {data:base64} = JSON.parse(localStorage.getItem(key));
+		const img = document.createElement('img');
+		img.src = base64;
+		img.id = "img";
+		document.getElementsByClassName("left")[0].appendChild(img);
+	});
+}
+
 function readURL(input) {
 	if (input.files && input.files[0]) {
 		var reader = new FileReader();
@@ -102,11 +115,6 @@ $("#restoreBtn").click(function () {
 	$("#img").css("filter", "none");
 });
 
-async function getAuth() {
-	let res = await fetch("/imagKitauth");
-	return res;
-}
-
 function uploadImageand() {
 	const img = document.getElementById("img");
 	const canvas = document.createElement("canvas");
@@ -143,40 +151,7 @@ function uploadImageand() {
 				console.error("Failed to create blob from canvas");
 				return;
 			}
-
-			try {
-				const authResponse = await getAuth();
-				const authData = await authResponse.json();
-
-				const imagekit = new ImageKit({
-					publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
-					urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
-				});
-
-				imagekit.upload(
-					{
-						file: blob,
-						fileName: "filtered-image.jpg",
-						tags: ["filtered", "canvas", "upload"],
-						responseFields: "tags",
-						token: authData.token,
-						signature: authData.signature,
-						expire: authData.expire,
-					},
-					function (err, result) {
-						if (err) {
-							console.error("Upload error:", err);
-						} else {
-							console.log("Upload successful:", result.url);
-							console.log(result.url);
-							document.getElementById("profileImageUrl").value = result.url;
-							document.getElementById("secondUpload").submit();
-						}
-					}
-				);
-			} catch (error) {
-				console.error("Auth or upload failed:", error);
-			}
+			document.getElementById("secondUpload").submit();
 		}, "image/jpeg", 0.95);
 	};
 }

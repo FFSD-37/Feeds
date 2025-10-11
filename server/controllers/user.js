@@ -907,6 +907,7 @@ const handlegetlog = async (req, res) => {
 }
 
 const uploadFinalPost = async (req, res) => {
+  try{
   const {data} = req.userDetails;
   const idd = `${data[0]}-${Date.now()}`;
   const postObj = {
@@ -919,7 +920,11 @@ const uploadFinalPost = async (req, res) => {
   await Post.create(postObj);
   const post = await Post.findOne({id: idd}).lean();
   await User.findOneAndUpdate({username: data[0]}, {$push: {postIds: post._id}}, {new: true, upsert: false});
-  return res.render("create_post", {img: data[2], currUser: data[0], msg: "post uploaded successfully", type: data[3]})
+  return res.render("create_post", {img: data[2], currUser: data[0], msg: "post uploaded successfully", type: data[3]});
+  } catch(err){ 
+    console.log(err)
+    return res.status(500).json({error: "Internal server error"});
+  }
 }
 
 const reportAccount = async (req, res) => {

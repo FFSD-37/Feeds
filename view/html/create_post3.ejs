@@ -18,20 +18,9 @@
         <div class="header-title">Create new post</div>
       </div>
       <div class="content">
-        <div class="image-create-post3">
-          <% if (type === "reel") { %>
-            <div></div>
-          <% } else { %>
-          <img
-            id="post-image"
-            class="post-image"
-            src="<%- post %>"
-            alt="Post image preview"
-          />
-          <% } %>
-        </div>
+        <div class="image-create-post3" data-type="<%= type %>" %>'></div>
         <div class="right-side">
-          <form action="/shareFinalPost" method="POST" id="create-post3">
+          <form id="create-post3">
             <input type="hidden" id="avatar" name="avatar" value="<%- post %>" />
             <input type="hidden" id="type" name="type" value="<%- type %>" />
             <div>
@@ -88,6 +77,7 @@
           </div>
       </div>
     </div>
+    <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
     <script src="../js/create_post3.js"></script>
   </body>
 </html>
