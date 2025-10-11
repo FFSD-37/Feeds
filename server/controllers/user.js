@@ -1015,8 +1015,8 @@ const handlereportpost = async (req, res) => {
 }
 
 const handlegetads = async (req, res) => {
-  const ads = await Adpost.find({});
-  console.log(ads);
+  const ads = await Adpost.find({}).lean();
+  // console.log(ads);
   return res.json({allAds: ads});
 }
 
