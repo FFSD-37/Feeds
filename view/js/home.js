@@ -2,28 +2,6 @@ function openpostdropdown(e) {
   document.getElementById("socialDropdown").style.display = "block";
 }
 
-function postOverlay(url, caption, time, author) {
-  document.getElementById("socialDropdown").style.display = "none";
-  document.getElementById("maindiv").style.display = "grid";
-  document.getElementById("maindiv").style.opacity = "1";
-
-  const overlayImage = document.getElementById("overlayImage");
-  if (overlayImage) {
-    overlayImage.src = url + "&&tr=w-1080,h-1080";
-  }
-
-  const postAuthor = document.getElementById("postAuthor");
-  postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
-  const overlayPostCaption = document.getElementById("overlayPostCaption");
-  if (caption) {
-    overlayPostCaption.innerHTML = caption;
-  } else {
-    overlayPostCaption.innerHTML = "";
-  }
-  const overlayPostTime = document.getElementById("overlayPostTime");
-  overlayPostTime.innerHTML = time;
-}
-
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     const reportModal = document.getElementById("report-modal");
@@ -50,15 +28,31 @@ function closepostdropdown(e) {
 }
 
 function openReportModal(e) {
+  console.log("Event: " + e);
   document.getElementById("report-modal").classList.add("show");
+  document.getElementById("postIdForReportPost").value = e;
 }
 
 function closeReportModal(e) {
   document.getElementById("report-modal").classList.remove("show");
+  document.getElementById("postIdForReportPost").value = "";
 }
 
-function selectReason(reason) {
-  alert("You selected: " + reason);
+async function selectReason(reason) {
+  await fetch("/report_post", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      reason,
+      post_id: document.getElementById("postIdForReportPost").value
+    })
+  }).then((res) => {
+    return res.json();
+  }).then((data) => {
+      alert("Your report has been received successfully. We'll review it shortly.");
+  })
   closeReportModal();
 }
 
@@ -66,15 +60,15 @@ function timeAgo(date) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
   const intervals = {
     year: 31536000,
-    month: 2592000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
+    mon: 2592000,
+    w: 604800,
+    d: 86400,
+    h: 3600,
+    m: 60,
   };
   for (const [unit, sec] of Object.entries(intervals)) {
     const count = Math.floor(seconds / sec);
-    if (count >= 1) return `${count}${unit.charAt(0)}`;
+    if (count >= 1) return `${count} ${unit}`;
   }
   return "just now";
 }
@@ -119,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let div = document.createElement("div");
         div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        console.log(p);
+        // console.log(p);
         // Start building the HTML string
         let html = `
           <div class="post-header">
@@ -131,10 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
               <a style="text-decoration:none;color:black">•••</a>
             </div>
             <div class="dropdown-menu" id="socialDropdown">
-              <div class="menu-item danger" onclick="openReportModal()">
+              <div class="menu-item danger" onclick="openReportModal('<%= post.id %>')">
                 Report
               </div>
-              <div class="menu-item normal" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
+              <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">
                 Go to post
               </div>
               <div class="menu-item normal" id="btnShareProfile" onclick="shareTo('${p.author}')">
@@ -157,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add content based on type
         if (p.type === "Img") {
           html += `
-            <div class="post-content" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')">
+            <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">
               <img class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" />
             </div>`;
         } else {
@@ -182,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           if (p.type === "Img") {
             html += `
-              <div class="action-icon" onclick="postOverlay('${p.url}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
+              <div class="action-icon" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
                 <i class="far fa-comment"></i>
               </div>`;
           }

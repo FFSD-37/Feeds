@@ -5,18 +5,10 @@ import { instance } from "../services/razorpay.js"
 const checkOut = async (req, res) => {
     try {
         const { data } = req.userDetails;
+        const { plan_name, plan_price } = req.body;
         const username = data[0];
         let order;
-        let amount;
-        if (req.body.plan_name === "Semi-Annualy") {
-            amount = 169 * 100 * 6;
-        }
-        if (req.body.plan_name === "Monthly") {
-            amount = 199 * 100;
-        }
-        if (req.body.plan_name === "Yearly") {
-            amount = 149 * 100 * 12;
-        }
+        let amount = Number(plan_price) * 100;
 
         order = await instance.orders.create({
             amount
@@ -55,7 +47,7 @@ const verify_payment = async (req, res) => {
 
         await User.findOneAndUpdate(
             { username: data[0]},
-            { isPremium: true },
+            { isPremium: true, coins: 0 },
             { new: true }
         )
     }

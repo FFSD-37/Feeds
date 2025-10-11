@@ -15,6 +15,8 @@ import Notification from '../models/notification_schema.js';
 import Channel from "../models/channelSchema.js"
 import channelPost from '../models/channelPost.js';
 import Story from "../models/storiesSchema.js";
+import Comment from '../models/comment_schema.js';
+import mongoose from 'mongoose';
 
 async function storeOtp(email, otp) {
   try {
@@ -395,9 +397,11 @@ const handlegetHome = async (req, res) => {
   return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3] });
 }
 
-const handlegetpayment = (req, res) => {
+const handlegetpayment = async (req, res) => {
   const { data } = req.userDetails;
-  return res.render("payment", { img: data[2], currUser: data[0] });
+  const user = await User.findOne({username: data[0]});
+  const coins = user.coins;
+  return res.render("payment", { img: data[2], currUser: data[0], coins: coins });
 }
 
 const handlegetprofile = async (req, res) => {
@@ -489,6 +493,28 @@ const handlegetcontact = (req, res) => {
   return res.render("contact", { img: data[2], msg: null, currUser: data[0] });
 }
 
+const handlegetcomment = async(req, res) => {
+  const postID = req.body.postID;
+  // console.log(postID);
+  const post = await Post.findOne({ id: req.body.postID });
+  // console.log(post);
+  let comment_array = [];
+  for (let i = 0; i < post.comments.length; i++) {
+    const comment = await Comment.findOne({ _id: post.comments[i] });
+    // console.log(comment);
+    let reply_array = [];
+    if(comment.reply_array.length > 0){
+      for(let j = 0; j < comment.reply_array.length; j++){
+        reply_array.push(await Comment.findOne({ _id: comment.reply_array[j] }));
+      }
+    }
+    comment_array.push([comment, reply_array]);
+  }
+  
+  // console.log(comment_array[0][1]);
+  return res.json(comment_array);
+}
+
 const handlegetconnect = async (req, res) => {
   const { data } = req.userDetails;
 
@@ -527,6 +553,71 @@ const handlegetconnect = async (req, res) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
+const handlepostcomment = async (req, res) => {
+  try {
+    const { data } = req.userDetails;
+    const { postID, commentText } = req.body;
+
+    if (!commentText || commentText.trim() === "") {
+      return res.status(400).json({ success: false, message: "Comment cannot be empty" });
+    }
+
+    // Find the target post
+    const post = await Post.findOne({ id: postID });
+    if (!post) {
+      return res.status(404).json({ success: false, message: "Post not found" });
+    }
+
+    // Create the new comment document
+    const newComment = await Comment.create({
+      text: commentText,
+      username: data[0],
+      avatarUrl: data[2],
+      postID: post._id,
+      reply_array: [],
+    });
+
+    // Push this comment’s ID to the post’s comment array
+    await Post.findOneAndUpdate(
+      { id: postID },
+      { $push: { comments: newComment._id } },
+      { new: true }
+    );
+
+    // Add activity log entry
+    await ActivityLog.create({
+      username: data[0],
+      id: `#${Date.now()}`,
+      message: `You commented on a post by #${post.author}!`
+    });
+
+    // Create notification for post author
+    if (data[0] !== post.author) {
+      const noti8 = await Notification.create({
+        mainUser: post.author,
+        msgSerial: 8,
+        userInvolved: data[0]
+      });
+
+      await Notification.findOneAndUpdate(
+        { _id: noti8._id },
+        { $inc: { coins: 1 } },
+        { new: true }
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Comment added successfully",
+      comment: newComment
+    });
+  } catch (error) {
+    console.error("❌ Error in handlepostcomment:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
@@ -840,6 +931,48 @@ const handleloginchannel = async (req, res) => {
   }
 }
 
+const handlepostreply = async (req, res) => {
+  const {data} = req.userDetails;
+  const {commentId, reply, postID} = req.body;
+  const user = await Comment.create({
+    text: reply,
+    parentCommntID: commentId,
+    username: data[0],
+    avatarUrl: data[2],
+  });
+  await Comment.findOneAndUpdate({_id: commentId}, {$push: {reply_array: user._id}});
+  return res.json({data: true});
+}
+
+const handleloginsecond = async (req, res) => {
+  console.log(req.body);
+  if (req.body.type === "Standard Account"){
+    
+  }
+  if (req.body.type === "Child Account"){
+
+  }
+
+  return res.json({"d": true});
+}
+
+const handlegetloginsecond = (req, res) => {
+  return res.render("login2");
+}
+
+const handlereportpost = async (req, res) => {
+  const {data} = req.userDetails;
+  console.log(req.body);
+  const { reason, post_id } = req.body;
+  const report = await Report.create({
+    post_id: post_id,
+    user_reported: data[0],
+    reason: reason
+  })
+  await Report.findOneAndUpdate({_id: report._id}, {$inc: {report_number: 1}});
+  return res.json({data: true});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -886,5 +1019,11 @@ export {
   uploadFinalPost,
   reportAccount,
   handlegetloginchannel,
-  handleloginchannel
+  handleloginchannel,
+  handlegetcomment,
+  handlepostreply,
+  handleloginsecond,
+  handlegetloginsecond,
+  handlepostcomment,
+  handlereportpost
 };

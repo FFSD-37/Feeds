@@ -26,7 +26,12 @@ const commentSchema = new mongoose.Schema({
     parentCommntID:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Comment'
-    }
+    },
+
+    reply_array:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Comment'
+    }],
     
 }, { timestamps: true });
 

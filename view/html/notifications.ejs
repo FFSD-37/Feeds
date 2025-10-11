@@ -324,7 +324,11 @@
             } else if(noti.msgSerial === 7) {
               icon = '👋';
               message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> has unfollowed you.';
+            } else if(noti.msgSerial === 8) {
+              icon = '👋';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> has commented on your post.';
             }
+
           %>
           
           <div class="notification-item">

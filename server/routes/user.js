@@ -44,7 +44,13 @@ import {
   uploadFinalPost,
   reportAccount,
   handlegetloginchannel,
-  handleloginchannel
+  handleloginchannel,
+  handlegetcomment,
+  handlepostreply,
+  handleloginsecond,
+  handlegetloginsecond,
+  handlepostcomment,
+  handlereportpost
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -173,5 +179,17 @@ router.post("/report/:username", isAuthuser, reportAccount);
 router.get("/login_channel",isAuthuser, handlegetloginchannel);
 
 router.post("/postloginchannel",isAuthuser, handleloginchannel);
+
+router.post("/userpost_comments",isAuthuser, handlegetcomment);
+
+router.post("/userpost_reply",isAuthuser, handlepostreply);
+
+router.post("/atin_job", handleloginsecond);
+
+router.get("/login2", handlegetloginsecond);
+
+router.post("/comment",isAuthuser, handlepostcomment);
+
+router.post("/report_post", isAuthuser, handlereportpost);
 
 export default router;

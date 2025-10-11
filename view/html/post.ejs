@@ -9,15 +9,23 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <!-- your CSS, etc. -->
-    <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
+    <link
+      rel="icon"
+      type="image/*"
+      href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780"
+    />
   </head>
   <body>
     <h1>Latest Posts</h1>
     <div id="posts-container">
       <% if (!posts || posts.length === 0) { %>
       <p>No posts to display.</p>
-      <% } else { %> <% posts.forEach(function(post) { %>
-      <div class="post" data-id="<%= post.id %>" data-createdat="<%= post.createdAt.toISOString() %>">
+      <% } else { %> <% posts.forEach(function(post) { %> 
+      <div
+        class="post"
+        data-id="<%= post.id %>"
+        data-createdat="<%= post.createdAt.toISOString() %>"
+      >
         <div class="post-header">
           <a
             href="/profile/<%= post.author %>"
@@ -36,10 +44,13 @@
             <a style="text-decoration: none; color: black">•••</a>
           </div>
           <div class="dropdown-menu" id="socialDropdown">
-            <div class="menu-item danger" onclick="openReportModal()">
+            <div class="menu-item danger" onclick="openReportModal('<%= post.id %>')">
               Report
             </div>
-            <div class="menu-item normal" onclick="postOverlay('<%= encodeURIComponent(post.url) %>', '<%= encodeURIComponent(post.content) %>', '<%= post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%= encodeURIComponent(post.author) %>')">
+            <div
+              class="menu-item normal"
+              onclick="postOverlay('<%- post.url %>','<%- post.id %>','<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+            >
               Go to post
             </div>
             <div
@@ -68,12 +79,9 @@
         <% if(post.type === "Img") { %>
         <div
           class="post-content"
-          onclick="postOverlay('<%= encodeURIComponent(post.url) %>', '<%= encodeURIComponent(post.content) %>', '<%= post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%= encodeURIComponent(post.author) %>')"
+          onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
         >
-          <img
-            class="post-on-home-page"
-            src="<%= post.url %>"
-          />
+          <img class="post-on-home-page" src="<%= post.url %>" />
         </div>
         <% } else { %>
         <div class="post-content" onclick="reelOpen('<%= post %>')">
@@ -84,7 +92,7 @@
             preload="metadata"
           ></video>
         </div>
-        <% } %> <% if (type !== "Kids" || type !== "Student") { %>
+        <% } %> <% if (type !== "Kids" && type !== "Student") { %>
         <div class="post-actions">
           <div class="action-icon" onclick="likePost('<%= post.id %>', this)">
             <% if(post.liked) { %>
@@ -96,7 +104,7 @@
           <% if(post.type === "Img") { %>
           <div
             class="action-icon"
-            onclick="postOverlay('<%= encodeURIComponent(post.url) %>', '<%= encodeURIComponent(post.content) %>', '<%= post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%= encodeURIComponent(post.author) %>')"
+            onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
             id="comment-button-post"
           >
             <i class="far fa-comment"></i>
@@ -105,7 +113,10 @@
           <div class="action-icon">
             <i class="fas fa-share" onclick="shareTo('<%= post.author %>')"></i>
           </div>
-          <div class="last-action-icon" onclick="savePost('<%= post.id %>', this)">
+          <div
+            class="last-action-icon"
+            onclick="savePost('<%= post.id %>', this)"
+          >
             <i class="fa-solid fa-floppy-disk"></i>
           </div>
         </div>
