@@ -16,7 +16,7 @@ import Channel from "../models/channelSchema.js"
 import channelPost from '../models/channelPost.js';
 import Story from "../models/storiesSchema.js";
 import Comment from '../models/comment_schema.js';
-
+ 
 async function storeOtp(email, otp) {
   try {
     const existing = await ResetPassword.findOne({ email });
@@ -608,8 +608,7 @@ const handlepostcomment = async (req, res) => {
 
       await User.findOneAndUpdate(
         { username: data[0] },
-        { $inc: { coins: 1 } },
-        { new: true }
+        { $inc: { coins: 1 } }
       );
     }
 
@@ -627,6 +626,9 @@ const handlepostcomment = async (req, res) => {
 
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
+  if(data[3] === "Kids"){
+    return res.render("kids_games", { img: data[2], currUser: data[0], type: data[3] })
+  }
   return res.render("games", { img: data[2], currUser: data[0], type: data[3] });
 }
 
@@ -642,7 +644,12 @@ const handlegetadmin = (req, res) => {
 const handlegetreels = async(req, res) => {
   const { data } = req.userDetails;
 
-  const userType = data[3];
+  if (data[3] === "Kids"){
+    const user = await Channel.find({});
+    console.log(user);
+    return res.render("kids_reels", {img: data[2], currUser: data[0], posts: [], type: data[3]})
+  }
+
   let posts = await Post.find({
     type: "Reels",
   }).sort({ createdAt: -1 }).lean();
@@ -674,6 +681,9 @@ const handlegetforgetpass = (req, res) => {
 const handlegeteditprofile = async (req, res) => {
   const { data } = req.userDetails;
   const user = await User.findOne({ username: data[0] });
+  if (data[3] === "Kids"){
+    return res.render("kids_editprofile", { img: data[2], currUser: data[0], CurrentUser: user, type: data[3] })
+  }
   return res.render("edit_profile", { img: data[2], currUser: data[0], CurrentUser: user, type: data[3] });
 }
 
@@ -846,6 +856,9 @@ const getSearch = async (req, res) => {
 const handlegetsettings = async (req, res) => {
   const { data } = req.userDetails;
   const Meuser = await User.findOne({ username: data[0] });
+  if (data[3] === "Kids"){
+    return res.render("kids_settings", { img: data[2], currUser: data[0], Meuser, type: data[3] });
+  }
   return res.render("settings", { img: data[2], currUser: data[0], Meuser, type: data[3] })
 }
 
@@ -886,6 +899,9 @@ const createPostfinalize = (req, res) => {
 const handlegetlog = async (req, res) => {
   const {data} = req.userDetails;
   const allLogs = await ActivityLog.find({username: data[0]}).lean().sort({createdAt: -1});
+  if(data[3] === "Kids"){
+    return res.render("kids_activityLog", {img: data[2], currUser: data[0], allLogs, type: data[3]})
+  }
   return res.render("activityLog", {img: data[2], currUser: data[0], allLogs, type: data[3]})
 }
 
