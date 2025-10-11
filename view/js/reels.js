@@ -1,296 +1,264 @@
-document.addEventListener("keydown", function (event) {
-  const reelsFeed = document.querySelector(".reels-feed");
-  const height = reelsFeed.clientHeight;
-
-  if (event.key === "ArrowDown") {
-    reelsFeed.scrollBy(0, height);
-  } else if (event.key === "ArrowUp") {
-    reelsFeed.scrollBy(0, -height);
-  }
-});
-
-document.querySelectorAll(".nav-arrow").forEach((arrow, index) => {
-  arrow.addEventListener("click", function () {
-    const reelsFeed = document.querySelector(".reels-feed");
-    const height = reelsFeed.clientHeight;
-    if (index === 0) {
-      reelsFeed.scrollBy(0, -height);
-    } else {
-      reelsFeed.scrollBy(0, height);
-    }
-  });
-});
-
-// Mute toggle & IntersectionObserver logic
-window.toggleMute = function (button) {
-  const video = button.closest(".reel-video").querySelector("video");
-  const muteIcon = button.querySelector(".mute-icon");
-  const unmuteIcon = button.querySelector(".unmute-icon");
-
-  video.muted = !video.muted;
-
-  if (video.muted) {
-    muteIcon.style.display = "block";
-    unmuteIcon.style.display = "none";
-  } else {
-    muteIcon.style.display = "none";
-    unmuteIcon.style.display = "block";
-  }
-};
-
-document.querySelectorAll(".reel-video video").forEach((video) => {
-  video.controls = false;
-  video.addEventListener("click", () => (video.paused ? video.play() : video.pause()));
-});
+// public/js/reels.js (fixed: allows spaces in textarea)
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Basic existing video + intersection logic (kept)
   const videos = document.querySelectorAll(".reel-video video");
   let activeVideo = null;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const video = entry.target;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target;
+      if (entry.isIntersecting) {
+        videos.forEach(v => { if (v !== video) { v.pause(); v.muted = true; } });
+        video.play().catch(() => { video.muted = true; video.play(); });
+        activeVideo = video;
+      } else if (video === activeVideo) {
+        video.pause(); video.muted = true; activeVideo = null;
+      }
+    });
+  }, { threshold: 0.8, rootMargin: '0px' });
 
-        if (entry.isIntersecting) {
-          videos.forEach((v) => {
-            if (v !== video) {
-              v.pause();
-              v.muted = true;
-            }
-          });
+  videos.forEach(v => {
+    v.controls = false;
+    v.addEventListener('click', () => v.paused ? v.play() : v.pause());
+    observer.observe(v);
+  });
 
-          video
-            .play()
-            .catch(() => {
-              video.muted = true;
-              video.play();
-            });
+  // Helper: detect if the user is typing in an input/textarea/contenteditable
+  function isUserTyping(evt) {
+    const active = document.activeElement;
+    if (!active) return false;
+    const tag = (active.tagName || "").toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return true;
+    if (active.isContentEditable) return true;
+    // also allow if some element has role="textbox"
+    if (active.getAttribute && active.getAttribute('role') === 'textbox') return true;
+    return false;
+  }
 
-          activeVideo = video;
-        } else if (video === activeVideo) {
-          video.pause();
-          video.muted = true;
-          activeVideo = null;
-        }
-      });
-    },
-    {
-      threshold: 0.8,
-      rootMargin: "0px",
-    }
-  );
+  document.addEventListener('keydown', (e) => {
+    // If user is typing into an input/textarea/contenteditable, do not intercept the key.
+    if (isUserTyping(e)) return;
 
-  videos.forEach((video) => observer.observe(video));
-
-  window.toggleMute = function (button) {
-    const video = button.closest(".reel-video").querySelector("video");
-    video.muted = !video.muted;
-
-    const icons = button.querySelectorAll("svg");
-    icons.forEach((icon) =>
-      icon.style.display = icon.classList.contains("mute-icon")
-        ? video.muted
-          ? "block"
-          : "none"
-        : video.muted
-        ? "none"
-        : "block"
-    );
-  };
-
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && activeVideo) {
-      e.preventDefault();
+    if (e.code === 'Space' && activeVideo) {
+      e.preventDefault(); // keep preventing default only when not typing
       activeVideo.paused ? activeVideo.play() : activeVideo.pause();
+    }
+    if (e.key === 'Escape') {
+      closeCommentsPanel();
     }
   });
 
-  // --- Like / Comment / Share handlers ---
-  const likeButtons = document.querySelectorAll(".like-button");
-  const commentButtons = document.querySelectorAll(".comment-button");
-  const shareButtons = document.querySelectorAll(".share-button");
+  window.toggleMute = function(button) {
+    const video = button.closest('.reel-video').querySelector('video');
+    video.muted = !video.muted;
+    const icons = button.querySelectorAll('svg');
+    icons.forEach((icon) => icon.style.display = icon.classList.contains('mute-icon') ? (video.muted ? 'block' : 'none') : (video.muted ? 'none' : 'block'));
+  };
 
-  likeButtons.forEach((btn) => btn.addEventListener("click", handleLikeClick));
-  commentButtons.forEach((btn) => btn.addEventListener("click", handleCommentClick));
-  shareButtons.forEach((btn) => btn.addEventListener("click", handleShareClick));
+  // --- comment panel logic ---
+  const container = document.querySelector('.reels-container');
+  const reelsWrap = document.querySelector('.reels-wrap');
+  const commentsPanel = document.getElementById('comments-panel');
+  const commentsList = document.getElementById('comments-list');
+  const commentForm = document.getElementById('comment-form');
+  const commentTextarea = document.getElementById('comment-text');
+  const commentsBackdrop = document.getElementById('comments-backdrop');
+  const closeBtn = document.getElementById('close-comments');
+  const commentsCountSmall = document.getElementById('comments-count-small');
 
-  // --------- Like logic ----------
-  async function handleLikeClick(e) {
-    const btn = e.currentTarget;
-    const countEl = btn.querySelector(".like-count");
-    const postId = btn.dataset.postId;
+  let activePostId = null;
 
-    // Optimistic UI update
-    btn.classList.toggle("liked");
-    const liked = btn.classList.contains("liked");
-    // countEl.textContent = liked ? current + 1 : Math.max(0, current - 1);
+  // Open comments for a post id
+  async function openComments(postId) {
+    if (!postId) return;
+    activePostId = postId;
+
+    // pause active video and clear it so Space won't be captured for play/pause
+    if (activeVideo && !activeVideo.paused) {
+      try { activeVideo.pause(); } catch(_) {}
+    }
+    activeVideo = null;
+
+    // shift layout
+    container.classList.add('comments-open');
+    commentsPanel.setAttribute('aria-hidden', 'false');
+    commentsBackdrop.setAttribute('aria-hidden', 'false');
+
+    // show loading state
+    commentsList.innerHTML = `<div class="loading" style="padding:12px;color:rgba(255,255,255,0.7)">Loading comments…</div>`;
 
     try {
-      const res = await fetch(`/posts/like`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reel_id: postId })
-      });
-      if (!res.ok) {
-        throw new Error("Failed to update like");
-      }
-      const data = await res.json();
-      // sync UI with server count
-      console.log(data.likes);
-      countEl.textContent = data.likes;
+      const res = await fetch(`/posts/${postId}`);
+      if (!res.ok) throw new Error('Failed to load comments');
+      const post = await res.json();
+      renderComments(post.comments || []);
+      commentsCountSmall.textContent = (post.comments || []).length;
+      // focus textarea for convenience (but allow browser to finish animation)
+      setTimeout(() => commentTextarea.focus(), 200);
     } catch (err) {
-      // Revert on error
+      commentsList.innerHTML = `<div class="error">Could not load comments</div>`;
       console.error(err);
-      btn.classList.toggle("liked");
-      alert("Could not update like. Try again.");
     }
   }
 
-  // --------- Comment modal logic ----------
-  const commentModal = document.getElementById("comment-modal");
-  const commentsList = document.getElementById("comments-list");
-  const commentForm = document.getElementById("comment-form");
-  const commentTextarea = document.getElementById("comment-text");
-  const closeModalBtn = document.getElementById("close-comment-modal");
-  // Assume you also have a modal backdrop with class 'comment-modal-backdrop'
-  let activePostIdForComment = null;
-  let commentCountEl = null;
-
-  function openCommentModal(postId, countEl) {
-    activePostIdForComment = postId;
-    commentCountEl = countEl;
-    commentsList.innerHTML = "<div class='loading'>Loading comments...</div>";
-    commentTextarea.value = "";
-    commentModal.style.display = "block";
-    document.body.style.overflow = "hidden";
-
-    fetch(`/posts/${postId}`)
-      .then((r) => r.json())
-      .then((post) => {
-        renderComments(post.comments || []);
-      })
-      .catch((err) => { 
-        console.error(err);
-        commentsList.innerHTML = "<div class='error'>Could not load comments.</div>";
-      });
-  }
-
-  function closeCommentModal() {
-    commentModal.style.display = "none";
-    document.body.style.overflow = "";
-    activePostIdForComment = null;
-    commentsList.innerHTML = "";
+  function closeCommentsPanel() {
+    activePostId = null;
+    container.classList.remove('comments-open');
+    commentsPanel.setAttribute('aria-hidden', 'true');
+    commentsBackdrop.setAttribute('aria-hidden', 'true');
+    commentsList.innerHTML = '';
+    commentTextarea.value = '';
   }
 
   function renderComments(comments) {
-    if (!comments.length) {
-      commentsList.innerHTML = "<div class='no-comments'>No comments yet. Be the first!</div>";
+    if (!comments || comments.length === 0) {
+      commentsList.innerHTML = `<div class="no-comments" style="padding:12px;color:rgba(255,255,255,0.6)">No comments yet. Be the first to comment!</div>`;
       return;
     }
-    commentsList.innerHTML = "";
-    comments.forEach((c) => {
-      const item = document.createElement("div");
-      item.className = "comment-item";
-      item.innerHTML =
-        `<div class="comment-author">${escapeHtml(c.author || "User")}</div>
-        <div class="comment-text">${escapeHtml(c.text)}</div>
-        <div class="comment-time">${new Date(c.createdAt).toLocaleString()}</div>`;
+
+    // create nodes
+    commentsList.innerHTML = '';
+    comments.forEach(c => {
+      const item = document.createElement('div');
+      item.className = 'comment-item';
+      item.innerHTML = `
+        <div class="avatar" aria-hidden="true"></div>
+        <div class="comment-main">
+          <div class="comment-author">${escapeHtml(c.author || 'User')}</div>
+          <div class="comment-text">${escapeHtml(c.text)}</div>
+          <div class="comment-time">${new Date(c.createdAt || Date.now()).toLocaleString()}</div>
+        </div>
+      `;
       commentsList.appendChild(item);
     });
+
+    // scroll to top (newest first)
+    commentsList.scrollTop = 0;
   }
 
-  commentForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = commentTextarea.value.trim();
-    if (!text || !activePostIdForComment) return;
+  // helper to escape HTML
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
 
-    // optimistic: append comment locally
-    const optimistic = { author: "You", text, createdAt: new Date().toISOString() };
-    // Prepare previous comments to restore on failure
-    const prev = commentsList.innerHTML;
+  // Event delegation for comment-button clicks
+  document.addEventListener('click', (ev) => {
+    const commentBtn = ev.target.closest('.comment-button');
+    if (commentBtn) {
+      const pid = commentBtn.dataset.postId;
+      openComments(pid);
+      ev.preventDefault();
+      return;
+    }
 
-    // Collect current items from DOM
-    const prevComments = Array.from(commentsList.children)
-      .filter((c) => c.classList.contains("comment-item"))
-      .map((c) => ({
-        author: c.querySelector(".comment-author")?.textContent || "",
-        text: c.querySelector(".comment-text")?.textContent || "",
-        createdAt: c.querySelector(".comment-time")?.textContent || ""
-      }));
+    const likeBtn = ev.target.closest('.like-button');
+    if (likeBtn) {
+      handleLikeClick(likeBtn);
+      return;
+    }
 
-    renderComments([optimistic, ...prevComments]);
-
-    try {
-      const res = await fetch(`/posts/${activePostIdForComment}/comment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
-      if (!res.ok) throw new Error("Failed to post comment");
-      const data = await res.json();
-      // update UI with server comments & count
-      renderComments(data.comments || []);
-      if (commentCountEl) commentCountEl.textContent = data.comments.length;
-      commentTextarea.value = "";
-    } catch (err) {
-      console.error(err);
-      alert("Could not post comment. Try again.");
-      // revert optimistic view
-      commentsList.innerHTML = prev;
+    const shareBtn = ev.target.closest('.share-button');
+    if (shareBtn) {
+      handleShareClick(shareBtn);
+      return;
     }
   });
 
-  closeModalBtn.addEventListener("click", closeCommentModal);
-  document.querySelector(".comment-modal-backdrop").addEventListener("click", closeCommentModal);
+  // backdrop and close button
+  commentsBackdrop.addEventListener('click', closeCommentsPanel);
+  closeBtn.addEventListener('click', closeCommentsPanel);
 
-  function handleCommentClick(e) {
-    const btn = e.currentTarget;
-    const postId = btn.dataset.postId;
-    const countEl = btn.querySelector(".comment-count");
-    openCommentModal(postId, countEl);
+  // posting a comment
+  commentForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = commentTextarea.value.trim();
+    if (!text || !activePostId) return;
+
+    // optimistic UI: push temporary comment
+    const optimistic = { author: 'You', text, createdAt: new Date().toISOString() };
+    const prevHTML = commentsList.innerHTML;
+    // show optimistic at top
+    renderComments([optimistic, ...Array.from(commentsList.children).map(el => ({
+      author: el.querySelector('.comment-author')?.textContent || '',
+      text: el.querySelector('.comment-text')?.textContent || '',
+      createdAt: new Date().toISOString()
+    }))]);
+
+    try {
+      const res = await fetch(`/posts/${activePostId}/comment`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text })
+      });
+      if (!res.ok) throw new Error('Failed to post comment');
+      const data = await res.json();
+      // data.comments expected (server returns updated comments list)
+      renderComments(data.comments || []);
+      // also update the comment count badge in the reels feed for that post
+      updateCommentCountInFeed(activePostId, (data.comments || []).length);
+      commentTextarea.value = '';
+    } catch (err) {
+      console.error(err);
+      alert('Could not post comment. Try again.');
+      // revert optimistic UI
+      commentsList.innerHTML = prevHTML;
+    }
+  });
+
+  // update comment count shown in feed for a given post id
+  function updateCommentCountInFeed(postId, newCount) {
+    const selector = `.comment-button[data-post-id="${postId}"] .comment-count`;
+    const countEl = document.querySelector(selector);
+    if (countEl) countEl.textContent = newCount;
+    if (commentsCountSmall) commentsCountSmall.textContent = newCount;
   }
 
-  // --------- Share logic ----------
-  async function handleShareClick(e) {
-    const btn = e.currentTarget;
+  // simple like handler (if you don't have one - keeps optimistic UX)
+  async function handleLikeClick(btn) {
     const postId = btn.dataset.postId;
-    const postUrl = btn.dataset.postUrl || `${location.origin}/posts/${postId}`;
+    const countEl = btn.querySelector('.like-count');
+    const currentlyLiked = btn.classList.contains('liked');
 
-    // Try Web Share API
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Check out this reel",
-          text: "Seen this? Thought you'd like it.",
-          url: postUrl,
-        });
-      } catch (err) {
-        // user canceled or share failed
-        console.log("Share canceled or failed", err);
+    // optimistic toggle
+    btn.classList.toggle('liked');
+    let current = parseInt(countEl.textContent || '0', 10);
+    countEl.textContent = currentlyLiked ? Math.max(0, current - 1) : current + 1;
+
+    try {
+      const res = await fetch('/posts/like', { // change to your real endpoint if different
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ reel_id: postId })
+      });
+      if (!res.ok) throw new Error('like request failed');
+      const data = await res.json();
+      // sync UI if server returns likes
+      if (data.likes !== undefined) countEl.textContent = data.likes;
+      if (data.liked !== undefined) {
+        if (data.liked) btn.classList.add('liked'); else btn.classList.remove('liked');
       }
-      return;
+    } catch (err) {
+      console.error(err);
+      // revert
+      btn.classList.toggle('liked');
+      countEl.textContent = currentlyLiked ? current : Math.max(0, current);
     }
+  }
 
-    // fallback: copy to clipboard
+  // simple share handler fallback
+  async function handleShareClick(btn) {
+    const postUrl = btn.dataset.postUrl || `${location.origin}/posts/${btn.dataset.postId}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Check this reel', url: postUrl }); return; } catch(e) { console.log(e); }
+    }
     try {
       await navigator.clipboard.writeText(postUrl);
-      alert("Link copied to clipboard!");
+      alert('Link copied to clipboard');
     } catch (err) {
-      console.error("Clipboard failed", err);
-      // fallback 2: open new window with link
-      window.open(postUrl, "_blank");
+      window.open(postUrl, '_blank');
     }
   }
 
-  // helper: escape HTML to avoid XSS when inserting innerHTML
-  function escapeHtml(text) {
-    if (!text) return "";
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-});
+}); // DOMContentLoaded end
