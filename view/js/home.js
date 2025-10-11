@@ -60,15 +60,15 @@ function timeAgo(date) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
   const intervals = {
     year: 31536000,
-    month: 2592000,
-    week: 604800,
-    day: 86400,
-    hour: 3600,
-    minute: 60,
+    mon: 2592000,
+    w: 604800,
+    d: 86400,
+    h: 3600,
+    m: 60,
   };
   for (const [unit, sec] of Object.entries(intervals)) {
     const count = Math.floor(seconds / sec);
-    if (count >= 1) return `${count}${unit.charAt(0)}`;
+    if (count >= 1) return `${count} ${unit}`;
   }
   return "just now";
 }

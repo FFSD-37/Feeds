@@ -20,7 +20,7 @@ function postOverlay(url, id, caption, time, author) {
     }
 
     const postAuthor = document.getElementById("postAuthor");
-    postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: black;">${author}</a>`;
+    postAuthor.innerHTML = `<a href="/profile/${author}" style="text-decoration: none; color: white;">${author}</a>`;
     const overlayPostCaption = document.getElementById("overlayPostCaption");
     if (caption) {
         overlayPostCaption.innerHTML = caption;
@@ -28,7 +28,7 @@ function postOverlay(url, id, caption, time, author) {
         overlayPostCaption.innerHTML = "";
     }
     const overlayPostTime = document.getElementById("overlayPostTime");
-    overlayPostTime.innerHTML = time;
+    overlayPostTime.innerHTML = timeAgo(new Date(time));
     fetch_comment(id);
 }
 
@@ -151,27 +151,52 @@ async function postComment(postID) {
 }
 
 function replyComment(commentId, postID) {
-    const div = document.getElementById("comment-info");
-    if (div.querySelector(".reply-input")) return;
+    // Select the comment-info div of the clicked comment
+    const div = document.querySelector(`.comment-info[data-comment-id="${commentId}"]`);
+    if (!div || div.querySelector(".reply-input")) return; // Prevent multiple inputs
 
+    // Create input field
     const replyInput = document.createElement("input");
     replyInput.type = "text";
     replyInput.placeholder = "Reply to this comment...";
     replyInput.className = "reply-input";
 
+    // Create reply button
     const replyButton = document.createElement("button");
     replyButton.textContent = "Reply";
     replyButton.className = "reply-button";
 
+    // Create cancel button
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancel";
+    cancelButton.className = "cancel-button";
+
+    // Handle Reply
     replyButton.onclick = () => {
-        replyToComment(commentId, replyInput.value, postID);
-        replyInput.value = "";
+        const replyText = replyInput.value.trim();
+        if (replyText === "") return; // prevent empty replies
+        replyToComment(commentId, replyText, postID);
+        cleanup();
     };
 
+    // Handle Cancel
+    cancelButton.onclick = cleanup;
+
+    // Helper to remove input + buttons
+    function cleanup() {
+        replyInput.remove();
+        replyButton.remove();
+        cancelButton.remove();
+    }
+
+    // Append elements to comment div
     div.appendChild(replyInput);
     div.appendChild(replyButton);
-}
+    div.appendChild(cancelButton);
 
+    // Autofocus on input
+    replyInput.focus();
+}
 
 function replyToComment(commentId, reply, postID) {
     fetch("/userpost_reply", {
@@ -206,7 +231,7 @@ function timeAgo(date) {
     };
     for (const [unit, sec] of Object.entries(intervals)) {
         const count = Math.floor(seconds / sec);
-        if (count >= 1) return `${count}${unit.charAt(0)}`;
+        if (count >= 1) return `${count}${unit.slice(0,2)}`;
     }
     return "just now";
 }
@@ -236,7 +261,7 @@ function fetch_comment(postID) {
                         <p class="comment-username" ><a href="/profile/${comment[0].username}" style="text-decoration: none; color: white">${comment[0].username}</a></p>
                         <p class="comment-text">${comment[0].text}</p>
                     </div>
-                    <div class="comment-info" id="comment-info">
+                    <div class="comment-info" data-comment-id="${comment[0]._id}">
                         <span class="comment-time">${timeAgo(new Date(comment[0].createdAt))}</span>
                         <span class="comment-reply" onclick="replyComment('${comment[0]._id}', '${postID}')">Reply</span>
                         <span class="comment-heart" name="heart-comment" data-liked="false">
