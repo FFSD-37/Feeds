@@ -231,3 +231,328 @@ video {
     padding: 8px;
     cursor: pointer;
   }
+
+
+  :root{
+  --bg: rgba(17,17,17,0.96);
+  --card: rgba(255,255,255,0.04);
+  --glass: rgba(255,255,255,0.06);
+  --accent: #7c5cff;      /* primary accent */
+  --accent-2: #00e0b8;    /* secondary accent */
+  --danger: #ff3860;      /* like color */
+  --text: #e9eefb;
+  --muted: rgba(233,238,251,0.6);
+  --glass-blur: 10px;
+  --modal-width: min(720px, 96%);
+}
+
+/* ===========================
+   Comment modal (creative)
+   =========================== */
+.comment-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  pointer-events: auto;
+  font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+}
+
+.comment-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.48), rgba(0,0,0,0.64));
+  backdrop-filter: blur(4px) saturate(120%);
+  transition: opacity .25s ease;
+  opacity: 0;
+  animation: fadeIn .22s forwards;
+}
+
+/* modal card — glass + border gradient + drop-shadow */
+.comment-modal-content {
+  position: relative;
+  z-index: 2;
+  width: var(--modal-width);
+  max-height: 82vh;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 1rem;
+  box-sizing: border-box;
+
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 12px 40px rgba(2,6,23,0.7), 0 2px 8px rgba(0,0,0,0.45);
+  backdrop-filter: blur(var(--glass-blur)) saturate(120%);
+  color: var(--text);
+
+  transform: translateY(18px) scale(.995);
+  opacity: 0;
+  animation: slideUp .26s cubic-bezier(.2,.9,.2,1) forwards;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.6rem;
+}
+
+/* header + top row */
+.comment-modal-content h3{
+  margin: 0 0 .25rem 0;
+  font-size: 1.05rem;
+  letter-spacing: .2px;
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+}
+.comment-modal-content h3::before{
+  content: "";
+  width:10px;height:10px;border-radius:50%;
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow: 0 6px 18px rgba(124,92,255,0.18), inset 0 -4px 10px rgba(0,0,0,0.15);
+}
+
+/* close button — floating pill */
+.close-comment-modal {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  color: var(--muted);
+  border: none;
+  height: 36px;
+  width: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: transform .14s ease, box-shadow .14s ease, color .14s ease;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.4);
+}
+.close-comment-modal:hover {
+  transform: translateY(-2px);
+  color: var(--text);
+  box-shadow: 0 10px 26px rgba(2,6,23,0.6);
+}
+
+/* comments list area */
+.comments-list {
+  padding: 0.4rem 0.1rem;
+  overflow: auto;
+  max-height: calc(82vh - 220px);
+  display:flex;
+  flex-direction:column;
+  gap: .45rem;
+}
+
+/* each comment */
+.comment-item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: .6rem;
+  align-items: start;
+  padding: 0.6rem;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.007));
+  border: 1px solid rgba(255,255,255,0.02);
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s;
+  transform: translateY(6px);
+  opacity: 0;
+  animation: commentReveal .34s forwards;
+}
+
+/* small avatar circle for commenter */
+.comment-item::before{
+  content: "";
+  width:44px;height:44px;border-radius:50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  display:block;
+  box-shadow: inset 0 -6px 10px rgba(0,0,0,0.25);
+}
+
+/* text area of comment */
+.comment-author {
+  font-weight: 700;
+  color: var(--text);
+  font-size: .95rem;
+}
+.comment-text {
+  color: var(--muted);
+  margin-top: 0.25rem;
+  line-height:1.35;
+  white-space: pre-wrap;
+  font-size: .95rem;
+}
+.comment-time {
+  font-size: .72rem;
+  color: rgba(233,238,251,0.45);
+  margin-top: .5rem;
+}
+
+/* comment form (sticky footer) */
+#comment-form {
+  display:flex;
+  gap:.6rem;
+  align-items:center;
+  padding-top:.5rem;
+  border-top: 1px dashed rgba(255,255,255,0.03);
+}
+#comment-text {
+  flex:1;
+  resize:none;
+  padding:.7rem .8rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  color: var(--text);
+  min-height:48px;
+  max-height:120px;
+  outline:none;
+  box-shadow: inset 0 -6px 16px rgba(0,0,0,0.35);
+  transition: box-shadow .14s ease, transform .12s ease, border-color .12s;
+  font-size: .95rem;
+}
+#comment-text:focus{
+  box-shadow: 0 8px 30px rgba(124,92,255,0.12), inset 0 -6px 20px rgba(0,0,0,0.45);
+  transform: translateY(-2px);
+  border-color: rgba(124,92,255,0.5);
+}
+
+/* post button */
+#comment-form button[type="submit"]{
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  color: white;
+  border: none;
+  padding: .6rem .9rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: .2px;
+  box-shadow: 0 8px 30px rgba(124,92,255,0.14);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s;
+}
+#comment-form button[type="submit"]:hover { transform: translateY(-3px); filter: brightness(1.03); }
+
+/* small states */
+.no-comments { color: var(--muted); padding: .8rem; text-align:center; }
+.loading { color: var(--muted); padding: .6rem; text-align:center; }
+.error { color: #ffb3b3; padding: .6rem; text-align:center; }
+
+/* ===========================
+   Like button creative styles
+   =========================== */
+.like-button {
+  display:inline-grid;
+  justify-items:center;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  transition: transform .12s ease, filter .12s ease;
+  user-select:none;
+}
+.like-button:active { transform: scale(.95); }
+
+.like-button .action-icon {
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s, background .18s;
+}
+
+/* default svg color (light) */
+.like-button .action-icon svg { fill: rgba(255,255,255,0.92); transition: transform .18s, filter .18s; }
+
+/* count label */
+.like-count {
+  font-size: .85rem;
+  color: var(--muted);
+  transition: color .12s, transform .12s;
+}
+
+/* liked state — triggers pulse + tiny burst */
+.like-button.liked .action-icon {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 18px 40px rgba(124,92,255,0.12), 0 6px 18px rgba(0,0,0,0.6);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(124,92,255,0.03));
+  border: 1px solid rgba(124,92,255,0.14);
+}
+.like-button.liked .action-icon svg { fill: var(--danger) !important; transform: scale(1.03); filter: drop-shadow(0 6px 16px rgba(255,56,96,0.18)); }
+
+/* pulse ring */
+.like-button.liked::after {
+  content: "";
+  position: absolute;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(50% - 44px);
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255,56,96,0.14), rgba(255,56,96,0.03) 40%, transparent 60%);
+  animation: pulse 700ms ease-out;
+  opacity: .95;
+}
+
+/* tiny confetti dots (pseudo burst) */
+.like-button.liked .action-icon::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(90deg, var(--danger), #ffd1e0);
+  border-radius: 2px;
+  transform: translateY(-22px) rotate(25deg) scale(.9);
+  opacity: 0;
+  animation: burstDots .44s forwards .06s;
+  box-shadow: -18px -6px #ffd1e0, 14px -12px rgba(0,224,184,0.9), -10px -26px rgba(124,92,255,0.9);
+}
+
+/* liked count styling */
+.like-button.liked .like-count {
+  color: var(--danger);
+  font-weight: 800;
+  transform: translateY(-2px);
+}
+
+/* ===========================
+   Animations
+   =========================== */
+@keyframes pulse {
+  0% { transform: translateX(-50%) scale(.6); opacity:.9; }
+  60% { transform: translateX(-50%) scale(1.12); opacity:.6; }
+  100% { transform: translateX(-50%) scale(1.42); opacity:0; }
+}
+
+@keyframes burstDots {
+  0% { opacity: 0; transform: translateY(-6px) scale(.4) rotate(10deg); }
+  40% { opacity: 1; transform: translateY(-28px) scale(1) rotate(10deg); }
+  100% { opacity: 0; transform: translateY(-48px) scale(.75) rotate(25deg); }
+}
+
+@keyframes slideUp {
+  to { transform: translateY(0) scale(1); opacity:1; }
+}
+
+@keyframes fadeIn {
+  to { opacity:1; }
+}
+
+@keyframes commentReveal {
+  0% { transform: translateY(12px); opacity: 0; }
+  60% { transform: translateY(-6px); opacity: .9; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ===========================
+   Responsive tweaks
+   =========================== */
+@media (max-width:520px){
+  .comment-modal-content { border-radius: 12px; padding: .8rem; }
+  .comment-item { grid-template-columns: 38px 1fr; gap:.5rem; padding:.5rem; border-radius:8px; }
+  .close-comment-modal { right: 8px; top: 8px; height:32px; width:32px; border-radius:8px; }
+  .like-button .action-icon { width:40px;height:40px;border-radius:10px; }
+  .like-button.liked::after { width:64px; height:64px; top: calc(50% - 38px); }
+}

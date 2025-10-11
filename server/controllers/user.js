@@ -896,6 +896,15 @@ const handlegetloginsecond = (req, res) => {
   return res.render("login2");
 }
 
+const handlelikereel = async (req, res) => {
+  const { data } = req.userDetails;
+  await Post.findOneAndUpdate({id: req.body.reel_id}, {$inc: {likes: 1}});
+  await User.findOneAndUpdate({username: data[0]}, {$push: {likedPostsIds: req.body.reel_id}});
+  const u = await User.findOne({username: data[0]}).select("likedPostsIds").lean();
+  console.log((u?.likedPostsIds ?? []).length);
+  return res.json({likes: (u?.likedPostsIds || []).length});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -946,5 +955,6 @@ export {
   handlegetcomment,
   handlepostreply,
   handleloginsecond,
-  handlegetloginsecond
+  handlegetloginsecond,
+  handlelikereel
 };
