@@ -6,7 +6,8 @@ import User from '../models/users_schema.js';
 import Post from '../models/postSchema.js';
 import Report from "../models/reports.js";
 import Payment from "../models/payment.js";
-import ActivityLog from "../models/activityLogSchema.js"
+import ActivityLog from "../models/activityLogSchema.js";
+import Adpost from "../models/ad_schema.js";
 import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt, { compare } from 'bcrypt';
 import Feedback from '../models/feedbackForm.js';
@@ -16,8 +17,7 @@ import Channel from "../models/channelSchema.js"
 import channelPost from '../models/channelPost.js';
 import Story from "../models/storiesSchema.js";
 import Comment from '../models/comment_schema.js';
-import mongoose from 'mongoose';
-
+ 
 async function storeOtp(email, otp) {
   try {
     const existing = await ResetPassword.findOne({ email });
@@ -98,7 +98,8 @@ const handledelacc = async (req, res) => {
       return res.render("delacc", {
         img: data[2],
         currUser: data[0],
-        msg: "Incorrect Password"
+        msg: "Incorrect Password",
+        type: data[3]
       });
     }
     const liked = user.likeIds || [];
@@ -337,7 +338,7 @@ const handleContact = (req, res) => {
       console.log("Error is writing file", err);
     }
     else {
-      return res.render("contact", { img: data[2], msg: "Your response is noted, we'll get back to you soon." ,currUser: data[0]})
+      return res.render("contact", { img: data[2], msg: "Your response is noted, we'll get back to you soon." ,currUser: data[0], type: data[3]})
     }
   })
 }
@@ -401,7 +402,7 @@ const handlegetpayment = async (req, res) => {
   const { data } = req.userDetails;
   const user = await User.findOne({username: data[0]});
   const coins = user.coins;
-  return res.render("payment", { img: data[2], currUser: data[0], coins: coins });
+  return res.render("payment", { img: data[2], currUser: data[0], coins: coins, type: data[3] });
 }
 
 const handlegetprofile = async (req, res) => {
@@ -434,7 +435,8 @@ const handlegetprofile = async (req, res) => {
     return res.render("profile_kids", {
       img: data[2],
       myUser: profUser,
-      currUser: data[0]
+      currUser: data[0],
+      type: data[3]
     });
   }
 
@@ -456,7 +458,8 @@ const handlegetprofile = async (req, res) => {
       archived: archivedObjects,
       isFollower,
       isFriend,
-      isRequested
+      isRequested,
+      type: data[3]
     });
   } else {
     if (profUser.isPremium) {
@@ -477,7 +480,8 @@ const handlegetprofile = async (req, res) => {
       archived: archivedObjects,
       isFollower,
       isFriend,
-      isRequested
+      isRequested,
+      type: data[3]
     });
   }
 };
@@ -485,12 +489,12 @@ const handlegetprofile = async (req, res) => {
 
 const handlegetterms = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("tandc", { img: data[2], currUser: data[0] });
+  return res.render("tandc", { img: data[2], currUser: data[0], type: data[3] });
 }
 
 const handlegetcontact = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("contact", { img: data[2], msg: null, currUser: data[0] });
+  return res.render("contact", { img: data[2], msg: null, currUser: data[0], type: data[3] });
 }
 
 const handlegetcomment = async(req, res) => {
@@ -546,7 +550,8 @@ const handlegetconnect = async (req, res) => {
     return res.render("connect", {
       img: data[2],
       currUser: data[0],
-      users: metualFollowers
+      users: metualFollowers,
+      type: data[3]
     });
   } catch (error) {
     console.error("Error in handlegetconnect:", error);
@@ -593,17 +598,18 @@ const handlepostcomment = async (req, res) => {
     });
 
     // Create notification for post author
+    console.log(post.author);
     if (data[0] !== post.author) {
       const noti8 = await Notification.create({
         mainUser: post.author,
         msgSerial: 8,
-        userInvolved: data[0]
+        userInvolved: data[0],
+        coin: 1
       });
 
-      await Notification.findOneAndUpdate(
-        { _id: noti8._id },
-        { $inc: { coins: 1 } },
-        { new: true }
+      await User.findOneAndUpdate(
+        { username: data[0] },
+        { $inc: { coins: 1 } }
       );
     }
 
@@ -621,12 +627,15 @@ const handlepostcomment = async (req, res) => {
 
 const handlegetgames = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("games", { img: data[2], currUser: data[0] });
+  if(data[3] === "Kids"){
+    return res.render("kids_games", { img: data[2], currUser: data[0], type: data[3] })
+  }
+  return res.render("games", { img: data[2], currUser: data[0], type: data[3] });
 }
 
 const handlegetdelacc = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("delacc", { img: data[2], msg: null, currUser: data[0] });
+  return res.render("delacc", { img: data[2], msg: null, currUser: data[0], type: data[3] });
 }
 
 const handlegetadmin = (req, res) => {
@@ -636,7 +645,12 @@ const handlegetadmin = (req, res) => {
 const handlegetreels = async(req, res) => {
   const { data } = req.userDetails;
 
-  const userType = data[3];
+  if (data[3] === "Kids"){
+    const user = await Channel.find({});
+    console.log(user);
+    return res.render("kids_reels", {img: data[2], currUser: data[0], posts: [], type: data[3]})
+  }
+
   let posts = await Post.find({
     type: "Reels",
   }).sort({ createdAt: -1 }).lean();
@@ -649,12 +663,12 @@ const handlegetreels = async(req, res) => {
     return { ...post, avatar: author.profilePicture, liked: isLiked };
   }))
 
-  return res.render("reels", { img: data[2], currUser: data[0], posts });
+  return res.render("reels", { img: data[2], currUser: data[0], posts, type: data[3] });
 }
 
 const handlegethelp = (req, res) => {
   const { data } = req.userDetails;
-  return res.render("help", { img: data[2], currUser: data[0] });
+  return res.render("help", { img: data[2], currUser: data[0], type: data[3] });
 }
 
 const handlegetsignup = (req, res) => {
@@ -668,7 +682,10 @@ const handlegetforgetpass = (req, res) => {
 const handlegeteditprofile = async (req, res) => {
   const { data } = req.userDetails;
   const user = await User.findOne({ username: data[0] });
-  return res.render("edit_profile", { img: data[2], currUser: data[0], CurrentUser: user });
+  if (data[3] === "Kids"){
+    return res.render("kids_editprofile", { img: data[2], currUser: data[0], CurrentUser: user, type: data[3] })
+  }
+  return res.render("edit_profile", { img: data[2], currUser: data[0], CurrentUser: user, type: data[3] });
 }
 
 const updateUserProfile = async (req, res) => {
@@ -695,7 +712,7 @@ const handlegetpostoverlay = (req, res) => {
 const handlegetcreatepost = (req, res) => {
   const { data } = req.userDetails;
   console.log(data);
-  return res.render("create_post", { img: data[2], currUser: data[0], msg: null });
+  return res.render("create_post", { img: data[2], currUser: data[0], msg: null, type: data[3] });
 }
 
 const handlecreatepost = async (req, res) => {
@@ -707,7 +724,7 @@ const handlecreatepost = async (req, res) => {
       url: req.body.profileImageUrl
     }
     await Story.create(user);
-    return res.render("create_post", {img: data[2], currUser: data[0], msg: "story uploaded successfully"})
+    return res.render("create_post", {img: data[2], currUser: data[0], msg: "story uploaded successfully", type: data[3]})
   }
   if (req.body.postType === "reel"){
     return res.render("create_post3", {img: data[2], currUser: data[0], post: req.body.profileImageUrl, type: req.body.postType})
@@ -719,7 +736,7 @@ const handlecreatepost = async (req, res) => {
 
 const handlegetcreatepost2 = (req, res) => {
   const { data } = req.userDetails
-  return res.render("create_post_second", { img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2] });
+  return res.render("create_post_second", { img2: 'https://ik.imagekit.io/FFSD0037/esrpic-609a6f96bb3031_OvyeHGHcB.jpg?updatedAt=1744145583878', currUser: data[0], img: data[2], type: data[3] });
 }
 
 const followSomeone = async (req, res) => {
@@ -798,7 +815,7 @@ const unfollowSomeone = async (req, res) => {
 const handlegetnotification = async (req, res) => {
   const { data } = req.userDetails;
   const allNotifications = await Notification.find({ mainUser: data[0] }).lean().sort({ createdAt: -1 });
-  return res.render("notifications", { img: data[2], currUser: data[0], allNotifications })
+  return res.render("notifications", { img: data[2], currUser: data[0], allNotifications, type: data[3] })
 }
 
 const getSearch = async (req, res) => {
@@ -840,7 +857,10 @@ const getSearch = async (req, res) => {
 const handlegetsettings = async (req, res) => {
   const { data } = req.userDetails;
   const Meuser = await User.findOne({ username: data[0] });
-  return res.render("settings", { img: data[2], currUser: data[0], Meuser })
+  if (data[3] === "Kids"){
+    return res.render("kids_settings", { img: data[2], currUser: data[0], Meuser, type: data[3] });
+  }
+  return res.render("settings", { img: data[2], currUser: data[0], Meuser, type: data[3] })
 }
 
 const togglePP = async (req, res) => {
@@ -851,7 +871,7 @@ const togglePP = async (req, res) => {
 
 const signupChannel = async (req, res) => {
   const { data } = req.userDetails;
-  return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] });
+  return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0], type: data[3] });
 }
 
 const registerChannel = async (req, res) => {
@@ -866,7 +886,7 @@ const registerChannel = async (req, res) => {
     channelAdmin: user._id,
   };
   await Channel.create(channel);
-  return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0] })
+  return res.render("channelregistration", { msg: null, img: data[2], currUser: data[0], type: data[3] })
 }
 
 const createPostfinalize = (req, res) => {
@@ -880,7 +900,10 @@ const createPostfinalize = (req, res) => {
 const handlegetlog = async (req, res) => {
   const {data} = req.userDetails;
   const allLogs = await ActivityLog.find({username: data[0]}).lean().sort({createdAt: -1});
-  return res.render("activityLog", {img: data[2], currUser: data[0], allLogs})
+  if(data[3] === "Kids"){
+    return res.render("kids_activityLog", {img: data[2], currUser: data[0], allLogs, type: data[3]})
+  }
+  return res.render("activityLog", {img: data[2], currUser: data[0], allLogs, type: data[3]})
 }
 
 const uploadFinalPost = async (req, res) => {
@@ -897,7 +920,7 @@ const uploadFinalPost = async (req, res) => {
   await Post.create(postObj);
   const post = await Post.findOne({id: idd}).lean();
   await User.findOneAndUpdate({username: data[0]}, {$push: {postIds: post._id}}, {new: true, upsert: false});
-  return res.render("create_post", {img: data[2], currUser: data[0], msg: "post uploaded successfully"});
+  return res.render("create_post", {img: data[2], currUser: data[0], msg: "post uploaded successfully", type: data[3]});
   } catch(err){ 
     console.log(err)
     return res.status(500).json({error: "Internal server error"});
@@ -919,7 +942,7 @@ const reportAccount = async (req, res) => {
 
 const handlegetloginchannel = async (req, res) => {
   const {data} = req.userDetails;
-  return res.render("channellogin", {img: data[2], currUser: data[0]});
+  return res.render("channellogin", {img: data[2], currUser: data[0], type: data[3]});
 }
 
 const handleloginchannel = async (req, res) => {
@@ -929,10 +952,10 @@ const handleloginchannel = async (req, res) => {
   const user = await User.findOne({username: data[0]});
   if(channel && channel.channelAdmin == user._id){
     if(channel.channelPassword == channelPassword){
-      return res.render("channel", {img: data[2], currUser: data[0], channel});
+      return res.render("channel", {img: data[2], currUser: data[0], channel, type: data[3]});
     }
     else{
-      return res.render("channellogin", {img: data[2], currUser: data[0], msg: "Channel do not exists."});
+      return res.render("channellogin", {img: data[2], currUser: data[0], msg: "Channel do not exists.", type: data[3]});
     }
   }
 }
@@ -996,6 +1019,12 @@ const handlereportpost = async (req, res) => {
   return res.json({data: true});
 }
 
+const handlegetads = async (req, res) => {
+  const ads = await Adpost.find({});
+  console.log(ads);
+  return res.json({allAds: ads});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -1049,5 +1078,6 @@ export {
   handlegetloginsecond,
   handlelikereel,
   handlepostcomment,
-  handlereportpost
+  handlereportpost,
+  handlegetads
 };

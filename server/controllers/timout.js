@@ -32,7 +32,10 @@ const getDailyusage=async(req,res)=>{
     try{
         const {data}=req.userDetails;
         const user=await seasonSchema.find({username:data[0]}).sort({createdAt:-1});
-        return res.render("dailyusage", { img: data[2], currUser: data[0], user });
+        if (data[3] === "Kids"){
+            return res.render("kids_dailyUsage", { img: data[2], currUser: data[0], user ,type: data[3] })
+        }
+        return res.render("dailyusage", { img: data[2], currUser: data[0], user, type:data[3] });
     }catch(err){
         console.log(err);
     }

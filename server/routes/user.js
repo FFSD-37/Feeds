@@ -51,7 +51,8 @@ import {
   handlegetloginsecond,
   handlelikereel,
   handlepostcomment,
-  handlereportpost
+  handlereportpost,
+  handlegetads
 
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
@@ -195,5 +196,7 @@ router.post("/posts/like", isAuthuser, handlelikereel);
 router.post("/comment",isAuthuser, handlepostcomment);
 
 router.post("/report_post", isAuthuser, handlereportpost);
+
+router.get("/ads", isAuthuser, handlegetads);
 
 export default router;
