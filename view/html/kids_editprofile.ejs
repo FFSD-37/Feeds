@@ -20,6 +20,8 @@
             <input type="file" id="photoInput" name="profilePictureFile" accept="image/*" style="display: none">
             <button type="button" class="change-profile-pic" onclick="document.getElementById('photoInput').click()">Change Photo</button>
             
+            <input type="hidden" id="profileImageUrl" name="profileImageUrl" value="<%- CurrentUser.profilePicture %>">
+
             <h4>Display Name</h4>
             <div class="field-container">
                 <input type="text" id="displayName" name="displayName" value="<%- CurrentUser.displayName %>">
@@ -52,5 +54,7 @@
             }
         };
     </script>
+    
+    <script src="../js/kids_editprofile.js"></script>
 </body>
 </html>
