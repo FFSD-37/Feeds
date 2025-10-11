@@ -401,7 +401,6 @@ const handlegetpayment = async (req, res) => {
   const { data } = req.userDetails;
   const user = await User.findOne({username: data[0]});
   const coins = user.coins;
-  console.log(user);
   return res.render("payment", { img: data[2], currUser: data[0], coins: coins });
 }
 
