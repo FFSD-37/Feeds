@@ -1,31 +1,45 @@
-/* -------------------------
-   base / existing rules (keep your app styles above or merge)
-   ------------------------- */
-* { margin:0; padding:0; box-sizing:border-box; font-family: "Roboto", Arial, sans-serif; }
-body { color: white; height: 100vh; display: flex; background: linear-gradient(45deg, #6b48ff, #6b48ff22); transition: background-color 1s ease-in-out; }
-.main-content { flex-grow:1; display:flex; flex-direction:column; height:100%; }
-
-/* -------------------------
-   layout for reels + comments panel
-   ------------------------- */
-.reels-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  overflow: hidden;
+/* ===========================
+   Global reset and base styles
+   =========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
-/* wrapper that will move left when comments open */
+body {
+  color: white;
+  height: 100vh;
+  display: flex;
+  background: linear-gradient(45deg, #6b48ff, #6b48ff22);
+  transition: background-color 1s ease-in-out;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ===========================
+   Reels Layout
+   =========================== */
+.reels-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
 .reels-wrap {
   transition: transform .36s cubic-bezier(.2,.9,.2,1);
   will-change: transform;
   z-index: 2;
 }
 
-/* keep your reels-feed width; it will shift left */
 .reels-feed {
   width: 400px;
   height: 100%;
@@ -38,35 +52,160 @@ body { color: white; height: 100vh; display: flex; background: linear-gradient(4
   box-shadow: 0 12px 40px rgba(0,0,0,0.45);
 }
 
-/* hide default scroll in Webkit */
-.reels-feed::-webkit-scrollbar { display: none; }
+.reels-feed::-webkit-scrollbar {
+  display: none;
+}
 
-.reel-video { height: 100vh; scroll-snap-align: start; position: relative; display:flex; flex-direction:column; justify-content:flex-end; }
-.reel-video video { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1; }
+.reel-video {
+  height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
 
-/* video controls tweaks (kept) */
-video { object-fit: cover; width:100%; height:100%; }
-.mute-toggle { position:absolute; bottom:20px; right:20px; z-index:100; background: rgba(0,0,0,0.5); border-radius:50%; padding:8px; cursor:pointer; }
+.reel-video video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
 
-/* video-info and actions (kept) */
-.video-info { padding: 20px; position: relative; z-index: 2; }
-.video-title { font-weight:bold; margin-bottom:8px; font-size:16px; }
-.video-channel { display:flex; align-items:center; margin-bottom:12px; }
-.channel-avatar { width:32px; height:32px; border-radius:50%; margin-right:12px; background-color:#555; }
+.mute-toggle {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-/* action buttons stack */
-.video-actions { display:flex; flex-direction:column; position:absolute; right:20px; bottom:120px; z-index:2; align-items:center; }
-.action-button { display:flex; flex-direction:column; align-items:center; margin-bottom:24px; cursor:pointer; }
-.action-icon { width:40px; height:40px; background-color: rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:4px; }
-.action-count { font-size:12px; }
+/* Video Info */
+.video-info {
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+}
 
-/* nav arrows */
-.reels-nav { position:absolute; top:50%; transform:translateY(-40%); width:60%; display:flex; justify-content:space-between; padding:0 20px; z-index:3; pointer-events:none; }
-.nav-arrow { width:48px; height:48px; background-color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; pointer-events:auto; }
+.video-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
 
-/* -------------------------
-   comments panel (right) styles
-   ------------------------- */
+.video-channel {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.channel-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 12px;
+  background-color: #555;
+}
+
+.subscribe-button {
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 18px;
+  padding: 6px 12px;
+  font-weight: bold;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+/* Actions */
+.video-actions {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 20px;
+  bottom: 120px;
+  z-index: 2;
+  align-items: center;
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.action-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.action-count {
+  font-size: 12px;
+}
+
+/* Nav Arrows */
+.reels-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-40%);
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.nav-arrow {
+  width: 48px;
+  height: 48px;
+  background-color: black;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* ===========================
+   Variables
+   =========================== */
+:root {
+  --bg: rgba(17,17,17,0.96);
+  --card: rgba(255,255,255,0.04);
+  --glass: rgba(255,255,255,0.06);
+  --accent: #7c5cff;
+  --accent-2: #00e0b8;
+  --danger: #ff3860;
+  --text: #e9eefb;
+  --muted: rgba(233,238,251,0.6);
+  --glass-blur: 10px;
+  --modal-width: min(720px, 96%);
+}
+
+/* ===========================
+   Comments Panel
+   =========================== */
 .comments-panel {
   position: absolute;
   top: 0;
@@ -76,97 +215,138 @@ video { object-fit: cover; width:100%; height:100%; }
   background: linear-gradient(180deg, rgba(20,20,25,0.98), rgba(13,13,18,0.99));
   border-left: 1px solid rgba(255,255,255,0.04);
   box-shadow: -24px 0 70px rgba(0,0,0,0.6);
-  transform: translateX(100%); /* hidden by default (off-screen) */
+  transform: translateX(100%);
   transition: transform .36s cubic-bezier(.2,.9,.2,1);
   z-index: 4;
-  display:flex;
+  display: flex;
   flex-direction: column;
   padding: 18px;
   gap: 12px;
-  will-change: transform, opacity;
   opacity: 0;
+  will-change: transform, opacity;
 }
 
-/* open state controlled by JS toggling class on .reels-container */
-.reels-container.comments-open .reels-wrap { transform: translateX(-420px); }
-.reels-container.comments-open .comments-panel { transform: translateX(0%); opacity: 1; }
+.reels-container.comments-open .reels-wrap {
+  transform: translateX(-420px);
+}
+.reels-container.comments-open .comments-panel {
+  transform: translateX(0%);
+  opacity: 1;
+}
 
-/* small top bar for close + title */
+/* Top Bar */
 .comments-top {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding-bottom:6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 6px;
   border-bottom: 1px solid rgba(255,255,255,0.03);
 }
+
 .close-comments {
   background: transparent;
   border: none;
-  color: var(--text, #eaf0ff);
+  height: 36px;
+  width: 36px;
+  border-radius: 10px;
+  color: var(--text);
   font-size: 18px;
   cursor: pointer;
-  padding:6px 8px;
-  border-radius:8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .14s ease, box-shadow .14s ease, color .14s ease;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.4);
 }
-.close-comments:hover { background: rgba(255,255,255,0.02); }
+.close-comments:hover {
+  background: rgba(255,255,255,0.02);
+}
 
-/* title + count */
-#comments-title { font-size: 1rem; font-weight:700; color: #fff; }
-.comments-count-small { margin-left:auto; color: rgba(255,255,255,0.6); font-weight:700; }
-
-/* comments list scroll area */
+/* Comments list */
 .comments-list {
-  flex:1;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 8px 2px;
 }
 
-/* single comment render */
+/* Comment item */
 .comment-item {
-  display:flex;
-  gap:10px;
-  align-items:flex-start;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
   background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.007));
-  padding:10px;
-  border-radius:10px;
+  padding: 10px;
+  border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.02);
+  transition: transform .18s cubic-bezier(.2,.9,.2,1);
+  animation: commentReveal .34s forwards;
+  opacity: 0;
+  transform: translateY(6px);
 }
+
 .comment-item .avatar {
-  width:40px;
-  height:40px;
-  border-radius:50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
 }
-.comment-main { flex:1; display:flex; flex-direction:column; gap:6px; }
-.comment-author { font-weight:700; color: #fff; font-size:.95rem; }
-.comment-text { color: rgba(255,255,255,0.75); font-size:.92rem; line-height:1.3; white-space:pre-wrap; }
-.comment-time { font-size: .78rem; color: rgba(255,255,255,0.45); }
 
-/* comment form sticky bottom */
-.comment-form {
-  display:flex;
-  gap:10px;
-  align-items:flex-end;
-  margin-top:6px;
-  margin-right: 150px;
+.comment-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
+
+.comment-author {
+  font-weight: 700;
+  color: #fff;
+  font-size: .95rem;
+}
+
+.comment-text {
+  color: rgba(255,255,255,0.75);
+  font-size: .92rem;
+  line-height: 1.3;
+  white-space: pre-wrap;
+}
+
+.comment-time {
+  font-size: .78rem;
+  color: rgba(255,255,255,0.45);
+}
+
+/* Comment form */
+.comment-form {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin-top: 6px;
+  border-top: 1px dashed rgba(255,255,255,0.03);
+}
+
 #comment-text {
-  flex:1;
-  min-height:48px;
-  max-height:120px;
-  resize:none;
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.04);
+  flex: 1;
+  resize: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
   background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
   color: #fff;
-  outline:none;
-  transition: box-shadow .12s, transform .12s;
+  outline: none;
+  box-shadow: inset 0 -6px 16px rgba(0,0,0,0.35);
+  font-size: .95rem;
+  transition: box-shadow .14s ease, transform .12s ease, border-color .12s;
 }
-#comment-text:focus { box-shadow: 0 8px 30px rgba(124,92,255,0.12); transform: translateY(-2px); }
+
+#comment-text:focus {
+  box-shadow: 0 8px 30px rgba(124,92,255,0.12);
+  transform: translateY(-2px);
+}
+
 .comment-post-btn {
   background: linear-gradient(135deg, #7c5cff, #00e0b8);
   color: #fff;
@@ -174,39 +354,134 @@ video { object-fit: cover; width:100%; height:100%; }
   padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
-  font-weight:700;
+  font-weight: 700;
+  box-shadow: 0 8px 30px rgba(124,92,255,0.14);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s;
+}
+.comment-post-btn:hover {
+  transform: translateY(-3px);
 }
 
-/* backdrop when panel open to allow clicking outside to close */
-.comments-backdrop {
+/* ===========================
+   Like Button
+   =========================== */
+.like-button {
+  display: inline-grid;
+  justify-items: center;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease;
+  user-select: none;
+}
+.like-button:active { transform: scale(.95); }
+
+.like-button .action-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform .18s cubic-bezier(.2,.9,.2,1);
+}
+
+.like-button .action-icon svg {
+  fill: rgba(255,255,255,0.92);
+  transition: transform .18s;
+}
+
+.like-count {
+  font-size: .85rem;
+  color: rgba(233,238,251,0.6);
+}
+
+.like-button.liked .action-icon {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 18px 40px rgba(124,92,255,0.12);
+  border: 1px solid rgba(124,92,255,0.14);
+}
+
+.like-button.liked .action-icon svg {
+  fill: var(--danger) !important;
+  transform: scale(1.03);
+  filter: drop-shadow(0 6px 16px rgba(255,56,96,0.18));
+}
+
+.like-button.liked .like-count {
+  color: var(--danger);
+  font-weight: 800;
+  transform: translateY(-2px);
+}
+
+/* ===========================
+   Reels Navigation Arrows
+   =========================== */
+.reels-nav {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.28);
-  opacity: 0;
-  pointer-events:none;
-  transition: opacity .3s;
-  z-index: 3;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
 }
-.reels-container.comments-open .comments-backdrop { opacity:1; pointer-events:auto; }
 
-/* responsive: on small screens, comments become full-screen overlay */
+.nav-arrow {
+  width: 50px;
+  height: 50px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.25s ease;
+}
+
+.nav-arrow:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+
+.nav-arrow i {
+  pointer-events: none;
+}
+
+.nav-arrow.left {
+  left: 15px;
+}
+
+.nav-arrow.right {
+  right: 15px;
+}
+
+/* ===========================
+   Animations
+   =========================== */
+@keyframes commentReveal {
+  0% { transform: translateY(12px); opacity: 0; }
+  60% { transform: translateY(-6px); opacity: .9; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ===========================
+   Responsive
+   =========================== */
 @media (max-width: 780px) {
   .reels-container.comments-open .reels-wrap { transform: translateX(-100%); }
-  .comments-panel { width:100%; right:0; transform: translateX(100%); }
-  .reels-container.comments-open .comments-panel { transform: translateX(0); opacity:1; }
-  .reels-feed { width:100%; border-radius:0; border-width:0; }
-  .reels-wrap { width:100%; }
+  .comments-panel { width: 100%; right: 0; transform: translateX(100%); }
+  .reels-container.comments-open .comments-panel { transform: translateX(0); opacity: 1; }
+  .reels-feed { width: 100%; border-radius: 0; border-width: 0; }
 }
-
-/* keep your like-button creative styles - copy/paste the earlier liked styles here */
-:root{
-  --danger: #ff3860;
-  --text: #e9eefb;
-}
-.like-button { display:inline-grid; justify-items:center; align-items:center; gap:6px; cursor:pointer; transition: transform .12s; }
-.like-button .action-icon { width:44px;height:44px; display:flex; align-items:center; justify-content:center; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); transition: transform .18s; }
-.like-button .action-icon svg { fill: rgba(255,255,255,0.92); transition: transform .18s; }
-.like-count { font-size:.85rem; color: rgba(233,238,251,0.6); transition: color .12s; }
-.like-button.liked .action-icon { transform: translateY(-6px) scale(1.05); box-shadow: 0 18px 40px rgba(124,92,255,0.12); border:1px solid rgba(124,92,255,0.14); }
-.like-button.liked .action-icon svg { fill: var(--danger) !important; transform: scale(1.03); filter: drop-shadow(0 6px 16px rgba(255,56,96,0.18)); }
-.like-button.liked .like-count { color: var(--danger); font-weight:800; transform: translateY(-2px); }
