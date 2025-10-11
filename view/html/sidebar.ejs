@@ -23,6 +23,7 @@
           </svg>
           <span class="tooltip">Home</span></a
         >
+        <% if(type != "Kids") { %>
         <a href="/notifications" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -37,6 +38,8 @@
           </svg>
           <span class="tooltip">Notifications</span></a
         >
+        <% } %>
+        <% if(type != "Kids") { %>
         <a href="/create_post" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -50,6 +53,8 @@
             /></svg
           ><span class="tooltip">Create</span></a
         >
+        <% } %>
+        <% if(type != "Kids"){ %>
         <a href="/chat" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -63,6 +68,7 @@
             /></svg
           ><span class="tooltip">Chat</span></a
         >
+        <% } %>
         <a href="/connect" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -76,6 +82,7 @@
             /></svg
           ><span class="tooltip">Connect</span></a
         >
+        <% if(type != "Kids") { %>
         <a href="/stories" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -89,6 +96,7 @@
             /></svg
           ><span class="tooltip">Stories</span></a
         >
+        <% } %>
         <a href="/reels" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -115,6 +123,7 @@
             /></svg
           ><span class="tooltip">Games</span></a
         >
+        <% if (type == "Normal") { %>
         <a href="/payment" class="icon-container"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -128,6 +137,7 @@
             /></svg
           ><span class="tooltip">Premium</span></a
         >
+        <% } %>
         <li class="nav-item profile" style="padding: 0;">
           <a href="#" class="icon-container" id="menu-toggle">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
