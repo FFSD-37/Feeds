@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Kid's Profile</title>
+    <link href="../css/edit_profile.css" rel="stylesheet"> 
+    <link rel="icon" type="image/*" href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780">
+    <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+</head>
+<body>
+    <%- include('partials/kids_sidebar') %>
+
+    <div class="profile-container">
+        <h2>Edit Kid's Profile</h2>
+        
+        <form id="profileForm" action="/kids_update_profile" method="POST" enctype="multipart/form-data">
+            
+            <img id="profilePic" src="<%- CurrentUser.profilePicture %>" alt="profile-pic" class="profile-photo" onclick="document.getElementById('photoInput').click()">
+            <input type="file" id="photoInput" name="profilePictureFile" accept="image/*" style="display: none">
+            <button type="button" class="change-profile-pic" onclick="document.getElementById('photoInput').click()">Change Photo</button>
+            
+            <h4>Display Name</h4>
+            <div class="field-container">
+                <input type="text" id="displayName" name="displayName" value="<%- CurrentUser.displayName %>">
+            </div>
+
+            <h4>Name</h4>
+            <div class="field-container">
+                <input type="text" id="name" name="name" value="<%- CurrentUser.fullName %>">
+            </div>
+
+            <h4>Bio</h4>
+            <div class="field-container">
+                <textarea id="bio" name="bio" rows="3"><%- CurrentUser.bio %></textarea>
+            </div>
+            
+            <h4>Phone Number</h4>
+            <div class="field-container">
+                <input type="tel" id="number" name="phone" value="<%- CurrentUser.phone %>">
+            </div>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('photoInput').onchange = function (evt) {
+            const [file] = this.files;
+            if (file) {
+                document.getElementById('profilePic').src = URL.createObjectURL(file);
+            }
+        };
+    </script>
+</body>
+</html>
