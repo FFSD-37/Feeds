@@ -6,7 +6,8 @@ import User from '../models/users_schema.js';
 import Post from '../models/postSchema.js';
 import Report from "../models/reports.js";
 import Payment from "../models/payment.js";
-import ActivityLog from "../models/activityLogSchema.js"
+import ActivityLog from "../models/activityLogSchema.js";
+import Adpost from "../models/ad_schema.js";
 import ResetPassword from "../models/reset_pass_schema.js";
 import bcrypt, { compare } from 'bcrypt';
 import Feedback from '../models/feedbackForm.js';
@@ -1013,6 +1014,12 @@ const handlereportpost = async (req, res) => {
   return res.json({data: true});
 }
 
+const handlegetads = async (req, res) => {
+  const ads = await Adpost.find({});
+  console.log(ads);
+  return res.json({allAds: ads});
+}
+
 export {
   handleSignup,
   handleLogin,
@@ -1066,5 +1073,6 @@ export {
   handlegetloginsecond,
   handlelikereel,
   handlepostcomment,
-  handlereportpost
+  handlereportpost,
+  handlegetads
 };

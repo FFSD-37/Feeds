@@ -259,3 +259,20 @@ async function savePost(postId, el) {
     console.error("Save error:", err);
   }
 }
+
+async function RenderAds(){
+  await fetch("/ads", {
+    method: "GET",
+    header: {
+      "Content-Type": "application/json"
+    }
+  }).then((res) => {
+    return res.json();
+  }).then((data) => {
+    console.log(data.allAds);
+  })
+}
+
+window.onload = () => {
+  RenderAds();
+}
