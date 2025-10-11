@@ -644,7 +644,8 @@ const handlegetreels = async(req, res) => {
   if (!posts) return res.status(404).json({ err: "Post not found" });
   posts = await Promise.all(posts.map(async(post) => {
     const author= await User.findOne({ username: post.author }).lean();
-    const isLiked=author.likedPostsIds?.includes(post.id) || false;
+    const user = await User.findOne({username: data[0]}).lean();
+    const isLiked=user.likedPostsIds?.includes(post.id) || false;
     return { ...post, avatar: author.profilePicture, liked: isLiked };
   }))
 
@@ -962,11 +963,19 @@ const handlegetloginsecond = (req, res) => {
 
 const handlelikereel = async (req, res) => {
   const { data } = req.userDetails;
-  await Post.findOneAndUpdate({id: req.body.reel_id}, {$inc: {likes: 1}});
-  await User.findOneAndUpdate({username: data[0]}, {$push: {likedPostsIds: req.body.reel_id}});
-  const u = await User.findOne({username: data[0]}).select("likedPostsIds").lean();
-  console.log((u?.likedPostsIds ?? []).length);
-  return res.json({likes: (u?.likedPostsIds || []).length});
+  // console.log(req.body);
+  const user = await User.findOne({username: data[0]});
+  if (user.likedPostsIds.includes(req.body.reel_id)){
+    await Post.findOneAndUpdate({_id: req.body.reel_id}, {$inc: {likes: -1}});
+    await User.findOneAndUpdate({username: data[0]}, {$pull: {likedPostsIds: req.body.reel_id}});
+  }
+  else{
+    await Post.findOneAndUpdate({_id: req.body.reel_id}, {$inc: {likes: 1}});
+    await User.findOneAndUpdate({username: data[0]}, {$push: {likedPostsIds: req.body.reel_id}});
+  }
+  const post = await Post.findOne({_id: req.body.reel_id});
+  // console.log(post);
+  return res.json({likes: post.likes});
 }
 
 const handlereportpost = async (req, res) => {

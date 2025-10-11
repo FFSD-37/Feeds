@@ -119,19 +119,18 @@ document.addEventListener("DOMContentLoaded", () => {
   async function handleLikeClick(e) {
     const btn = e.currentTarget;
     const countEl = btn.querySelector(".like-count");
-    let current = parseInt(countEl.textContent || "0", 10);
+    const postId = btn.dataset.postId;
 
     // Optimistic UI update
     btn.classList.toggle("liked");
     const liked = btn.classList.contains("liked");
     // countEl.textContent = liked ? current + 1 : Math.max(0, current - 1);
-    // console.log(document.getElementById("reel-id").value);
 
     try {
       const res = await fetch(`/posts/like`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reel_id: document.getElementById("reel-id").value })
+        body: JSON.stringify({ reel_id: postId })
       });
       if (!res.ok) {
         throw new Error("Failed to update like");
@@ -144,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Revert on error
       console.error(err);
       btn.classList.toggle("liked");
-      countEl.textContent = current;
       alert("Could not update like. Try again.");
     }
   }
@@ -172,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((post) => {
         renderComments(post.comments || []);
       })
-      .catch((err) => {
+      .catch((err) => { 
         console.error(err);
         commentsList.innerHTML = "<div class='error'>Could not load comments.</div>";
       });

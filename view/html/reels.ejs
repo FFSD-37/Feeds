@@ -13,8 +13,8 @@
       <div class="reels-container">
         <div class="reels-feed">
           <% posts.forEach(post => { %>
-            <input type="hidden" id="reel-id" value="<%- post.id %>" />
-          <div class="reel-video" data-post-id="<%- post.id %>">
+            <input type="hidden" id="reel-id" value="<%= post.id %>" />
+          <div class="reel-video" data-post-id="<%= post.id %>">
             <video autoplay loop muted playsinline>
               <source src="<%= post.url %>" type="video/mp4">
               Your browser does not support the video tag.
@@ -35,7 +35,12 @@
               </div>
               <div class="video-channel">
                 <img class="channel-avatar" src="<%= post.avatar %>" alt="Channel avatar"/>
-                <span><%= post.author %></span>
+                <span><a style="text-decoration: none; color: white;" href="/profile/<%= post.author %>"><%= post.author %></a></span>
+                <% if(post.liked) { %> 
+            <div>
+              YES
+            </div>
+            <% } %>
               </div>
             </div>
 
