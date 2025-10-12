@@ -909,6 +909,7 @@ const handlegetlog = async (req, res) => {
   if(data[3] === "Kids"){
     return res.render("kids_activityLog", {img: data[2], currUser: data[0], allLogs, type: data[3]})
   }
+  console.log(allLogs);
   return res.render("activityLog", {img: data[2], currUser: data[0], allLogs, type: data[3]})
 }
 
