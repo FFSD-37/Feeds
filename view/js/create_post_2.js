@@ -116,15 +116,18 @@ $("#restoreBtn").click(function () {
 });
 
 function storeFilesInLocalStorage(files) {
-    // clear previous stored images
+	let name;
     Object.keys(localStorage).forEach(k => {
-        if (k.startsWith("uploadedFile_")) localStorage.removeItem(k);
+        if (k.startsWith("uploadedFile_")) {
+			name=JSON.parse(localStorage.getItem(k)).name
+			localStorage.removeItem(k)
+		};
     });
 
     Array.from(files).forEach((file, i) => {
         const reader = new FileReader();
         reader.onload = e => {
-        localStorage.setItem(`uploadedFile_${i}`, JSON.stringify({ name:file.name, data:e.target.result}));
+        localStorage.setItem(`uploadedFile_${i}`, JSON.stringify({ name, data:e.target.result}));
         };
         reader.readAsDataURL(file);
     });
