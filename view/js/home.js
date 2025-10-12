@@ -257,17 +257,47 @@ async function savePost(postId, el) {
   }
 }
 
-async function RenderAds(){
-  await fetch("/ads", {
-    method: "GET",
-    header: {
-      "Content-Type": "application/json"
+async function RenderAds() {
+  try {
+    const res = await fetch("/ads", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await res.json();
+
+    const leftSection = document.querySelector(".left-section");
+    if (!leftSection) return;
+
+    const footer = leftSection.querySelector(".footer");
+    if (!footer) return;
+
+    // Remove old ads if already rendered
+    leftSection.querySelectorAll(".ads-grid").forEach(el => el.remove());
+
+    if (data.allAds && data.allAds.length > 0) {
+      const gridContainer = document.createElement("div");
+      gridContainer.classList.add("ads-grid");
+
+      data.allAds.forEach(ad => {
+        const adDiv = document.createElement("div");
+        adDiv.classList.add("ad-card");
+        adDiv.innerHTML = `
+          <a href="${ad.url}" target="_blank" style="text-decoration:none;color:inherit">
+            <video class="ad-video" src="${ad.ad_url}" muted loop autoplay playsinline></video>
+          </a>
+        `;
+        gridContainer.appendChild(adDiv);
+      });
+
+      leftSection.insertBefore(gridContainer, footer);
+    } else {
+      console.warn("No ads found in response.");
     }
-  }).then((res) => {
-    return res.json();
-  }).then((data) => {
-    console.log(data.allAds);
-  })
+  } catch (err) {
+    console.error("Error loading ads:", err);
+  }
 }
 
 window.onload = () => {
