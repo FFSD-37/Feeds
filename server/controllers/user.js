@@ -401,7 +401,7 @@ const handlegetHome = async (req, res) => {
     return post;
   })
   
-  return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3] });
+  return res.render("home", { img: data[2], currUser: data[0], posts, type: data[3] , isPremium: data[4]});
 }
 
 const handlegetpayment = async (req, res) => {

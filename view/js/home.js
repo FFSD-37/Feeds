@@ -113,8 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let div = document.createElement("div");
         div.classList.add("post");
         div.dataset.createdat = new Date(p.createdAt).toISOString();
-        // console.log(p);
-        // Start building the HTML string
         let html = `
           <div class="post-header">
             <a href="/profile/${p.author}" style="text-decoration:none;color:black">
@@ -148,7 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>`;
         
-        // Add content based on type
         if (p.type === "Img") {
           html += `
             <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')">
@@ -161,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
         }
         
-        // Add actions if needed
         if ('<%- type %>' !== "Kids" && '<%- type %>' !== "Student") {
           html += `
             <div class="post-actions">
@@ -188,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
         }
         
-        // Assign the complete HTML string at once
         div.innerHTML = html;
         container.appendChild(div);
     });      
@@ -222,7 +217,7 @@ async function likePost(postId, el) {
     const res = await fetch(`/post/liked/${postId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include' // Important if you’re using cookies (auth)
+      credentials: 'include'
     });
 
     const data = await res.json();
@@ -230,7 +225,7 @@ async function likePost(postId, el) {
     if (data.success) {
       icon.classList.toggle("far");       // Outline heart
       icon.classList.toggle("fas");       // Solid heart
-      icon.classList.toggle("text-red");  // Optional styling
+      icon.classList.toggle("text-red");
     } else {
       alert(data.err || "Unable to like post.");
     }
@@ -301,5 +296,8 @@ async function RenderAds() {
 }
 
 window.onload = () => {
-  RenderAds();
+  const isPremium = document.getElementById("premiumFlag").value;
+  if (!isPremium) {
+    RenderAds();
+  }
 }
