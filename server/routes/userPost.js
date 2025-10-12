@@ -18,6 +18,6 @@ router.delete('/:id', isAuthuser,handlePostDelete);
 router.get('/suggestedPost/get',suggestedPost);
 router.get('/suggested/reels',suggestedReels);
 router.post('/liked/:id', isAuthuser,handleLikePost);
-router.post('/saved/:id', isAuthuser,handleSavePost);
+router.post('/saved', isAuthuser,handleSavePost);
 
 export default router;

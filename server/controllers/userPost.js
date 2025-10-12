@@ -101,10 +101,15 @@ const suggestedPost=async(req,res)=>{
         
             if(user.likedPostsIds?.includes(post.id)){
                 post={...post,liked:true};
-                console.log('post',post);
+            }
+            else{
+                post={...post,liked:false};
             }
             if(user.savedPostsIds?.includes(post.id)){
                 post={...post,saved:true};
+            }
+            else{
+                post={...post,saved:false};
             }
             return post;
         })
@@ -174,13 +179,13 @@ const handleLikePost=async(req,res)=>{
 
 const handleSavePost=async(req,res)=>{
     try{
-        const {id}=req.params;
-        if(!id) return res.status(400).json({ err: "Post ID is required" });
+        const {id}=req.body;
+        // if(!id) return res.status(400).json({ err: "Post ID is required" });
         const userDetails=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
         if(!userDetails) return res.status(401).json({ err: "Unauthorized" });
         const userType=userDetails.data[3];
 
-        const post=await Post.findOne({id});
+        const post=await Post.findOne({id: id});
         if(!post) return res.status(404).json({ err: "Post not found" });
 
         let user=await User.findOne({username:userDetails.data[0]});
@@ -192,7 +197,8 @@ const handleSavePost=async(req,res)=>{
         
         
         await user.save();
-        return res.json({success:true})
+        // console.log(id);
+        return res.json({data:true})
     }
     catch(error){
         console.log(error);

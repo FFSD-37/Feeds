@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="menu-item danger" onclick="openReportModal('<%= post.id %>')">
                 Report
               </div>
-              <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">
+              <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')">
                 Go to post
               </div>
               <div class="menu-item normal" id="btnShareProfile" onclick="shareTo('${p.author}')">
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add content based on type
         if (p.type === "Img") {
           html += `
-            <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')">
+            <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')">
               <img class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" />
             </div>`;
         } else {
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           if (p.type === "Img") {
             html += `
-              <div class="action-icon" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}')" id="comment-button-post">
+              <div class="action-icon" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')" id="comment-button-post">
                 <i class="far fa-comment"></i>
               </div>`;
           }
@@ -184,9 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
           html += `
               <div class="action-icon">
                 <i class="fas fa-share" onclick="shareTo('${p.author}')"></i>
-              </div>
-              <div class="last-action-icon">
-                <i class="fa-solid fa-floppy-disk" onclick="savePost('${p._id}', this)"></i>
               </div>
             </div>`;
         }

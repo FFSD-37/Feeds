@@ -32,8 +32,28 @@
             style="text-decoration: none; color: black"
             ><span class="username"><%= post.author %></span></a
           >
+
+          <% 
+            function timeAgo(date) {
+              const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+              const intervals = {
+                year: 31536000,
+                mon: 2592000,
+                w: 604800,
+                d: 86400,
+                h: 3600,
+                m: 60,
+              };
+              for (const [unit, sec] of Object.entries(intervals)) {
+                const count = Math.floor(seconds / sec);
+                if (count >= 1) return `${count} ${unit}`;
+              }
+              return "just now";
+            }
+          %>
+
           <span class="post-time" data-created="<%= post.createdAt %>"
-            >• 1d</span
+            ><%= timeAgo(new Date(post.createdAt)) %></span
           >
 
           <div
@@ -49,7 +69,7 @@
             </div>
             <div
               class="menu-item normal"
-              onclick="postOverlay('<%- post.url %>','<%- post.id %>','<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+              onclick="postOverlay('<%- post.url %>','<%- post.id %>','<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>')"
             >
               Go to post
             </div>
@@ -79,7 +99,7 @@
         <% if(post.type === "Img") { %>
         <div
           class="post-content"
-          onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+          onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>')"
         >
           <img class="post-on-home-page" src="<%= post.url %>" />
         </div>
@@ -104,7 +124,7 @@
           <% if(post.type === "Img") { %>
           <div
             class="action-icon"
-            onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>')"
+            onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>')"
             id="comment-button-post"
           >
             <i class="far fa-comment"></i>
@@ -113,12 +133,12 @@
           <div class="action-icon">
             <i class="fas fa-share" onclick="shareTo('<%= post.author %>')"></i>
           </div>
-          <div
+          <!-- <div
             class="last-action-icon"
             onclick="savePost('<%= post.id %>', this)"
           >
             <i class="fa-solid fa-floppy-disk"></i>
-          </div>
+          </div> -->
         </div>
         <% } %>
       </div>

@@ -115,6 +115,21 @@ $("#restoreBtn").click(function () {
 	$("#img").css("filter", "none");
 });
 
+function storeFilesInLocalStorage(files) {
+    // clear previous stored images
+    Object.keys(localStorage).forEach(k => {
+        if (k.startsWith("uploadedFile_")) localStorage.removeItem(k);
+    });
+
+    Array.from(files).forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+        localStorage.setItem(`uploadedFile_${i}`, JSON.stringify({ name:file.name, data:e.target.result}));
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
 function uploadImageand() {
 	const img = document.getElementById("img");
 	const canvas = document.createElement("canvas");
@@ -151,6 +166,7 @@ function uploadImageand() {
 				console.error("Failed to create blob from canvas");
 				return;
 			}
+			storeFilesInLocalStorage([blob]);
 			document.getElementById("secondUpload").submit();
 		}, "image/jpeg", 0.95);
 	};

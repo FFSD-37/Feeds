@@ -3,13 +3,32 @@ const commentInput = document.getElementById("message-input");
 const postButton = document.querySelector(".overlaypost-button");
 currentPostID = null;
 
-function postOverlay(url, id, caption, time, author) {
-    //   console.log(url,id, caption, time, author);
+function postOverlay(url, id, caption, time, author, liked, saved) {
+    console.log(liked, saved);
     currentPostID = id;
 
     document.getElementById("socialDropdown").style.display = "none";
     document.getElementById("maindiv").style.display = "grid";
     document.getElementById("maindiv").style.opacity = "1";
+    const savedBtn = document.getElementById("savedBtn");
+    if (saved){
+        savedBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Z"/></svg>`;
+        savedBtn.setAttribute("data-saved", "true");
+    }
+    else{
+        savedBtn.innerHTML = `<svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#FFFFFF"
+            >
+              <path
+                d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Zm80-122 200-86 200 86v-518H280v518Zm0-518h400-400Z"
+              />
+            </svg>`;
+        savedBtn.setAttribute("data-saved", "false");
+    }
 
     // checking ...
     document.getElementById("check123").value = id;
@@ -61,7 +80,7 @@ emojiPicker.addEventListener("keydown", (e) => {
 
 document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
     const trig = ele.getAttribute("name");
-    ele.addEventListener("click", function () {
+    ele.addEventListener("click", async function () {
         if (trig === "like") {
             const liked = this.getAttribute("data-liked") === "true";
             if (!liked) {
@@ -80,24 +99,38 @@ document.querySelectorAll(".comment-heart, .action-icon").forEach((ele) => {
             // logic for share
         }
         if (trig === "save") {
+            const post_id = document.getElementById("check123").value;
             const liked = this.getAttribute("data-liked") === "true";
-            if (!liked) {
-                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Z"/></svg>`;
-                this.setAttribute("data-liked", "true");
-            } else {
-                this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Zm80-122 200-86 200 86v-518H280v518Zm0-518h400-400Z"/></svg>`;
-                this.setAttribute("data-liked", "false");
-            }
+            await fetch('/post/saved', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({id: post_id})
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                if (data){
+                    if (!liked){
+                    this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Z"/></svg>`;
+                    this.setAttribute("data-saved", "true");
+                    }
+                }
+                else {
+                    this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-120v-640q0-33 23.5-56.5T280-840h400q33 0 56.5 23.5T760-760v640L480-240 200-120Zm80-122 200-86 200 86v-518H280v518Zm0-518h400-400Z"/></svg>`;
+                    this.setAttribute("data-saved", "false");
+                }
+            })
             // fetch request for like for the backend part is pending
         }
         if (trig == "heart-comment") {
             const liked = this.getAttribute("data-liked") === "true";
             if (!liked) {
                 this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Z"/></svg>`; // or your SVG
-                this.setAttribute("data-liked", "true");
+                this.setAttribute("data-saved", "true");
             } else {
                 this.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#FFFFFF"><path d="M480-219.5 468-231q-95.13-86.18-157.07-146.09Q249-437 214.22-480.9q-34.79-43.9-48-78.48Q153-593.95 153-628.5q0-64.5 45.5-110t110-45.5q49.47 0 93.98 27.5Q447-729 480-675.5q33.5-53.5 77.75-81T651.5-784q64.5 0 110 45.44Q807-693.11 807-628.69q0 34.73-12.72 68.31-12.71 33.58-47.46 76.92-34.75 43.35-96.9 104.37Q587.77-318.07 490-229l-10 9.5Zm0-23.5q91.82-83.57 151.35-141.98t94.84-101.72q35.31-43.3 49.31-76.59 14-33.28 14-65.07 0-58.64-39.86-98.39t-97.89-39.75q-36.25 0-67 15.5t-75.25 60l-35 41h11l-35-41q-45.5-45.5-76.75-60.5t-65.5-15q-57.03 0-97.39 39.75t-40.36 98.44q0 31.82 13.07 63.64t47.25 74.49Q265-447.5 325-388.75 385-330 480-243Zm0-262.5Z"/></svg>`;
-                this.setAttribute("data-liked", "false");
+                this.setAttribute("data-saved", "false");
             }
         }
     });
