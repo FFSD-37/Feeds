@@ -69,14 +69,14 @@
             </div>
             <div
               class="menu-item normal"
-              onclick="postOverlay('<%- post.url %>','<%- post.id %>','<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>')"
+              onclick="postOverlay('<%- post.url %>','<%- post.id %>','<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>', '<%- currUser %>')"
             >
               Go to post
             </div>
             <div
               class="menu-item normal"
               id="btnShareProfile"
-              onclick="shareTo('<%= post.author %>')"
+              onclick="shareTo('<%= post.id %>')"
             >
               Share to...
             </div>
@@ -99,7 +99,7 @@
         <% if(post.type === "Img") { %>
         <div
           class="post-content"
-          onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>')"
+          onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>', '<%- currUser %>')"
         >
           <img class="post-on-home-page" src="<%= post.url %>" />
         </div>
@@ -124,7 +124,7 @@
           <% if(post.type === "Img") { %>
           <div
             class="action-icon"
-            onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>')"
+            onclick="postOverlay('<%- post.url %>','<%- post.id %>', '<%- post.content %>', '<%- post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt %>', '<%- post.author %>', '<%- post.liked %>', '<%- post.saved %>', '<%- currUser %>')"
             id="comment-button-post"
           >
             <i class="far fa-comment"></i>
@@ -150,7 +150,7 @@
           navigator
             .share({
               title: "My Profile",
-              url: `http://localhost:3000/profile/${uname}`,
+              url: `http://localhost:3000/posts/${uname}`,
             })
             .catch((err) => {
               console.log("Error sharing:", err);

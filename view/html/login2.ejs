@@ -1,10 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Role-based Login — Professional Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
         --bg1: #f2f6ff;
@@ -16,11 +19,17 @@
         --role2: #c3ecdf;
         --role3: #f3e9d8;
       }
-      * { box-sizing: border-box }
-      html, body { height: 100% }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
       body {
         margin: 0;
-        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
         background: linear-gradient(135deg, #eef1fa 0%, #f7fbff 100%);
         display: flex;
         align-items: flex-start;
@@ -43,7 +52,7 @@
       }
       .heading p {
         color: var(--muted);
-        margin-top: 8px
+        margin-top: 8px;
       }
       .role-row {
         display: flex;
@@ -55,7 +64,7 @@
       .role-card {
         background: var(--card-bg);
         border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(35,45,80,0.08);
+        box-shadow: 0 8px 24px rgba(35, 45, 80, 0.08);
         padding: 18px 30px;
         min-width: 210px;
         display: flex;
@@ -63,17 +72,21 @@
         align-items: center;
         border: 2px solid transparent;
         cursor: pointer;
-        transition: transform .18s, box-shadow .18s, border-color .18s;
+        transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
       }
       .role-card:hover {
         transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 12px 30px rgba(36,50,100,0.10);
+        box-shadow: 0 12px 30px rgba(36, 50, 100, 0.1);
         border-color: var(--accent-2);
       }
       .role-card.active {
         border-color: var(--accent);
-        background: linear-gradient(180deg, rgba(67,47,255,0.06), rgba(67,47,255,0.03));
-        box-shadow: 0 18px 40px rgba(43,56,108,0.10);
+        background: linear-gradient(
+          180deg,
+          rgba(67, 47, 255, 0.06),
+          rgba(67, 47, 255, 0.03)
+        );
+        box-shadow: 0 18px 40px rgba(43, 56, 108, 0.1);
       }
       .role-icon {
         width: 38px;
@@ -85,7 +98,9 @@
         background: #e5e8f2;
         color: var(--accent);
       }
-      .role-content { line-height: 1 }
+      .role-content {
+        line-height: 1;
+      }
       .role-content .title {
         font-weight: 600;
         font-size: 15px;
@@ -105,8 +120,8 @@
         background: var(--card-bg);
         border-radius: 12px;
         padding: 34px 32px 28px;
-        box-shadow: 0 18px 40px rgba(32,40,80,0.06);
-        border: 1px solid rgba(0,0,0,0.04);
+        box-shadow: 0 18px 40px rgba(32, 40, 80, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.04);
       }
       .hero-icon {
         width: 60px;
@@ -119,15 +134,41 @@
         background: #e5e8f2;
         color: var(--accent);
       }
-      .card h2 { text-align: center; margin: 10px 0 22px; font-weight: 700; color: #262c37 }
-      .form-row { display: flex; flex-direction: column; gap: 12px }
-      .field {
-        display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(15, 20, 40, 0.07);
-        background: #f8f9fb
+      .card h2 {
+        text-align: center;
+        margin: 10px 0 22px;
+        font-weight: 700;
+        color: #262c37;
       }
-      .field svg { opacity: 0.6 }
-      .field input { border: 0; outline: 0; background: transparent; font-size: 14px; width: 100%; }
-      .hint { font-size: 12px; color: var(--muted); margin-top: 6px }
+      .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .field {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(15, 20, 40, 0.07);
+        background: #f8f9fb;
+      }
+      .field svg {
+        opacity: 0.6;
+      }
+      .field input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font-size: 14px;
+        width: 100%;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
       .submit {
         margin-top: 10px;
         background: linear-gradient(180deg, var(--accent), #2d299b);
@@ -141,7 +182,9 @@
         font-size: 15px;
         letter-spacing: 0.04em;
       }
-      .submit:hover { opacity: 0.96 }
+      .submit:hover {
+        opacity: 0.96;
+      }
       .link {
         display: block;
         text-align: center;
@@ -163,12 +206,17 @@
         font-weight: 600;
         margin-left: 3px;
       }
-      .toggle-group { display: flex; align-items: center; gap: 8px }
+      .toggle-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .toggle-btn {
         padding: 6px 14px;
         border-radius: 999px;
-        border: 1px solid rgba(15,20,40,0.14);
-        cursor: pointer; background: #f7f8fb;
+        border: 1px solid rgba(15, 20, 40, 0.14);
+        cursor: pointer;
+        background: #f7f8fb;
         font-size: 13px;
         font-weight: 600;
         color: var(--muted);
@@ -178,11 +226,18 @@
         border-color: var(--accent);
         color: #222;
       }
-      @media (max-width:600px){
-        .role-row{flex-direction:column;gap:12px}
-        .card{width:100%;padding:20px}
+      @media (max-width: 600px) {
+        .role-row {
+          flex-direction: column;
+          gap: 12px;
+        }
+        .card {
+          width: 100%;
+          padding: 20px;
+        }
       }
     </style>
+    <link rel="stylesheet" href="../css/alert.css" />
   </head>
   <body>
     <div class="container">
@@ -190,13 +245,28 @@
         <h1>Welcome Back</h1>
         <p>Select your login type below</p>
       </div>
+      <div class="alert" role="alert">
+        <span id="error-msg" class="alert-text"></span>
+        <span
+          class="close-btn"
+          onclick="this.parentElement.style.display='none'"
+          >&times;</span
+        >
+      </div>
       <div class="role-row" role="tablist" aria-label="Choose role">
         <div class="role-card" data-role="kids">
           <div class="role-icon">
             <!-- SVG User family icon -->
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="5" stroke="#432fff" stroke-width="2"/>
-              <ellipse cx="12" cy="19" rx="7" ry="3.5" stroke="#432fff" stroke-width="2"/>
+              <circle cx="12" cy="8" r="5" stroke="#432fff" stroke-width="2" />
+              <ellipse
+                cx="12"
+                cy="19"
+                rx="7"
+                ry="3.5"
+                stroke="#432fff"
+                stroke-width="2"
+              />
             </svg>
           </div>
           <div class="role-content">
@@ -208,8 +278,12 @@
           <div class="role-icon">
             <!-- SVG person icon -->
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="5" stroke="#432fff" stroke-width="2"/>
-              <path d="M5 21c0-3.866 3.582-7 8-7s8 3.134 8 7" stroke="#432fff" stroke-width="2"/>
+              <circle cx="12" cy="8" r="5" stroke="#432fff" stroke-width="2" />
+              <path
+                d="M5 21c0-3.866 3.582-7 8-7s8 3.134 8 7"
+                stroke="#432fff"
+                stroke-width="2"
+              />
             </svg>
           </div>
           <div class="role-content">
@@ -221,12 +295,20 @@
           <div class="role-icon">
             <!-- SVG channel/broadcast icon -->
             <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <rect x="4" y="7" width="16" height="10" rx="3" stroke="#432fff" stroke-width="2"/>
-              <path d="M8 21h8" stroke="#432fff" stroke-width="2"/>
+              <rect
+                x="4"
+                y="7"
+                width="16"
+                height="10"
+                rx="3"
+                stroke="#432fff"
+                stroke-width="2"
+              />
+              <path d="M8 21h8" stroke="#432fff" stroke-width="2" />
             </svg>
           </div>
           <div class="role-content">
-            <div class="title">Channel Admin</div>
+            <div class="title">Channel Account</div>
             <div class="desc">Manage communications and teams</div>
           </div>
         </div>
@@ -236,8 +318,12 @@
           <div class="hero-icon" id="heroIcon">
             <!-- Default Standard Account SVG -->
             <svg width="38" height="38" fill="none" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="5" stroke="#432fff" stroke-width="2"/>
-              <path d="M5 21c0-3.866 3.582-7 8-7s8 3.134 8 7" stroke="#432fff" stroke-width="2"/>
+              <circle cx="12" cy="8" r="5" stroke="#432fff" stroke-width="2" />
+              <path
+                d="M5 21c0-3.866 3.582-7 8-7s8 3.134 8 7"
+                stroke="#432fff"
+                stroke-width="2"
+              />
             </svg>
           </div>
           <h2 id="cardTitle">Standard Login</h2>
@@ -245,38 +331,39 @@
             <div class="form-row" id="formFields"></div>
             <button type="submit" class="submit">Sign In</button>
           </form>
-          <a class="link" href="#">Forgot password?</a>
+          <a class="link" href="/forget-password">Forgot password?</a>
           <div class="muted-center">
             No account yet?
-            <a href="#">Sign up here</a>
+            <a href="/signup">Sign up here</a>
           </div>
         </div>
       </div>
     </div>
     <script>
-      const roleCards = document.querySelectorAll('.role-card');
-      const cardTitle = document.getElementById('cardTitle');
-      const heroIcon = document.getElementById('heroIcon');
-      const formFields = document.getElementById('formFields');
-      const loginForm = document.getElementById('loginForm');
+      const roleCards = document.querySelectorAll(".role-card");
+      const cardTitle = document.getElementById("cardTitle");
+      const heroIcon = document.getElementById("heroIcon");
+      const formFields = document.getElementById("formFields");
+      const loginForm = document.getElementById("loginForm");
 
-      let currentRole = document.querySelector('.role-card.active').dataset.role;
+      let currentRole =
+        document.querySelector(".role-card.active").dataset.role;
       renderForRole(currentRole);
       setHeroIcon(currentRole);
 
-      roleCards.forEach(card => {
-        card.addEventListener('click', () => {
-          roleCards.forEach(c=>c.classList.remove('active'));
-          card.classList.add('active');
+      roleCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          roleCards.forEach((c) => c.classList.remove("active"));
+          card.classList.add("active");
           const role = card.dataset.role;
           currentRole = role;
           setHeroIcon(role);
-          if(role === 'kids'){
-            cardTitle.textContent = 'Child Account Login';
-          } else if(role === 'normal') {
-            cardTitle.textContent = 'Standard Login';
+          if (role === "kids") {
+            cardTitle.textContent = "Child Account Login";
+          } else if (role === "normal") {
+            cardTitle.textContent = "Standard Login";
           } else {
-            cardTitle.textContent = 'Channel Admin Login';
+            cardTitle.textContent = "Channel Account Login";
           }
           renderForRole(role);
         });
@@ -296,14 +383,14 @@
           channel: `<svg width="38" height="38" fill="none" viewBox="0 0 24 24">
                   <rect x="4" y="7" width="16" height="10" rx="3" stroke="#432fff" stroke-width="2"/>
                   <path d="M8 21h8" stroke="#432fff" stroke-width="2"/>
-                </svg>`
+                </svg>`,
         };
         heroIcon.innerHTML = icons[role];
       }
 
-      function renderForRole(role){
-        formFields.innerHTML = '';
-        if(role === 'kids'){
+      function renderForRole(role) {
+        formFields.innerHTML = "";
+        if (role === "kids") {
           formFields.innerHTML = `
             <label style="font-size:13px;color:#666;">Child Email</label>
             <div class="field">
@@ -315,7 +402,7 @@
             </div>
             <div class="hint">A parent or guardian password is required for access.</div>
           `;
-        } else if(role === 'normal'){
+        } else if (role === "normal") {
           formFields.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:center">
               <label style="font-size:13px;color:#666;">Login Identifier</label>
@@ -333,27 +420,28 @@
             </div>
             <div class="hint">Sign in using either your email address or username.</div>
           `;
-          setTimeout(()=>{
-            const btns = document.querySelectorAll('.toggle-btn');
+          setTimeout(() => {
+            const btns = document.querySelectorAll(".toggle-btn");
             const input = formFields.querySelector('input[name="identifier"]');
-            btns.forEach(b => b.addEventListener('click', () => {
-              btns.forEach(x => x.classList.remove('active'));
-              b.classList.add('active');
-              const mode = b.dataset.mode;
-              if(mode === 'username'){
-                input.type = 'text';
-                input.placeholder = 'your_username';
-                input.removeAttribute('pattern');
-                input.setAttribute('autocomplete','username');
-              } else {
-                input.type = 'email';
-                input.placeholder = 'user@domain.com';
-                input.setAttribute('autocomplete','email');
-              }
-            }));
-          },0);
-
-        } else if(role === 'channel'){
+            btns.forEach((b) =>
+              b.addEventListener("click", () => {
+                btns.forEach((x) => x.classList.remove("active"));
+                b.classList.add("active");
+                const mode = b.dataset.mode;
+                if (mode === "username") {
+                  input.type = "text";
+                  input.placeholder = "your_username";
+                  input.removeAttribute("pattern");
+                  input.setAttribute("autocomplete", "username");
+                } else {
+                  input.type = "email";
+                  input.placeholder = "user@domain.com";
+                  input.setAttribute("autocomplete", "email");
+                }
+              })
+            );
+          }, 0);
+        } else if (role === "channel") {
           formFields.innerHTML = `
             <label style="font-size:13px;color:#666;">Channel Name</label>
             <div class="field">
@@ -372,41 +460,52 @@
         }
       }
 
-      loginForm.addEventListener('submit', (e) => {
+      loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const data = new FormData(loginForm);
-        console.log(data);
+        // console.log(data);
         let type;
-        for(let i = 0; i < 3; i++){
-            if (roleCards[i].classList.contains("active")){
-                type = roleCards[i].getElementsByClassName("title")[0].innerHTML;
-                break;
-            }
+        for (let i = 0; i < 3; i++) {
+          if (roleCards[i].classList.contains("active")) {
+            type = roleCards[i].getElementsByClassName("title")[0].innerHTML;
+            break;
+          }
         }
         let userTypeiden;
-        if (type === "Standard Account"){
-            userTypeiden = document.getElementsByClassName("toggle-btn active")[0].innerHTML;
+        if (type === "Standard Account") {
+          userTypeiden =
+            document.getElementsByClassName("toggle-btn active")[0].innerHTML;
         }
-        console.log(userTypeiden);
         let obj = {};
         for (const [k, v] of data.entries()) obj[k] = v;
-        let object = {...obj, type}
-        if (type === "Standard Account"){
-            object = {...object, userTypeiden}
+        let object = { ...obj, type };
+        if (type === "Standard Account") {
+          object = { ...object, userTypeiden };
         }
         fetch("/atin_job", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(object, null, 2)
-        }).then((res) => {
-            return res.json();
-        }).then((d) => {
-            if (d){
-                console.log(d);
-            }
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(object),
         })
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              window.location.href = "/home";
+            } else {
+              document.querySelector(".alert").style.display = "flex";
+              document.getElementById("error-msg").innerHTML = data.reason;
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.querySelector(".alert").style.display = "flex";
+            document.getElementById("error-msg").innerHTML =
+              "An error occurred. Please try again.";
+          });
       });
     </script>
   </body>

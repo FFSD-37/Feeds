@@ -199,7 +199,7 @@
             <h2 id="overlay-title">Options</h2>
             <ul id="overlay-list">
                 <li onclick="reportUser('<%- myUser.username %>')">Report User</li>
-                <li onclick="blockUser('<%- myUser.username %>')">Block User</li>
+                <li onclick="blockUser('<%- myUser.username %>')">Block / Unblock User</li>
                 <li onclick="shareTo('<%- myUser.username %>')">Share Profile</li>
                 <li onclick="copyURL('<%- myUser.username %>')">Copy Profile Link</li>
                 <li onclick="AboutOverlay()">About This Account</li>
@@ -256,8 +256,24 @@
             closeOverlay();
         }
 
-        function blockUser(username) {
-            alert(`Blocking user: ${username}`);
+        async function blockUser(username) {
+            await fetch(`/block/${username}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                if (data.flag === "blocked"){
+                    window.location.href = "/";
+                    alert("User blocked successfully");
+                }
+                else{
+                    window.location.href="/";
+                    alert("User unblocked successfully");
+                }
+            })
             closeOverlay();
         }
 

@@ -77,11 +77,27 @@
         </nav>
         <div id="posts" class="posts-grid">
             <% if (posts && posts.length > 0) { %>
-            <% posts.forEach(post => { %>
-                <div class="post">
-                    <img src="<%= post.url %>" alt="Post image" />
+                <% posts.forEach(post => { %>
+                    <div class="post">
+                      <img src="<%= post.url %>" alt="Post image" />
+                      <button class="menu-button" style="
+                        position: absolute;
+                        top: 8px;
+                        right: 8px;
+                        background: rgba(0,0,0,0.5);
+                        border: none;
+                        color: white;
+                        padding: 5px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                      " onclick="openMenu('post', '<%= post.id %>')">
+                        &#8942;
+                      </button>
+                    </div>
+                  <% }) %>
+                <div class="post-create-post" onclick="create_post()">
+                    <strong>Create New Post</strong>
                 </div>
-            <% }) %>
             <% } else { %>
                 <div class="no-posts-msg">No posts yet.</div>
             <% } %>
@@ -91,6 +107,19 @@
             <% saved.forEach(save => { %>
                 <div class="post">
                     <img src="<%= save.url %>" alt="Saved image" />
+                    <button class="menu-button" style="
+                        position: absolute;
+                        top: 8px;
+                        right: 8px;
+                        background: rgba(0,0,0,0.5);
+                        border: none;
+                        color: white;
+                        padding: 5px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                      " onclick="openMenu('saved', '<%= save.id %>')">
+                        &#8942;
+                      </button>
                 </div>
             <% }) %>
             <% } else { %>
@@ -113,6 +142,19 @@
             <% archived.forEach(archive => { %>
                 <div class="post">
                     <img src="<%= archive.url %>" alt="Archived image" />
+                    <button class="menu-button" style="
+                        position: absolute;
+                        top: 8px;
+                        right: 8px;
+                        background: rgba(0,0,0,0.5);
+                        border: none;
+                        color: white;
+                        padding: 5px;
+                        border-radius: 3px;
+                        cursor: pointer;
+                      " onclick="openMenu('archived', '<%= archive.id %>')">
+                        &#8942;
+                      </button>
                 </div>
             <% }) %>
             <% } else { %>
@@ -120,7 +162,7 @@
             <% } %>
         </div>
     </div>
-    <div class="footer">
+    <!-- <div class="footer">
         <a href="#"
             ><a href="/contact" style="text-decoration: none; color: black">About</a></a
         >
@@ -148,7 +190,14 @@
             >
             from IIIT Sri-City
         </p>
+    </div> -->
+    <div id="menuOfpost" class="overlay">
+        <div class="overlay-content">
+            <span class="close-btn" onclick="closeOverlay()">x</span>
+            <ul id="menu-list"></ul>
+        </div>
     </div>
+
     <div id="overlay" class="overlay">
         <div class="overlay-content">
             <span class="close-btn" onclick="closeOverlay()">×</span>
@@ -180,7 +229,7 @@
                 if (myUser.followers && myUser.followers.length > 0) {
                     for (let i = 0; i < myUser.followers.length; i++) {
                         const follower = myUser.followers[i];
-                        console.log(follower);
+                        // console.log(follower);
                         const li = document.createElement("li");
                         const a = document.createElement("a");
                         a.href = `/profile/${follower.username}`;
@@ -212,8 +261,98 @@
             overlay.classList.add("show");
         }
 
+        async function deletePost(id){
+            await fetch(`/delete/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                if (data){
+                    window.location.reload();
+                    alert("Post deleted successfully")
+                }
+            })
+        }
+
+        async function archivePost(id){
+            await fetch(`/archive/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                if (data){
+                    window.location.reload();
+                    alert("Post archived!!")
+                }
+            })
+        }
+
+        async function unarchive(id){
+            await fetch(`/unarchive/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                if (data){
+                    window.location.reload();
+                    alert("Post unarchived!!")
+                }
+            })
+        }
+
+        async function unsavePost(id){
+            await fetch(`/unsave/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((res) => {
+                return res.json();
+            }).then((data) => {
+                if (data){
+                    window.location.reload();
+                    alert("Post unsaved!!")
+                }
+            })
+        }
+
+        function openMenu(type, id){
+            const overlay = document.getElementById("menuOfpost");
+            const list = document.getElementById("menu-list");
+            list.innerHTML = '';
+            if (type === 'post'){
+                list.innerHTML += `
+                    <li><a style="text-decoration: none; color: white;" onclick=deletePost('${id}')>Delete Post [Can't be undone⚠️]</a></li>
+                    <li><a style="text-decoration: none; color: white;" onclick=archivePost('${id}')>Archive Post</a></li>                
+                `;
+            } else if (type === 'saved') {
+                list.innerHTML += `
+                    <li><a style="text-decoration: none; color: white;" onclick="unsavePost('${id}')">Unsave Post</a></li>
+                `;
+            } else if (type === "archived"){
+                list.innerHTML += `
+                    <li><a style="text-decoration: none; color: white;" onclick="unarchive('${id}')">Unarchive Post</a></li>
+                `;
+            }
+            overlay.classList.add("show");
+        }
+
         function closeOverlay() {
+            document.getElementById("menuOfpost").classList.remove("show");
             document.getElementById("overlay").classList.remove("show");
+        }
+
+        function create_post(){
+            window.location.href = "/create_post";
         }
     </script>
 </body>

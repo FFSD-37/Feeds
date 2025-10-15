@@ -52,8 +52,14 @@ import {
   handlelikereel,
   handlepostcomment,
   handlereportpost,
-  handlegetads
-
+  handlegetads,
+  handlelikecomment,
+  handleblockuser,
+  handledeletepost,
+  handlearchivepost,
+  handleunarchivepost,
+  handleunsavepost,
+  handlegetchannel
 } from "../controllers/user.js";
 import { handleimagKitauth } from "../services/imagKit.js";
 import { isAuthuser } from "../middleware/isAuthuser.js";
@@ -99,10 +105,7 @@ router.get("/help",isAuthuser, handlegethelp);
 router.get("/notifications", isAuthuser, handlegetnotification);
 
 router.get("/login",isAuthuser, (req, res) => {
-  res.render("login", {
-    loginType: null,
-    msg: null,
-  });
+  res.render("login2");
 });
 
 router.get("/admin", handlegetadmin);
@@ -198,5 +201,19 @@ router.post("/comment",isAuthuser, handlepostcomment);
 router.post("/report_post", isAuthuser, handlereportpost);
 
 router.get("/ads", isAuthuser, handlegetads);
+
+router.post("/comment/like/:id", isAuthuser, handlelikecomment);
+
+router.post("/block/:username", isAuthuser, handleblockuser);
+
+router.post("/delete/:id", isAuthuser, handledeletepost);
+
+router.post("/archive/:id", isAuthuser, handlearchivepost);
+
+router.post("/unarchive/:id", isAuthuser, handleunarchivepost);
+
+router.post("/unsave/:id", isAuthuser, handleunsavepost);
+
+router.get("/channel/:channelid", isAuthuser, handlegetchannel);
 
 export default router;

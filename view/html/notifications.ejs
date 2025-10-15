@@ -327,6 +327,9 @@
             } else if(noti.msgSerial === 8) {
               icon = '👋';
               message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> has commented on your post.';
+            } else if(noti.msgSerial === 9) {
+              icon = '❤️';
+              message = '<a href="/profile/' + noti.userInvolved + '">' + noti.userInvolved + '</a> has liked your comment.';
             }
 
           %>

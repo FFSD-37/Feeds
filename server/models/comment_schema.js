@@ -23,6 +23,10 @@ const commentSchema = new mongoose.Schema({
         trim: true
     },
 
+    likes: [{
+        type: String    
+    }],
+
     parentCommntID:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Comment'

@@ -1,350 +1,736 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Instagram Profile</title>
+    <title>Registration</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
     <style>
-      /* [Styles remain unchanged] */
-      /* All your existing CSS code here */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
       }
 
       body {
+        min-height: 100vh;
         display: flex;
+        align-items: center;
         justify-content: center;
-        align-items: center;
-        height: 100vh;
-        color: #262626;
-        background-color: bisque;
+        background: linear-gradient(45deg, #6b48ff, #6b48ff22);
+        padding: 2rem;
       }
 
-      .container {
-        height: 100dvh;
-        max-width: 1050px;
-        margin: 0 0;
-        margin-bottom: 40px;
-        padding: 30px 20px;
-        text-align: center;
-      }
-
-      .profile-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-
-      .profile-pic {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        margin-right: 30px;
-        overflow: hidden;
-      }
-
-      .profile-pic img {
+      .register-container {
+        padding: 2rem;
+        border-radius: 25px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 2px solid rgb(189, 31, 224);
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        max-width: 500px;
+        background: white;
       }
 
-      .profile-info {
-        flex: 1;
-        text-align: left;
-      }
-
-      .profile-info-header {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-        margin-bottom: 10px;
-      }
-
-      .username {
-        font-size: 20px;
-        font-weight: 600;
-        margin-right: 10px;
-      }
-
-      .edit-profile,
-      .archive {
-        background: transparent;
-        border: 1px solid #dbdbdb;
-        color: #262626;
-        border-radius: 4px;
-        padding: 5px 9px;
-        font-weight: 600;
-        cursor: pointer;
-        margin: 0 5px;
-      }
-
-      .settings {
-        margin-left: 10px;
-        cursor: pointer;
-      }
-
-      .profile-stats {
-        display: flex;
-        margin-bottom: 10px;
-      }
-
-      .stat {
-        margin-right: 20px;
-      }
-
-      .stat span {
-        font-weight: 600;
-      }
-
-      .footer {
-        font-size: 15px;
-        color: #0c0c0c;
+      .register-header {
         text-align: center;
-        font-weight: bold;
-        position: fixed;
-        bottom: 0;
+        margin-bottom: 2rem;
       }
 
-      .footer a {
-        color: #090808;
-        text-decoration: none;
-        margin: 0 10px;
+      .register-header h1 {
+        color: #333;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
       }
 
-      .profile-bio p {
-        font-size: 16px;
-        line-height: 1.5;
-      }
-
-      .posts-nav {
-        display: flex;
-        justify-content: center;
-        border-top: 1px solid #dbdbdb;
-        margin-bottom: 10px;
-      }
-
-      .nav-item2 {
-        display: flex;
-        align-items: center;
-        margin-right: 20px;
-        padding: 15px 0;
-        font-size: 12px;
-        font-weight: 600;
-        color: #8e8e8e;
-        text-transform: uppercase;
-        cursor: pointer;
-      }
-
-      .nav-item2.active {
-        color: #262626;
-        border-top: 1px solid #262626;
-        margin-top: -1px;
-      }
-
-      .nav-item2 i {
-        margin-right: 6px;
-      }
-
-      .posts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        grid-gap: 10px;
-        max-height: 400px;
-        overflow-y: auto;
-      }
-
-      .post {
-        width: 100%;
+      .form-group {
+        margin-bottom: 1.5rem;
         position: relative;
-        padding-bottom: 100%;
       }
 
-      .post img {
-        position: absolute;
-        top: 0;
-        left: 0;
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #555;
+        font-weight: 500;
+      }
+
+      .form-group input:not([type="radio"]),
+      .form-group textarea,
+      .form-group select {
         width: 100%;
-        height: 100%;
-        object-fit: fill;
-        cursor: pointer;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
         border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
       }
 
-      .no-posts-msg {
-        grid-column: 1 / -1;
-        text-align: center;
-        font-style: italic;
-        color: gray;
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #6b48ff;
       }
 
-      .hidden {
+      .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 37px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
         display: none;
       }
 
-      @media (max-width: 735px) {
-        .profile-header {
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
+      .form-group.error input,
+      .form-group.error textarea,
+      .form-group.error select {
+        border-color: #dc3545;
+      }
+
+      .form-group.error .error-message {
+        display: block;
+      }
+
+      .checkbox-group {
+        margin-top: 1.5rem;
+      }
+
+      .checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #333;
+        cursor: pointer;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: #6b48ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      .submit-btn:hover {
+        background: #5a3cd9;
+      }
+
+      .overlay {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 30%;
+        padding: 10px;
+        background: rgb(145, 160, 212);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        z-index: 1000;
+        display: none;
+      }
+
+      .show-overlay {
+        display: block;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      .multiselect-dropdown {
+        position: relative;
+        width: 100%;
+      }
+
+      .select-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .select-box:hover {
+        border-color: #aaa;
+      }
+
+      .select-box.open {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+      }
+
+      .selected-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        flex: 1;
+      }
+
+      .selected-item {
+        background-color: #e1ecf4;
+        color: #39739d;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .selected-item i {
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .placeholder {
+        color: #999;
+        font-size: 14px;
+      }
+
+      .dropdown-arrow {
+        transition: transform 0.3s;
+      }
+
+      .open .dropdown-arrow {
+        transform: rotate(180deg);
+      }
+
+      .dropdown-content {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        background-color: white;
+        z-index: 100;
+        display: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .open .dropdown-content {
+        display: block;
+      }
+
+      .search-box {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 10;
+      }
+
+      .search-box input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        outline: none;
+      }
+
+      .search-box input:focus {
+        border-color: #4a90e2;
+      }
+
+      .options {
+        list-style: none;
+      }
+
+      .option {
+        padding: 10px 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .option:hover {
+        background-color: #f5f5f5;
+      }
+
+      .option.selected {
+        background-color: #e1ecf4;
+      }
+
+      .option input[type="checkbox"] {
+        cursor: pointer;
+      }
+
+      .no-options {
+        padding: 15px;
+        text-align: center;
+        color: #999;
+        font-size: 14px;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 1rem;
         }
 
-        .profile-pic {
-          margin-right: 0;
-          margin-bottom: 10px;
+        .register-container {
+          padding: 1.5rem;
+          max-width: 100%;
+          margin: 1rem;
         }
 
-        .profile-info-header {
-          justify-content: center;
+        .register-header h1 {
+          font-size: 1.5rem;
         }
 
-        .profile-stats {
-          justify-content: center;
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+          font-size: 0.9rem;
+          padding: 0.6rem;
         }
 
-        .posts-grid {
-          grid-gap: 3px;
-          max-height: 300px;
+        .submit-btn {
+          font-size: 0.9rem;
+          padding: 0.6rem;
+        }
+
+        .overlay {
+          width: 90%;
         }
       }
     </style>
+    <link
+      rel="icon"
+      type="image/*"
+      href="https://ik.imagekit.io/FFSD0037/logo.jpeg?updatedAt=1746701257780"
+    />
   </head>
+
   <body>
-    <%- include('sidebar') %>
-    <div class="container">
-      <header class="profile-header">
-        <div class="profile-pic">
-          <img src="<%- channel.channelLogo %>" alt="Channel Logo" />
-          <img src="https://via.placeholder.com/200" alt="Profile Picture" />
+    <%- include("sidebar") %>
+    <div class="register-container">
+      <div class="register-header">
+        <h1>Create Account</h1>
+      </div>
+      <form id="registerForm" action="/signupChannel" method="POST" novalidate>
+        <div class="form-group">
+          <label for="channelName">Channel Name</label>
+          <input
+            type="text"
+            id="channelName"
+            name="channelName"
+            placeholder="Channel name"
+            required
+          />
+          <div class="error-message">Please enter unique Channel name</div>
         </div>
-        <div class="profile-info">
-          <div class="profile-info-header">
-            <h2 class="username"><%- channel.channelName %></h2>
-            <h2 class="username">
-              <i class="fa-solid fa-check-circle" style="color: #0095f6"></i>
-            </h2>
-          </div>
-          <div class="profile-stats">
-            <div class="stat">
-              <span><%- (channel && channel.postIds) ? channel.postIds.length : 0 %></span>
-              <span>5</span> posts
-            </div>
-            <div class="stat">
-              <span><%- (channel && channel.members) ? channel.members.length : 0 %></span>
-              <span>150</span> members
-            </div>
-          </div>
-
-          <div class="profile-bio">
-            <strong><%- channel.bio %></strong>
-            <strong>This is a sample about of a channel.</strong><br />
-          </div>
-          <div class="profile-info-header">
-            <button class="edit-profile">
-              <a
-                href="/edit_profile"
-                style="text-decoration: none; color: black"
-                >Edit Profile</a
-              >
-            </button>
-            <button class="archive">
-              <a href="/settings" style="text-decoration: none; color: black"
-                >Settings</a
-              >
-            </button>
-          </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            title="Password must be at least 6 characters long, include one uppercase letter, one number, and one special character."
+            required
+          />
+          <div class="error-message">Password should be valid</div>
+          <span class="password-toggle" id="passwordToggle">👁️</span>
         </div>
-      </header>
 
-      <nav class="posts-nav">
-        <div
-          class="nav-item2 active"
-          data-tab="posts"
-          onclick="showTab('posts')"
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Password crosscheck"
+            required
+          />
+          <div class="error-message">Password should match</div>
+          <span class="password-toggle" id="confirmPasswordToggle">👁️</span>
+        </div>
+
+        <label
+          for="multiselect"
+          style="display: block; margin-bottom: 8px; font-weight: 500"
+          >Select Categories</label
         >
-          📷 Posts
+        <div class="multiselect-dropdown">
+          <div class="select-box">
+            <div class="selected-items"></div>
+            <span class="placeholder">Select options...</span>
+            <span class="dropdown-arrow"
+              ><i class="fas fa-chevron-down"></i
+            ></span>
+          </div>
+          <div class="dropdown-content">
+            <div class="search-box">
+              <input
+                type="text"
+                placeholder="Search options..."
+                class="search-input"
+              />
+            </div>
+            <ul class="options"></ul>
+          </div>
+          <input
+            type="hidden"
+            id="selectedCategories"
+            name="selectedCategories"
+          />
         </div>
-        <div class="nav-item2" data-tab="archive" onclick="showTab('archive')">
-          📁 Archive
-        </div>
-      </nav>
+        <input type="hidden" id="profileImageUrl" name="profileImageUrl" />
 
-      <div id="posts" class="posts-grid">
-        <!-- <% if (posts && posts.length > 0) { %> <% posts.forEach(post => { %> -->
-        <div class="post">
-          <img src="<%= post.url %>" alt="Post image" />
-          <img src="https://via.placeholder.com/150" alt="Post image" />
+        <div class="form-group">
+          <label for="pfp">Channel Logo (Optional)</label>
+          <input type="file" name="pfp" id="pfp" accept="image/*" />
         </div>
-        <div class="post">
-          <img src="https://via.placeholder.com/150" alt="Post image" />
-        </div>
-        <div class="post">
-          <img src="https://via.placeholder.com/150" alt="Post image" />
-        </div>
-        <div class="post">
-          <img src="https://via.placeholder.com/150" alt="Post image" />
-        </div>
-        <!-- <% }) %> <% } else { %> -->
-        <div class="no-posts-msg">No posts yet.</div>
-        <!-- <% } %> -->
-      </div>
 
-      <div id="archive" class="posts-grid hidden">
-        <!-- <% if (archived && archived.length > 0) { %> <% archived.forEach(archive => { %> -->
-        <div class="post">
-          <img src="https://via.placeholder.com/150" alt="Post image" />
+        <div class="form-group">
+          <label for="channelDescription">Channel Description</label>
+          <textarea
+            id="channelDescription"
+            name="channelDescription"
+            rows="4"
+            cols="50"
+            placeholder="Write your channel description here..."
+            required
+          ></textarea>
         </div>
-        <!-- <% }) %> <% } else { %> -->
-        <div class="no-posts-msg">No archived posts yet.</div>
-        <!-- <% } %> -->
-      </div>
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="terms" required />
+            I agree to the
+            <a href="#" onclick="openOverlay(event)">Terms & Conditions</a>
+          </label>
+          <div class="error-message">You must agree to the terms</div>
+        </div>
+
+        <button type="submit" class="submit-btn">Create Account</button>
+      </form>
     </div>
-
-    <div class="footer">
-      <a href="/contact" style="text-decoration: none; color: black">About</a> •
-      <a href="/help" style="text-decoration: none; color: black">Help</a> •
-      <a href="/tandc" style="text-decoration: none; color: black">Terms</a> •
-      <a
-        href="https://www.google.com/maps/place/Indian+Institute+of+Information+Technology,+Sri+City,+Chittoor"
-        style="text-decoration: none; color: black"
-        target="_blank"
-        >Locations</a
+    <div class="overlay" id="overlay">
+      <button
+        class="close-btn"
+        onclick="document.getElementById('overlay').classList.remove('show-overlay')"
       >
-      <p>
-        © 2025
-        <a href="/home" style="text-decoration: none; color: rgb(216, 24, 24)"
-          >Feeds</a
+        X
+      </button>
+      <h1>Terms & Conditions</h1>
+      <div class="content">
+        <h2>1. Introduction</h2>
+        <p>
+          Welcome to Feeds! By using our platform, you agree to these terms and
+          conditions.
+        </p>
+
+        <h2>2. User Category info</h2>
+        <h3>1. Kids</h3>
+        <pre>
+1. Education
+2. Animation
+3. Nature</pre
         >
-        from IIIT Sri-City
-      </p>
+        <h3>2. Students</h3>
+        <pre>All</pre>
+        <p><strong>Last Updated: February 2025</strong></p>
+      </div>
     </div>
 
     <script>
-      function showTab(tabName) {
-        document.querySelectorAll(".posts-grid").forEach((grid) => {
-          grid.classList.add("hidden");
+      const form = document.getElementById("registerForm");
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+      const passwordToggle = document.getElementById("passwordToggle");
+      const confirmPasswordToggle = document.getElementById(
+        "confirmPasswordToggle"
+      );
+      const selectedCategoriesInput =
+        document.getElementById("selectedCategories");
+
+      const validatePassword = (password) => {
+        return (
+          password.length >= 6 &&
+          /[A-Z]/.test(password) &&
+          /[0-9]/.test(password) &&
+          /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        );
+      };
+
+      document.querySelectorAll(".password-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const input = toggle.previousElementSibling.previousElementSibling;
+          if (input.type === "password") {
+            input.type = "text";
+            toggle.textContent = "👁️‍🗨️";
+          } else {
+            input.type = "password";
+            toggle.textContent = "👁️";
+          }
         });
-        document.querySelectorAll(".nav-item2").forEach((header) => {
-          header.classList.remove("active");
-        });
-        document.getElementById(tabName).classList.remove("hidden");
-        document
-          .querySelector(`[data-tab="${tabName}"]`)
-          .classList.add("active");
+      });
+
+      form.addEventListener("submit", (e) => {
+        const passwordValid = validatePassword(form.password.value);
+        const passwordsMatch =
+          form.password.value === form.confirmPassword.value;
+        const termsValid = form.terms.checked;
+
+        // Show/hide errors
+        document.querySelector("#password + .error-message").style.display =
+          passwordValid ? "none" : "block";
+        document.querySelector(
+          "#confirmPassword + .error-message"
+        ).style.display = passwordsMatch ? "none" : "block";
+        document.querySelector("#terms ~ .error-message").style.display =
+          termsValid ? "none" : "block";
+
+        // Add/remove error classes
+        passwordValid
+          ? passwordInput.classList.remove("error")
+          : passwordInput.classList.add("error");
+        passwordsMatch
+          ? confirmPasswordInput.classList.remove("error")
+          : confirmPasswordInput.classList.add("error");
+
+        if (!passwordValid || !passwordsMatch || !termsValid) {
+          return;
+        }
+
+        form.submit();
+      });
+
+      function openOverlay(event) {
+        event.preventDefault();
+        document.getElementById("overlay").classList.add("show-overlay");
       }
 
-      function openSettings() {
-        window.location.href = "/settings";
-      }
+      document.addEventListener("DOMContentLoaded", function () {
+        // Sample data - can be replaced with your own data
+        const optionsData = [
+          { value: "All", label: "All" },
+          { value: "Education", label: "Education" },
+          { value: "Animations", label: "Animations" },
+          { value: "Games", label: "Games" },
+          { value: "Memes", label: "Memes" },
+          { value: "News", label: "News" },
+          { value: "Tech", label: "Tech" },
+          { value: "Vlog", label: "Vlog" },
+          { value: "Entertainment", label: "Entertainment" },
+          { value: "Sports", label: "Sports" },
+          { value: "Nature", label: "Nature" },
+          { value: "Music", label: "Music" },
+          { value: "Marketing", label: "Marketing" },
+          { value: "Fitness", label: "Fitness" },
+          { value: "Lifestyle", label: "Lifestyle" },
+        ];
+
+        const multiselect = document.querySelector(".multiselect-dropdown");
+        const selectBox = multiselect.querySelector(".select-box");
+        const selectedItems = multiselect.querySelector(".selected-items");
+        const placeholder = multiselect.querySelector(".placeholder");
+        const dropdownContent = multiselect.querySelector(".dropdown-content");
+        const searchInput = multiselect.querySelector(".search-input");
+        const optionsList = multiselect.querySelector(".options");
+
+        // State
+        let selectedValues = [];
+        let isOpen = false;
+
+        // Initialize dropdown
+        function initDropdown() {
+          renderOptions(optionsData);
+          updateSelectedItems();
+
+          // Toggle dropdown
+          selectBox.addEventListener("click", function (e) {
+            e.stopPropagation();
+            toggleDropdown();
+          });
+
+          // Close dropdown when clicking outside
+          document.addEventListener("click", function () {
+            if (isOpen) {
+              closeDropdown();
+            }
+          });
+
+          // Search functionality
+          searchInput.addEventListener("input", function () {
+            const searchTerm = this.value.toLowerCase();
+            const filteredOptions = optionsData.filter((option) =>
+              option.label.toLowerCase().includes(searchTerm)
+            );
+            renderOptions(filteredOptions);
+          });
+        }
+
+        // Toggle dropdown
+        function toggleDropdown() {
+          if (isOpen) {
+            closeDropdown();
+          } else {
+            openDropdown();
+          }
+        }
+
+        function openDropdown() {
+          multiselect.classList.add("open");
+          isOpen = true;
+          // Focus search input when dropdown opens
+          setTimeout(() => {
+            searchInput.focus();
+          }, 0);
+        }
+
+        function closeDropdown() {
+          multiselect.classList.remove("open");
+          isOpen = false;
+          // Clear search when closing
+          searchInput.value = "";
+          renderOptions(optionsData);
+        }
+
+        // Render options
+        function renderOptions(options) {
+          optionsList.innerHTML = "";
+
+          if (options.length === 0) {
+            optionsList.innerHTML =
+              '<div class="no-options">No options found</div>';
+            return;
+          }
+
+          options.forEach((option) => {
+            const li = document.createElement("li");
+            li.className = "option";
+            if (selectedValues.includes(option.value)) {
+              li.classList.add("selected");
+            }
+
+            li.innerHTML = `
+                        <input type="checkbox" ${
+                          selectedValues.includes(option.value) ? "checked" : ""
+                        } 
+                            data-value="${option.value}">
+                        <span>${option.label}</span>
+                    `;
+
+            li.addEventListener("click", function (e) {
+              // Don't toggle if clicking on the checkbox directly
+              if (e.target.tagName !== "INPUT") {
+                const checkbox = this.querySelector("input");
+                checkbox.checked = !checkbox.checked;
+                handleOptionChange(checkbox);
+              }
+            });
+
+            const checkbox = li.querySelector("input");
+            checkbox.addEventListener("change", function () {
+              handleOptionChange(this);
+            });
+
+            optionsList.appendChild(li);
+          });
+        }
+
+        // Handle option selection change
+        function handleOptionChange(checkbox) {
+          const value = checkbox.getAttribute("data-value");
+
+          if (checkbox.checked) {
+            if (!selectedValues.includes(value)) {
+              selectedValues.push(value);
+            }
+          } else {
+            selectedValues = selectedValues.filter((v) => v !== value);
+          }
+
+          updateSelectedItems();
+          updateHiddenInput();
+          renderOptions(optionsData); // Re-render to update selected state
+        }
+
+        function updateHiddenInput() {
+          selectedCategoriesInput.value = JSON.stringify(selectedValues);
+        }
+
+        // Update selected items display
+        function updateSelectedItems() {
+          selectedItems.innerHTML = "";
+
+          if (selectedValues.length === 0) {
+            placeholder.style.display = "block";
+            return;
+          }
+
+          placeholder.style.display = "none";
+
+          selectedValues.forEach((value) => {
+            const option = optionsData.find((o) => o.value === value);
+            if (option) {
+              const item = document.createElement("div");
+              item.className = "selected-item";
+              item.innerHTML = `
+                            ${option.label}
+                            <i class="fas fa-times" data-value="${value}"></i>
+                        `;
+              selectedItems.appendChild(item);
+            }
+          });
+
+          // Add click event to remove buttons
+          selectedItems.querySelectorAll(".fa-times").forEach((btn) => {
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const value = this.getAttribute("data-value");
+              selectedValues = selectedValues.filter((v) => v !== value);
+              updateSelectedItems();
+              updateHiddenInput();
+              renderOptions(optionsData);
+            });
+          });
+        }
+
+        // Initialize the dropdown
+        initDropdown();
+      });
     </script>
   </body>
 </html>

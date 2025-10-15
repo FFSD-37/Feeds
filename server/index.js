@@ -48,7 +48,7 @@ io.use((socket, next) => {
   const cookie=socket.handshake.headers.cookie;
   const parsedCookie=parseCookieString(cookie);
 
-  const {data}=verify_JWTtoken(parsedCookie.uuid, process.env.USER_SECRET);
+  const {data}=verify_JWTtoken(parsedCookie.uuid||parsedCookie.cuid, process.env.USER_SECRET);
   
   socket.userId=data[0];
   socket.img=data[2];

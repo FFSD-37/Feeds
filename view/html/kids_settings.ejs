@@ -25,8 +25,7 @@
       }
 
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, sans-serif;
+        font-family: "Inter", sans-serif;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         padding: 20px;
@@ -54,7 +53,6 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
       }
 
       .section {
@@ -65,6 +63,7 @@
         margin-bottom: 15px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       }
+
       .settings-list {
         display: flex;
         flex-direction: column;
@@ -82,6 +81,7 @@
         color: #2d3748;
         font-weight: 500;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
       }
 
       .settings-item:hover {
@@ -98,15 +98,83 @@
       .settings-item-content i {
         color: #764ba2;
       }
-      
+
       .settings-item .arrow-icon {
         color: #cbd5e0;
+      }
+
+      /* Overlay styling */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .overlay.active {
+        display: flex;
+      }
+
+      .overlay-box {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .overlay-box h2 {
+        margin-bottom: 20px;
+        color: #4a4a4a;
+      }
+
+      .overlay-box input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #cbd5e0;
+        border-radius: 8px;
+        outline: none;
+      }
+
+      .overlay-box button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: opacity 0.2s ease;
+      }
+
+      .overlay-box button:hover {
+        opacity: 0.9;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        color: #a0aec0;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        cursor: pointer;
       }
 
       @media (max-width: 768px) {
         body {
           padding: 15px;
-          padding-bottom: 90px;
         }
         .header h1 {
           font-size: 1.5rem;
@@ -114,6 +182,7 @@
       }
     </style>
   </head>
+
   <body>
     <%- include('sidebar') %>
 
@@ -124,7 +193,6 @@
 
       <div class="section">
         <div class="settings-list">
-          
           <a href="/activityLog" class="settings-item">
             <div class="settings-item-content">
               <i class="fas fa-chart-line"></i>
@@ -133,41 +201,148 @@
             <i class="fas fa-chevron-right arrow-icon"></i>
           </a>
 
-          <a href="/kids_deactivate" class="settings-item">
+          <div class="settings-item" id="deactivateBtn">
             <div class="settings-item-content">
               <i class="fas fa-user-slash"></i>
               <span>Deactivate My Account</span>
             </div>
             <i class="fas fa-chevron-right arrow-icon"></i>
-          </a>
+          </div>
 
-          <a href="/kids_timecontrol" class="settings-item">
+          <div class="settings-item" id="timeControlBtn">
             <div class="settings-item-content">
               <i class="fas fa-hourglass-half"></i>
               <span>Time Control</span>
             </div>
             <i class="fas fa-chevron-right arrow-icon"></i>
-          </a>
+          </div>
 
-          <a href="/kids_changepassword" class="settings-item">
-            <div class="settings-item-content">
-              <i class="fas fa-key"></i>
-              <span>Change Password</span>
-            </div>
-            <i class="fas fa-chevron-right arrow-icon"></i>
-          </a>
-
-          <a href="/kids_parentalpassword" class="settings-item">
+          <div class="settings-item" id="parentalPassBtn">
             <div class="settings-item-content">
               <i class="fas fa-user-shield"></i>
               <span>Change Parental Control Password</span>
             </div>
             <i class="fas fa-chevron-right arrow-icon"></i>
-          </a>
-
+          </div>
         </div>
       </div>
     </div>
 
-    </body>
+    <!-- Overlay 1: Deactivate -->
+    <div class="overlay" id="deactivateOverlay">
+      <div class="overlay-box">
+        <button class="close-btn" onclick="closeOverlay('deactivateOverlay')">
+          ✖
+        </button>
+        <h2>Deactivate Account</h2>
+        <input
+          type="password"
+          id="deactivatePassword"
+          placeholder="Enter Parental Password"
+        />
+        <button onclick="submitDeactivate()">Deactivate</button>
+      </div>
+    </div>
+
+    <!-- Overlay 2: Time Control -->
+    <div class="overlay" id="timeOverlay">
+      <div class="overlay-box">
+        <button class="close-btn" onclick="closeOverlay('timeOverlay')">✖</button>
+        <h2>Set Daily Usage Limit</h2>
+        <input
+          type="number"
+          id="timeHours"
+          placeholder="Enter hours per day"
+          min="1"
+        />
+        <input
+          type="password"
+          id="timePassword"
+          placeholder="Enter Parental Password"
+        />
+        <button onclick="submitTimeControl()">Save</button>
+      </div>
+    </div>
+
+    <!-- Overlay 3: Change Parental Password -->
+    <div class="overlay" id="parentalOverlay">
+      <div class="overlay-box">
+        <button class="close-btn" onclick="closeOverlay('parentalOverlay')">
+          ✖
+        </button>
+        <h2>Change Parental Password</h2>
+        <input type="password" id="oldPass" placeholder="Old Password" />
+        <input type="password" id="newPass" placeholder="New Password" />
+        <input type="password" id="confirmPass" placeholder="Confirm Password" />
+        <button onclick="submitParentalChange()">Update</button>
+      </div>
+    </div>
+
+    <script>
+      // open overlay
+      document.getElementById("deactivateBtn").onclick = () =>
+        openOverlay("deactivateOverlay");
+      document.getElementById("timeControlBtn").onclick = () =>
+        openOverlay("timeOverlay");
+      document.getElementById("parentalPassBtn").onclick = () =>
+        openOverlay("parentalOverlay");
+
+      function openOverlay(id) {
+        document.getElementById(id).classList.add("active");
+      }
+
+      function closeOverlay(id) {
+        document.getElementById(id).classList.remove("active");
+      }
+
+      // Fetch functions (you’ll handle backend)
+      async function submitDeactivate() {
+        const password = document.getElementById("deactivatePassword").value.trim();
+        if (!password) return alert("Enter parental password!");
+
+        const res = await fetch("/kids_deactivate_account", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        });
+
+        if (res.ok) alert("Account deactivation requested!");
+        else alert("Invalid password or error!");
+      }
+
+      async function submitTimeControl() {
+        const hours = document.getElementById("timeHours").value.trim();
+        const password = document.getElementById("timePassword").value.trim();
+        if (!hours || !password) return alert("Fill all fields!");
+
+        const res = await fetch("/kids_timecontrol_update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hours, password }),
+        });
+
+        if (res.ok) alert("Time control updated!");
+        else alert("Invalid parental password!");
+      }
+
+      async function submitParentalChange() {
+        const oldPass = document.getElementById("oldPass").value.trim();
+        const newPass = document.getElementById("newPass").value.trim();
+        const confirmPass = document.getElementById("confirmPass").value.trim();
+        if (!oldPass || !newPass || !confirmPass)
+          return alert("Please fill all fields!");
+        if (newPass !== confirmPass)
+          return alert("New passwords do not match!");
+
+        const res = await fetch("/kids_parentalpassword_change", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ oldPass, newPass }),
+        });
+
+        if (res.ok) alert("Parental password updated!");
+        else alert("Error updating password!");
+      }
+    </script>
+  </body>
 </html>

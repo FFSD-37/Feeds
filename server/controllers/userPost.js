@@ -111,11 +111,12 @@ const suggestedPost=async(req,res)=>{
             else{
                 post={...post,saved:false};
             }
+            post={...post,currUser:userDetails.data[0]};
             return post;
         })
 
         if(!posts) return res.status(404).json({ err: "Post not found" });
-        
+        // console.log(posts);
         return res.json({posts})
     }
     catch(error){

@@ -75,9 +75,7 @@ const userSchema = new mongoose.Schema({
     }],
 
     blockedUsers: [{
-        username:{
-            type:String
-        }
+        type:String
     }],
 
     bio: {

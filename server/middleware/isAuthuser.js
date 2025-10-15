@@ -3,7 +3,8 @@ import { verify_JWTtoken } from "cookie-string-parser";
 const isAuthuser = (req, res, next) => {
 
     try{
-    const isAuth=verify_JWTtoken(req.cookies.uuid, process.env.USER_SECRET);
+    const isAuth=verify_JWTtoken(req.cookies.uuid||req.cookies.cuid, process.env.USER_SECRET);
+    // console.log('isAuth',isAuth);
     
     if(isAuth){
         if(req.url==="/login" || req.url==="/signup" || req.url==="/forgetpass" || req.url==='/'){

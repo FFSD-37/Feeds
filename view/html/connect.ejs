@@ -13,55 +13,104 @@
     <%- include('sidebar') %>
     <div class="content">
       <div class="header">
-        <h1>🔍 Discover People</h1>
-        <p>Connect with amazing people in the community</p>
+        <% if(type === "Kids") { %>
+          <h1>🔍 Discover New channels</h1>
+        <% } else { %>
+          <h1>🔍 Discover People</h1>
+        <% } %>
+        <% if(type === "Kids") { %>
+          <p>Connect, Learn and Grow together</p>
+        <% } else { %>
+          <p>Connect with amazing people in the community</p>
+        <% } %>
       </div>
 
       <div class="search-container">
         <div class="search-wrapper">
           <span class="search-icon">🔎</span>
-          <input type="text" id="searchInput" placeholder="Search by name or username..." />
+          <% if (type === "Kids") { %>
+            <input type="text" id="searchInput" placeholder="Search by channel name..." />
+          <% } else { %>
+            <input type="text" id="searchInput" placeholder="Search by name or username..." />
+          <% } %>
         </div>
       </div>
 
-      <div class="container">
-        <div class="results-header">
-          <span id="resultsCount"><%= users.length %></span> People Found
-        </div>
-
-        <% if (users.length === 0) { %>
-          <div class="empty-state">
-            <div class="empty-state-icon">👥</div>
-            <div class="empty-state-text">No people found</div>
+      <% if (type !== "Kids") { %>
+        <div class="container">
+          <div class="results-header">
+            <span id="resultsCount"><%= users.length %></span> People Found
           </div>
-        <% } else { %>
-          <ul id="peopleList">
-            <% users.forEach((user) => { %>
-              <li data-name="<%= user.display_name.toLowerCase() %>" data-username="<%= user.username.toLowerCase() %>">
-                <div class="profile">
-                  <img src="<%= user.avatarUrl %>" alt="<%= user.display_name %>" />
-                  <div class="info">
-                    <a href="/profile/<%= user.username %>">
-                      <div><strong><%= user.display_name %></strong></div>
-                      <div>@<%= user.username %></div>
-                    </a>
-                    <div class="stats">
-                      <div class="stat-item">
-                        <span class="stat-icon">👥</span>
-                        <span class="stat-value"><%= user.followers %></span> Followers
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-icon">➕</span>
-                        <span class="stat-value"><%= user.following %></span> Following
+
+          <% if (users.length === 0) { %>
+            <div class="empty-state">
+              <div class="empty-state-icon">👥</div>
+              <div class="empty-state-text">No people found</div>
+            </div>
+          <% } else { %>
+            <ul id="peopleList">
+              <% users.forEach((user) => { %>
+                <li data-name="<%= user.display_name.toLowerCase() %>" data-username="<%= user.username.toLowerCase() %>">
+                  <div class="profile">
+                    <img src="<%= user.avatarUrl %>" alt="<%= user.display_name %>" />
+                    <div class="info">
+                      <a href="/profile/<%= user.username %>">
+                        <div><strong><%= user.display_name %></strong></div>
+                        <div>@<%= user.username %></div>
+                      </a>
+                      <div class="stats">
+                        <div class="stat-item">
+                          <span class="stat-icon">👥</span>
+                          <span class="stat-value"><%= user.followers %></span> Followers
+                        </div>
+                        <div class="stat-item">
+                          <span class="stat-icon">➕</span>
+                          <span class="stat-value"><%= user.following %></span> Following
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            <% }) %>
-          </ul>
-        <% } %>
-      </div>
+                </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
+      <% } else { %>
+        <div class="container">
+          <div class="results-header">
+            <span id="resultsCount"><%= users.length %></span> Channels Found
+          </div>
+          <% if (users.length === 0) { %>
+            <div class="empty-state">
+              <div class="empty-state-icon">👥</div>
+              <div class="empty-state-text">No people found</div>
+            </div>
+          <% } else { %>
+            <ul id="peoplelist">
+              <% users.forEach((user) => { %>
+                <li data-name="<%= user.channelName.toLowerCase() %>" data-username="<%= user.channelName.toLowerCase() %>">
+                  <div class="profile">
+                    <img src="<%= user.channelLogo %>" alt="<%= user.channelName %>" />
+                    <div class="info">
+                      <a href="/profile/<%= user.channelName %>">
+                        <div><strong><%= user.channelName %></strong></div>
+                        <div>@<%= user.channelName %></div>
+                      </a>
+                      <div class="stats">
+                        <div class="stat-item"></div>
+                        <div class="stat-item">
+                          <span class="stat-icon">➕</span>
+                          <span class="stat-value"><%= user.channelMembers.length %></span> Members
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </div>
+      <% } %>
     </div>
 
     <script>

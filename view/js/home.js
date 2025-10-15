@@ -73,6 +73,11 @@ function timeAgo(date) {
   return "just now";
 }
 
+async function reelOpen(id){
+  window.location.href = "/reels";
+  // implementation of particular reel open
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("postsContainer");
   let isLoading = false;
@@ -126,10 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="menu-item danger" onclick="openReportModal('<%= post.id %>')">
                 Report
               </div>
-              <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')">
+              <div class="menu-item normal" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}', '${p.currUser}')">
                 Go to post
               </div>
-              <div class="menu-item normal" id="btnShareProfile" onclick="shareTo('${p.author}')">
+              <div class="menu-item normal" id="btnShareProfile" onclick="shareTo('${p.id}')">
                 Share to...
               </div>
               <div class="menu-item normal" onclick="copyURL('${p.author}')">
@@ -148,8 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (p.type === "Img") {
           html += `
-            <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')">
-              <img class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" />
+            <div class="post-content" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}', '${p.currUser}')">
+              <img class="post-on-home-page" src="${p.url}" />
             </div>`;
         } else {
           html += `
@@ -164,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="action-icon">`
           
           if (p.liked){
-            html += `<i class="fas fa-heart" onclick="likePost('${p.id}', this)"></i>`;
+            html += `<i class="fas fa-heart" onclick="likePost('${p.id}', this)"></i></div>`;
           }else{
             html +=
                 `<i class="far fa-heart" onclick="likePost('${p.id}', this)"></i>
@@ -172,14 +177,14 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           if (p.type === "Img") {
             html += `
-              <div class="action-icon" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}')" id="comment-button-post">
+              <div class="action-icon" onclick="postOverlay('${p.url}','${p.id}', '${p.content}', '${p.createdAt}', '${p.author}', '${p.saved}', '${p.saved}', '${p.currUser}')" id="comment-button-post">
                 <i class="far fa-comment"></i>
               </div>`;
           }
           
           html += `
               <div class="action-icon">
-                <i class="fas fa-share" onclick="shareTo('${p.author}')"></i>
+                <i class="fas fa-share" onclick="shareTo('${p.id}')"></i>
               </div>
             </div>`;
         }
@@ -206,7 +211,7 @@ document.querySelectorAll(".post-on-home-page").forEach((video) => {
 window.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".post-time").forEach((el) => {
     const createdAt = el.dataset.created;
-    el.textContent = `• ${timeAgo(createdAt)}`;
+    el.textContent = `• ${timeAgo(new Date(createdAt))}`;
   });
 });
 

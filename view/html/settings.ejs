@@ -426,11 +426,11 @@
             <% if(Meuser.blockedUsers && Meuser.blockedUsers.length > 0) { %> <%
             blockedUsers.forEach((user) => { %>
             <tr>
-              <td><strong>@<%= user.username %></strong></td>
+              <td><strong>@<%= user %></strong></td>
               <td>
                 <button
                   class="btn btn-unblock"
-                  onclick="unblockUser('<%= user.username %>')"
+                  onclick="unblockUser('<%= user %>')"
                 >
                   <i class="fas fa-user-check"></i> Unblock
                 </button>
@@ -597,21 +597,20 @@
 
         window.unblockUser = function (username) {
           if (confirm(`Are you sure you want to unblock ${username}?`)) {
-            fetch(`/unblock/${username}`, {
+            fetch(`/block/${username}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
             })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error("Network response was not ok");
-                }
-                return response.json();
+              .then((res) => {
+                return res.json();
               })
               .then((data) => {
-                console.log("Success:", data);
-                window.location.reload();
+                if (data){
+                  window.location.href="/settings";
+                  alert("Unblocked successfully");
+                }
               })
               .catch((error) => {
                 console.error("Error:", error);
