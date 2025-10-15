@@ -477,8 +477,18 @@ const fetchOverlayUser = async (req, res) => {
 const handlegetHome = async (req, res) => {
   const { data } = req.userDetails;
   // console.log(data);
+  const createdAt = req.query.createdAt || new Date();
+  let posts = await (
+    data[3] === "Kids" || data[3] === "Channel"
+      ? channelPost.find({ createdAt: { $lt: createdAt } })
+      : Post.find({ createdAt: { $lt: createdAt } })
+  )
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .lean();
+
   if (data[3] === "Channel" || data[3] === "Kids") {
-    let posts = await channelPost.find({}).sort({ createdAt: -1 }).lean();
+    // posts = await channelPost.find({}).sort({ createdAt: -1 }).lean();
     return res.render("home", {
       img: data[2],
       currUser: data[0],

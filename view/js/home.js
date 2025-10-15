@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           html += `
             <div class="post-content" onclick="reelOpen('${p.url}')">
-              <video class="post-on-home-page" src="${p.url}&&tr=w-640,h-640" loop preload="metadata"></video>
+              <video class="post-on-home-page" src="${p.url}" loop preload="metadata"></video>
             </div>`;
         }
         
