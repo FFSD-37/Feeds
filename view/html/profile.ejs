@@ -78,23 +78,29 @@
         <div id="posts" class="posts-grid">
             <% if (posts && posts.length > 0) { %>
                 <% posts.forEach(post => { %>
-                    <div class="post">
-                      <img src="<%= post.url %>" alt="Post image" />
-                      <button class="menu-button" style="
-                        position: absolute;
-                        top: 8px;
-                        right: 8px;
-                        background: rgba(0,0,0,0.5);
-                        border: none;
-                        color: white;
-                        padding: 5px;
-                        border-radius: 3px;
-                        cursor: pointer;
-                      " onclick="openMenu('post', '<%= post.id %>')">
-                        &#8942;
-                      </button>
-                    </div>
-                  <% }) %>
+                <div class="post">
+                    <% if (post.type === 'Reels') { %>
+                    <video src="<%= post.url %>" controls muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <% } else { %>
+                    <img src="<%= post.url %>" alt="Post image" />
+                    <% } %>
+
+                    <button class="menu-button" style="
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    background: rgba(0,0,0,0.5);
+                    border: none;
+                    color: white;
+                    padding: 5px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    " onclick="openMenu('post', '<%= post.id %>')">
+                    &#8942;
+                    </button>
+                </div>
+                <% }) %>
+
                 <div class="post-create-post" onclick="create_post()">
                     <strong>Create New Post</strong>
                 </div>
@@ -129,9 +135,13 @@
         <div id="liked" class="posts-grid hidden">
             <% if (liked && liked.length > 0) { %>
             <% liked.forEach(like => { %>
-                <div class="post">
-                    <img src="<%= like.url %>" alt="Liked image" />
-                </div>
+            <div class="post">
+                <% if (like.type === 'Reels') { %>
+                <video src="<%= like.url %>" controls muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <% } else { %>
+                <img src="<%= like.url %>" alt="Liked image" />
+                <% } %>
+            </div>
             <% }) %>
             <% } else { %>
                 <div class="no-posts-msg">No liked posts yet.</div>
