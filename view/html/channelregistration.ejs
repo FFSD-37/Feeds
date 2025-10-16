@@ -478,6 +478,7 @@
         "confirmPasswordToggle"
       );
       const selectedCategoriesInput = document.getElementById("selectedCategories");
+      const imageupload = document.getElementById('pfp');
 
       const validatePassword = (password) => {
         return (
@@ -530,6 +531,42 @@
 
         form.submit();
       });
+
+      async function getAuth() {
+        let res = await fetch('/imagKitauth')
+        return res;
+      }
+
+      imageupload.addEventListener('change', handleUpload);
+      async function handleUpload() {
+        const authResponse = await getAuth();
+
+        if (!authResponse.ok) throw new Error("Failed to fetch auth details");
+
+        const authData = await authResponse.json();
+        var imagekit = new ImageKit({
+          publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
+          urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
+        });
+
+        var file = document.getElementById("pfp");
+        imagekit.upload({
+          file: file.files[0],
+          fileName: file.files[0].name || "sample-file.jpg",
+          tags: ["tag1"],
+          responseFields: "tags",
+          token: authData.token,
+          signature: authData.signature,
+          expire: authData.expire,
+        }, function (err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            document.getElementById("profileImageUrl").value = result.url;
+            console.log(result);
+          }
+        });
+      }
 
       function openOverlay(event) {
         event.preventDefault();
@@ -727,5 +764,6 @@
         initDropdown();
       });
     </script>
+    <script src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
   </body>
 </html>
