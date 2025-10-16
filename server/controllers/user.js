@@ -988,7 +988,6 @@ const handlegetcreatepost = (req, res) => {
 };
 
 const handlecreatepost = async (req, res) => {
-  // console.log(req.body);
   const { data } = req.userDetails;
   if (req.body.postType === "story") {
     const user = {

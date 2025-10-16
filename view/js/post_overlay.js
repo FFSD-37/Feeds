@@ -219,7 +219,7 @@ async function postComment(postID) {
                 <span class="comment-time">${timeAgo(new Date())}</span>
                 <span class="comment-reply onclick="replayComment('${
                   data.comment._id
-                }', '${postID}')">Replay</span>
+                }', '${postID}')">Reply</span>
                 <span id="${
                   data.comment._id
                 }-${postID}" class="comment-heart" name="heart-comment" data-liked="false" onclick="likeComment('${postID}','${
