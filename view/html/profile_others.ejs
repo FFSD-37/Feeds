@@ -149,7 +149,11 @@
         <div id="posts" class="posts-grid">
             <% if (posts && posts.length > 0) { %> <% posts.forEach(post => { %>
             <div class="post">
-                <img src="<%= post.url %>" alt="Post image" />
+                <% if (post.type === "Img") { %>
+                    <img src="<%= post.url %>" alt="Post image" />
+                <% } else { %>
+                    <video src="<%= post.url %>" controls muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <% } %>
             </div>
             <% }) %> <% } else { %>
             <div class="no-posts-msg">No posts yet.</div>

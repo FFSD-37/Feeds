@@ -112,7 +112,11 @@
             <% if (saved && saved.length > 0) { %>
             <% saved.forEach(save => { %>
                 <div class="post">
-                    <img src="<%= save.url %>" alt="Saved image" />
+                    <% if (save.type === "Img") { %>
+                        <img src="<%= save.url %>" alt="Saved image" />
+                    <% } else { %>
+                        <video src="<%= save.url %>" controls muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <% } %>
                     <button class="menu-button" style="
                         position: absolute;
                         top: 8px;
@@ -151,7 +155,11 @@
             <% if (archived && archived.length > 0) { %>
             <% archived.forEach(archive => { %>
                 <div class="post">
-                    <img src="<%= archive.url %>" alt="Archived image" />
+                    <% if (archive.type === "Img") { %>
+                        <img src="<%= archive.url %>" alt="Archived image" />
+                    <% } else { %>
+                        <video src="<%= archive.url %>" controls muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <% } %>
                     <button class="menu-button" style="
                         position: absolute;
                         top: 8px;
