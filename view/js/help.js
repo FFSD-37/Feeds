@@ -88,13 +88,11 @@ function toggleSection(sectionId) {
     const header = content.previousElementSibling;
     const wasActive = content.classList.contains("active");
 
-    // Close all sections
     document.querySelectorAll(".section-content").forEach((section) => {
         section.classList.remove("active");
         section.previousElementSibling.classList.remove("active");
     });
 
-    // Toggle clicked section
     if (!wasActive) {
         content.classList.add("active");
         header.classList.add("active");

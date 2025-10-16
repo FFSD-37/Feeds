@@ -75,7 +75,6 @@ function timeAgo(date) {
 
 async function reelOpen(id){
   window.location.href = "/reels";
-  // implementation of particular reel open
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -228,8 +227,8 @@ async function likePost(postId, el) {
     const data = await res.json();
 
     if (data.success) {
-      icon.classList.toggle("far");       // Outline heart
-      icon.classList.toggle("fas");       // Solid heart
+      icon.classList.toggle("far");
+      icon.classList.toggle("fas");
       icon.classList.toggle("text-red");
     } else {
       alert(data.err || "Unable to like post.");
@@ -248,7 +247,7 @@ async function savePost(postId, el) {
     const data = await res.json();
     if (data.success) {
       const icon = el.tagName === "I" ? el : el.querySelector("i");
-      icon.classList.toggle("saved"); // You can define this class in CSS
+      icon.classList.toggle("saved");
     } else {
       alert(data.err || "Unable to save post.");
     }
@@ -273,7 +272,6 @@ async function RenderAds() {
     const footer = leftSection.querySelector(".footer");
     if (!footer) return;
 
-    // Remove old ads if already rendered
     leftSection.querySelectorAll(".ads-grid").forEach(el => el.remove());
 
     if (data.allAds && data.allAds.length > 0) {

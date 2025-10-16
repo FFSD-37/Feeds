@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const loadingOverlay = document.getElementById("loading-overlay");
-        loadingOverlay.style.display = "flex"; // show loading spinner
+        loadingOverlay.style.display = "flex"; 
 
         try {
             const caption = document.getElementById("caption").value;
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.error(error);
                     alert("Unexpected error occurred.");
                 } finally {
-                    loadingOverlay.style.display = "none"; // hide spinner after completion
+                    loadingOverlay.style.display = "none";
                 }
             });
 

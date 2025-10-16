@@ -25,10 +25,10 @@ async function storeOtp(email, otp) {
     if (existing) {
       existing.otp = otp;
       await existing.save();
-      console.log(`✅ OTP for ${email} updated successfully.`);
+      // console.log(`✅ OTP for ${email} updated successfully.`);
     } else {
       await ResetPassword.create({ email, otp });
-      console.log(`✅ OTP for ${email} saved successfully.`);
+      // console.log(`✅ OTP for ${email} saved successfully.`);
     }
   } catch (err) {
     console.error(`❌ Error storing OTP for ${email}:`, err);
@@ -379,7 +379,7 @@ const updatepass = async (req, res) => {
       email: req.body.foremail,
     });
 
-    console.log(user, user.username);
+    // console.log(user, user.username);
 
     if (await bcrypt.compare(user.password, req.body.new_password)) {
       return res.render("Forgot_pass", {
@@ -477,7 +477,6 @@ const fetchOverlayUser = async (req, res) => {
 
 const handlegetHome = async (req, res) => {
   const { data } = req.userDetails;
-  // console.log(data);
   const createdAt = req.query.createdAt || new Date();
   let posts = await (
     data[3] === "Kids" || data[3] === "Channel"
@@ -540,7 +539,6 @@ const handlegetprofile = async (req, res) => {
   const { data } = req.userDetails;
   const profUser = await User.findOne({ username: u.username });
   if (!profUser) {
-    // This means the profile must be a channel
     const channel = await Channel.findOne({ channelName: u.username });
     const postIds = channel.postIds || [];
     let postObjects = await Post.find({ _id: { $in: postIds } });
@@ -549,7 +547,7 @@ const handlegetprofile = async (req, res) => {
     channel.channelMembers.forEach((each) => {
       members.push(each.username);
     });
-    console.log(members);
+    // console.log(members);
     return res.render("profile_channel", {
       img: data[2],
       currUser: data[0],
@@ -570,7 +568,7 @@ const handlegetprofile = async (req, res) => {
   const postIds = profUser.postIds || [];
   let postObjects = await Post.find({ _id: { $in: postIds } });
 
-  // ✅ Remove archived posts from postObjects
+  // Remove archived posts from postObjects
   const archiveIds = profUser.archivedPostsIds || [];
   postObjects = postObjects.filter(
     (p) => !archiveIds.includes(p.id || p._id.toString())
@@ -665,13 +663,10 @@ const handlegetcontact = (req, res) => {
 
 const handlegetcomment = async (req, res) => {
   const postID = req.body.postID;
-  // console.log(postID);
   const post = await Post.findOne({ id: req.body.postID });
-  // console.log(post);
   let comment_array = [];
   for (let i = 0; i < post.comments.length; i++) {
     const comment = await Comment.findOne({ _id: post.comments[i] });
-    // console.log(comment);
     let reply_array = [];
     if (comment.reply_array.length > 0) {
       for (let j = 0; j < comment.reply_array.length; j++) {
@@ -683,7 +678,6 @@ const handlegetcomment = async (req, res) => {
     comment_array.push([comment, reply_array]);
   }
 
-  // console.log(comment_array[0][1]);
   return res.json(comment_array);
 };
 
@@ -705,7 +699,7 @@ const handlegetconnect = async (req, res) => {
         result.push(i);
       }
     });
-    console.log(result);
+    // console.log(result);
     return res.render("connect", {
       img: data[2],
       currUser: data[0],
@@ -862,7 +856,7 @@ const handlegetreels = async (req, res) => {
 
   if (data[3] === "Kids") {
     const user = await Channel.find({});
-    console.log(user);
+    // console.log(user);
     return res.render("kids_reels", {
       img: data[2],
       currUser: data[0],
@@ -984,7 +978,7 @@ const handlegetpostoverlay = (req, res) => {
 
 const handlegetcreatepost = (req, res) => {
   const { data } = req.userDetails;
-  console.log(data);
+  // console.log(data);
   return res.render("create_post", {
     img: data[2],
     currUser: data[0],
@@ -994,7 +988,7 @@ const handlegetcreatepost = (req, res) => {
 };
 
 const handlecreatepost = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { data } = req.userDetails;
   if (req.body.postType === "story") {
     const user = {
@@ -1225,7 +1219,6 @@ const signupChannel = async (req, res) => {
 
 const registerChannel = async (req, res) => {
   const { data } = req.userDetails;
-  // console.log(req.body);
   const user = await User.findOne({ username: data[0] });
   const channel = {
     channelName: req.body.channelName,
@@ -1258,7 +1251,7 @@ const handlegetchannel = async (req, res) => {
 const createPostfinalize = (req, res) => {
   try {
     const { data } = req.userDetails;
-    console.log(req.body);
+    // console.log(req.body);
     return res.render("create_post3", {
       img: data[2],
       currUser: data[0],
@@ -1283,7 +1276,6 @@ const handlegetlog = async (req, res) => {
       type: data[3],
     });
   }
-  // console.log(allLogs);
   return res.render("activityLog", {
     img: data[2],
     currUser: data[0],
@@ -1342,7 +1334,7 @@ const handlegetloginchannel = async (req, res) => {
 
 const handleloginchannel = async (req, res) => {
   const { data } = req.userDetails;
-  console.log(req.body);
+  // console.log(req.body);
   const { channelName, channelPassword } = req.body;
   const channel = await Channel.findOne({ channelName: channelName });
   const user = await User.findOne({ username: data[0] });
@@ -1417,7 +1409,7 @@ const handleloginsecond = async (req, res) => {
   }
   if (req.body.type === "Child Account") {
     try {
-      console.log(req.body);
+      // console.log(req.body);
       const user = await User.findOne({ email: req.body.childEmail });
       if (!user) return res.json({ success: false, reason: "Email invalid" });
       if (user.type !== "Kids") {
@@ -1457,9 +1449,9 @@ const handleloginsecond = async (req, res) => {
     const user = await Channel.findOne({ channelName: req.body.channelName });
     if (!user)
       return res.json({ success: false, reason: "Invalid channel Name" });
-    console.log(user);
+    // console.log(user);
     const mainUser = await User.findOne({ _id: user.channelAdmin._id });
-    console.log(mainUser);
+    // console.log(mainUser);
     if (mainUser.username !== req.body.adminName) {
       return res.json({ success: false, reason: "Invalid Admin name" });
     }
@@ -1495,7 +1487,6 @@ const handlegetloginsecond = (req, res) => {
 
 const handlelikereel = async (req, res) => {
   const { data } = req.userDetails;
-  // console.log(req.body);
   const user = await User.findOne({ username: data[0] });
   if (user.likedPostsIds.includes(req.body.reel_id)) {
     await Post.findOneAndUpdate(
@@ -1522,7 +1513,7 @@ const handlelikereel = async (req, res) => {
 
 const handlereportpost = async (req, res) => {
   const { data } = req.userDetails;
-  console.log(req.body);
+  // console.log(req.body);
   const { reason, post_id } = req.body;
   const report = await Report.create({
     post_id: post_id,
@@ -1538,7 +1529,6 @@ const handlereportpost = async (req, res) => {
 
 const handlegetads = async (req, res) => {
   const ads = await Adpost.find({}).lean();
-  // console.log(ads);
   return res.json({ allAds: ads });
 };
 

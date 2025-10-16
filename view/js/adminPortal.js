@@ -1,4 +1,4 @@
-// Sidebar Toggle Functionality
+
 const sidebarToggle = document.getElementById("sidebarToggle");
 const sidebar = document.getElementById("sidebar");
 const mainContent = document.getElementById("mainContent");
@@ -24,14 +24,12 @@ function checkScreenSize() {
 window.addEventListener("load", checkScreenSize);
 window.addEventListener("resize", checkScreenSize);
 
-// Menu item active state and section toggling
 const menuItems = document.querySelectorAll(".menu-item");
 menuItems.forEach((item) => {
     item.addEventListener("click", function () {
         menuItems.forEach((i) => i.classList.remove("active"));
         this.classList.add("active");
 
-        // On mobile, close sidebar after selection
         if (window.innerWidth < 992) {
             sidebar.classList.add("sidebar-hidden");
             mainContent.classList.add("content-full");
@@ -48,7 +46,7 @@ menuItems.forEach((item) => {
             document.getElementById("reviewSection").style.display = "none";
             document.getElementById("usersSection").style.display = "block";
             document.getElementById("reportSection").style.display = "none";
-        } else if (id === "menuReports") { // ✅ Check for the menu item, not the section
+        } else if (id === "menuReports") {
             document.getElementById("dashboardSection").style.display = "none";
             document.getElementById("reviewSection").style.display = "none";
             document.getElementById("usersSection").style.display = "none";

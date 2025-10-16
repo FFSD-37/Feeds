@@ -114,18 +114,6 @@ form.addEventListener("submit", (e) => {
   const genderValid = form.gender.value !== "";
   const termsValid = form.terms.checked;
 
-  // console.log({
-  //   fullNameValid,
-  //   usernameValid,
-  //   emailValid,
-  //   phoneValid,
-  //   passwordValid,
-  //   passwordsMatch,
-  //   dobValid,
-  //   genderValid,
-  //   termsValid,
-  // });
-
   showError(form.fullName, fullNameValid);
   showError(form.username, usernameValid);
   showError(form.email, emailValid);

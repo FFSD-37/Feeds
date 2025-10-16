@@ -264,7 +264,6 @@ h2 {
   cursor: pointer;
 }
 
-/* Report Button */
 .report-button {
   background: #ff4d4d;
   color: white;
@@ -280,7 +279,6 @@ h2 {
   background: #cc0000;
 }
 
-/* Modal Overlay */
 .report-overlay {
   position: fixed;
   top: 0;
@@ -301,7 +299,6 @@ h2 {
   z-index: 100;
 }
 
-/* Modal Content */
 .modal-content {
   background: #1c1c1c;
   color: white;
@@ -311,7 +308,6 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Modal Header */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -330,7 +326,6 @@ h2 {
   color: #ff4d4d;
 }
 
-/* Report Options */
 .modal-title {
   font-size: 16px;
   font-weight: bold;

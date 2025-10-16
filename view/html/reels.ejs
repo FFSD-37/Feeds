@@ -19,7 +19,6 @@
                 Your browser does not support the video tag.
               </video>
 
-              <!-- Mute toggle -->
               <div class="mute-toggle" onclick="toggleMute(this)">
                 <svg
                   class="mute-icon"
@@ -46,7 +45,6 @@
                 </svg>
               </div>
 
-              <!-- Video info -->
               <div class="video-info">
                 <div class="video-title"><%= post.content %></div>
                 <div class="video-channel">
@@ -66,9 +64,7 @@
                 </div>
               </div>
 
-              <!-- Video actions -->
               <div class="video-actions">
-                <!-- Like -->
                 <div
                   class="action-button like-button <%= post.liked ? 'liked' : '' %>"
                   data-post-id="<%= post._id || post.id %>"
@@ -91,7 +87,6 @@
                   </div>
                 </div>
 
-                <!-- Comment -->
                 <div
                   class="action-button comment-button"
                   data-post-id="<%= post._id || post.id %>"
@@ -114,7 +109,6 @@
                   </div>
                 </div>
 
-                <!-- Share -->
                 <div
                   class="action-button share-button"
                   data-post-id="<%= post._id || post.id %>"
@@ -141,7 +135,6 @@
           </div>
         </div>
 
-        <!-- Comments panel -->
         <aside id="comments-panel" class="comments-panel" aria-hidden="true">
           <div class="comments-top">
             <button

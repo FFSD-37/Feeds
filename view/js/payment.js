@@ -1,4 +1,4 @@
-// ../js/payment.js
+
 document.addEventListener('DOMContentLoaded', () => {
   const planElems = document.querySelectorAll('.plan');
   const originalSpan = document.getElementById('original-amount');
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const planPriceInput = document.getElementById('plan_price');
   const payBtn = document.getElementById('pay-btn');
 
-  // config (no DOM name clash)
   const planConfig = [
     { name: "Monthly", price: 199, months: 1 },
     { name: "Semi-Annualy", price: 169, months: 6 },
@@ -27,10 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (durationDiv) durationDiv.textContent = `(${plan.months} month${plan.months > 1 ? 's' : ''})`;
 
     if (planNameInput) planNameInput.value = plan.name;
-    if (planPriceInput) planPriceInput.value = discounted.toFixed(2); // rupees as string
+    if (planPriceInput) planPriceInput.value = discounted.toFixed(2);
   }
 
-  // pick default selected index (from markup) or fallback
   let selectedIndex = Array.from(planElems).findIndex(el => el.classList.contains('selected'));
   if (selectedIndex === -1) selectedIndex = 0;
 
@@ -43,14 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // initial render
   updateAmount(selectedIndex);
 
-  // Payment button handler (keeps your existing logic, but safe)
+  // Payment button handler
   payBtn?.addEventListener('click', async (e) => {
     e.preventDefault();
     const plan_name = planNameInput.value;
-    const plan_price = planPriceInput.value; // discounted rupees
+    const plan_price = planPriceInput.value;
 
     if (!plan_name || !plan_price) {
       alert('Please select a plan.');
@@ -58,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // console.log(plan_name, plan_price);
       const res = await fetch('/payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -72,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const options = {
         key: 'rzp_test_f7KvjxjG0mJxq1',
-        amount: data.order.amount, // backend must send paise integer
+        amount: data.order.amount,
         currency: 'INR',
         name: 'ARNAV RANJAN',
         description: 'Purchase Premium Membership',

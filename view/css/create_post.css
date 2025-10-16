@@ -134,3 +134,78 @@ body {
   width: 80%;
   margin-top: 10px;
 }
+
+.post-type-selector {
+  position: relative;
+  margin-bottom: 15px;
+  width: 200px;
+}
+
+.post-type-btn {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post-type-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+}
+
+.post-type-dropdown.active {
+  display: block;
+}
+
+.post-type-option {
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+.post-type-option:hover {
+  background: #f5f5f5;
+}
+
+.continue-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.continue-button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.loading-spinner {
+  display: inline-flex;
+  animation: spin 1s linear infinite;
+}
+
+.loading-spinner svg {
+  fill: currentColor;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

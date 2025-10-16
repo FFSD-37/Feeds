@@ -174,7 +174,7 @@ body {
 
 .post-create-post {
   width: 100%;
-  aspect-ratio: 1 / 1; /* keeps it a perfect square */
+  aspect-ratio: 1 / 1;
   position: relative;
   cursor: pointer;
   background: linear-gradient(135deg, #667eea, #764ba2);
@@ -286,9 +286,9 @@ body {
 
 .private-msg-container {
   display: flex;
-  justify-content: center; /* centers horizontally */
-  align-items: center; /* centers vertically */
-  height: 300px; /* or 100vh if full screen \*/
+  justify-content: center; 
+  align-items: center;
+  height: 300px; 
 }
 
 .private-msg {

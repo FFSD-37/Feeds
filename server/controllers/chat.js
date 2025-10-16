@@ -34,7 +34,7 @@ const getChatpage = async (req, res) => {
     // Step 4: Lookup users not in friends by username
     const nonFriendUsers = await User.find({
     username: { $in: nonFriendUsernames }
-    }, { username: 1 }).lean(); // include only _id and username
+    }, { username: 1 }).lean();
 
     console.log(nonFriendUsers, friends); // These are usernames you've chatted with but aren't friends
     

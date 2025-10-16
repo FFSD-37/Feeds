@@ -6,7 +6,6 @@ const card = document.querySelector('.card');
 
 let counter = stackContainer.children.length;
 
-//function to generate random number
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -41,7 +40,6 @@ perspec.addEventListener('animationend', function (e) {
                 }
             });
 
-            //generate random number of lines of code between 4 and 10 and add to each card
             let numLines = randomIntFromInterval(5, 10);
 
             //loop through the lines and add them to the DOM
@@ -51,7 +49,6 @@ perspec.addEventListener('animationend', function (e) {
                 node.classList.add('node-' + index);
                 elem.querySelector('.code ul').appendChild(node).setAttribute('style', '--linelength: ' + lineLength + '%;');
 
-                //draw lines of code 1 by 1
                 if (index == 0) {
                     elem.querySelector('.code ul .node-' + index).classList.add('writeLine');
                 } else {

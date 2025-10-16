@@ -184,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (commentsCountSmall) commentsCountSmall.textContent = newCount;
   }
 
-  // --- Share logic ---
   async function handleShareClick(e) {
     const btn = e.currentTarget;
     const postUrl = btn.dataset.postUrl || `${location.origin}/posts/${btn.dataset.postId}`;

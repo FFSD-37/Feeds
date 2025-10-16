@@ -21,7 +21,6 @@ document.querySelectorAll(".nav-arrow").forEach((arrow, index) => {
     });
 });
 
-// Update the toggleMute function in reels.js
 window.toggleMute = function(button) {
     const video = button.closest('.reel-video').querySelector('video');
     const muteIcon = button.querySelector('.mute-icon');

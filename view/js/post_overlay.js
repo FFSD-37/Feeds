@@ -13,7 +13,6 @@ async function postOverlay(
   saved,
   currUser
 ) {
-  // console.log(liked, saved);
   currentPostID = id;
 
   document.getElementById("socialDropdown").style.display = "none";
@@ -112,7 +111,6 @@ document.querySelectorAll(".action-icon").forEach((ele) => {
             }
           }
         });
-      // fetch request for like for the backend part is pending
     }
     if (trig === "comment") {
       commentInput.focus();
@@ -179,7 +177,6 @@ async function likeComment(post_id, commUser, cid) {
     });
 }
 
-// --- POST COMMENT FUNCTION ---
 async function postComment(postID) {
   const input = document.getElementById("message-input");
   const commentText = input.value.trim();
@@ -200,11 +197,9 @@ async function postComment(postID) {
 
       const commentSection = document.querySelector(".comment-section");
 
-      // Remove "No comments yet..." if it exists
       const emptyMsg = commentSection.querySelector("p");
       if (emptyMsg) emptyMsg.remove();
 
-      // Create a new comment element
       const newComment = document.createElement("div");
       newComment.classList.add("comment");
       newComment.innerHTML = `
