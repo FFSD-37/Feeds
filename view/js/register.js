@@ -114,17 +114,17 @@ form.addEventListener("submit", (e) => {
   const genderValid = form.gender.value !== "";
   const termsValid = form.terms.checked;
 
-  console.log({
-    fullNameValid,
-    usernameValid,
-    emailValid,
-    phoneValid,
-    passwordValid,
-    passwordsMatch,
-    dobValid,
-    genderValid,
-    termsValid,
-  });
+  // console.log({
+  //   fullNameValid,
+  //   usernameValid,
+  //   emailValid,
+  //   phoneValid,
+  //   passwordValid,
+  //   passwordsMatch,
+  //   dobValid,
+  //   genderValid,
+  //   termsValid,
+  // });
 
   showError(form.fullName, fullNameValid);
   showError(form.username, usernameValid);
@@ -181,9 +181,8 @@ async function handleUpload() {
     signature: authData.signature,
     expire: authData.expire,
   }, function (err, result) {
-    if (err) {
-      console.log(err);
-    } else {
+    if (err) {console.log(err);} 
+    else {
       document.getElementById("profileImageUrl").value = result.url;
       console.log(result);
     }

@@ -114,16 +114,12 @@
               Kids
             </label>
             <label>
-              <input type="radio" name="acctype" value="Student" required />
-              Student
-            </label>
-            <label>
               <input type="radio" name="acctype" value="Normal" checked/>
               Normal
             </label>
           </div>
           <div class="know-about-type">
-            <button  onclick="alert('1. Kids : Age should be 2 to 8 years\n2. Student : Age should be 9 to 16 years\n3. Normal : Age should be greater than 16\n')">
+            <button  onclick="alert('1. Kids : Age should be 2 to 8 years\n2. Normal : Age should be greater than 8\n')">
               Not sure about the type ?
             </button>
           </div>
@@ -135,7 +131,7 @@
           <div class="error-message">Age criteria should match with the account type</div>
         </div>
 
-        <input type="hidden" id="profileImageUrl" name="profileImageUrl"/>
+        <input type="hidden" id="profileImageUrl" name="profileImageUrl" value="https://ik.imagekit.io/FFSD0037/default_user.png?updatedAt=1741701160385"/>
 
         <div class="form-group">
           <label for="pfp">Profile Picture (Optional)</label>

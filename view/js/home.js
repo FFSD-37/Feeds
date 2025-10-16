@@ -302,7 +302,7 @@ async function RenderAds() {
 
 window.onload = () => {
   const isPremium = document.getElementById("premiumFlag").value;
-  if (!isPremium) {
+  if (isPremium === "false") {
     RenderAds();
   }
 }
