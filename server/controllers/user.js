@@ -1288,10 +1288,24 @@ const handlegetlog = async (req, res) => {
 const uploadFinalPost = async (req, res) => {
   try {
     const { data } = req.userDetails;
+    // console.log(data);
     const idd = `${data[0]}-${Date.now()}`;
+    // console.log(req.body);
+    if (data[3] === "Channel"){
+      const postObj = {
+        id: idd,
+        type: req.body.type == "Img" ? "Img" : "Reels",
+        url: req.body.avatar,
+        content: req.body.caption,
+        channel: data[0],
+      };
+      const post = await channelPost.create(postObj);
+      await Channel.findOneAndUpdate({channelName: data[0]}, {$push: { postIds: post._id }}, {new: true, upsert: false});
+      return res.json({success: true});
+    }
     const postObj = {
       id: idd,
-      type: req.body.type ? "Img" : "Reels",
+      type: req.body.type == "Img" ? "Img" : "Reels",
       url: req.body.avatar,
       content: req.body.caption,
       author: data[0],
@@ -1303,12 +1317,13 @@ const uploadFinalPost = async (req, res) => {
       { $push: { postIds: post._id } },
       { new: true, upsert: false }
     );
-    return res.render("create_post", {
-      img: data[2],
-      currUser: data[0],
-      msg: "post uploaded successfully",
-      type: data[3],
-    });
+    // return res.render("create_post", {
+    //   img: data[2],
+    //   currUser: data[0],
+    //   msg: "post uploaded successfully",
+    //   type: data[3],
+    // });
+    return res.json({success: true})
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });

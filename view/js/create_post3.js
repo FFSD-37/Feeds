@@ -80,6 +80,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ caption, avatar: result.url, type: type === "image" ? "Img" : "Reels" }),
                         credentials: 'include'
+                    }).then((res) => {
+                        return res.json();
+                    }).then((data) => {
+                        if(data.success){
+                            window.location.href = "/home";
+                        }
                     });
                 } catch (error) {
                     console.error(error);
