@@ -404,6 +404,7 @@ const updatepass = async (req, res) => {
 
 const handlelogout = (req, res) => {
   res.cookie("uuid", "", { maxAge: 0 });
+  res.cookie("cuid", "", { maxAge: 0 });
   return res.render("login2");
 };
 
