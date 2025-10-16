@@ -20,8 +20,48 @@ function storeFilesInLocalStorage(files) {
     });
     }
 
-function showPreview(event) {
-    if (event.target.files.length > 0) {console.log(event.target.files[0]);
+async function getAuth() {
+let res = await fetch("/imagKitauth");
+return res;
+}
+
+async function showPreview(event) {
+    if (event.target.files.length > 0) {
+        const postTypeInput = document.getElementById('postType');
+        storeFilesInLocalStorage(event.target.files);
+
+        if(postTypeInput.value==='story'){
+            const authResponse = await getAuth();
+            const authData = await authResponse.json();
+
+            var imagekit = new ImageKit({
+                publicKey: "public_wbpheuS28ohGGR1W5QtPU+uv/z8=",
+                urlEndpoint: "https://ik.imagekit.io/lidyx2zxm/",
+            });
+            const keys = Object.keys(localStorage).filter(k => k.startsWith('uploadedFile_'));
+            const array=keys.map(key => {
+                const {data:base64,name} = JSON.parse(localStorage.getItem(key));
+                return {base64,name};
+            });
+            document.querySelector('.loading-spinner').style.display = 'inline-flex';
+
+            imagekit.upload({
+                file: array[0].base64,
+                fileName: array[0].name,
+                tags: ["tag1"],
+                responseFields: "tags",
+                token: authData.token,
+                signature: authData.signature,
+                expire: authData.expire,
+            }, function (err, result) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    document.getElementById("profileImageUrl").value = result.url;
+                    document.querySelector('.loading-spinner').style.display = 'none';
+                }
+            });
+        }
     
         var src = URL.createObjectURL(event.target.files[0]);
         var preview = document.getElementById("file-ip-1-preview");
@@ -37,7 +77,6 @@ function showPreview(event) {
             ".post-manipulation-buttons"
         );
         manipulation_buttons.style.display = "flex";
-        storeFilesInLocalStorage(event.target.files);
     }
 }
 
