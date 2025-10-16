@@ -857,10 +857,12 @@ const handlegetreels = async (req, res) => {
   if (data[3] === "Kids") {
     const user = await Channel.find({});
     // console.log(user);
-    return res.render("kids_reels", {
+    let posts = await channelPost.find({ type: "Reels" });
+    console.log(posts);
+    return res.render("reels", {
       img: data[2],
       currUser: data[0],
-      posts: [],
+      posts,
       type: data[3],
     });
   }
