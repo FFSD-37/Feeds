@@ -408,28 +408,29 @@ const handlelogout = (req, res) => {
   return res.render("login2");
 };
 
-const handleContact = (req, res) => {
+const handleContact = async (req, res) => {
   const data = {
     Name: req.body.name,
     Email: req.body.email,
     sub: req.body.subject,
     msg: req.body.message,
   };
-  const pat = path.resolve(
-    `routes/Responses/${req.body.subject}/${req.body.email}.json`
-  );
-  fs.writeFile(pat, JSON.stringify(data, null, 2), (err) => {
-    if (err) {
-      console.log("Error is writing file", err);
-    } else {
-      return res.render("contact", {
-        img: data[2],
-        msg: "Your response is noted, we'll get back to you soon.",
-        currUser: data[0],
-        type: data[3],
-      });
-    }
-  });
+
+  const obj = {
+    id: `#${Date.now()}`,
+    name: req.body.name,
+    email: req.body.email,
+    subject: req.body.subject,
+    message: req.body.message
+  }
+
+  await Feedback.create(obj);
+  return res.render("contact", {
+    img: data[2],
+    msg: "Your response is noted, we'll get back to you soon.",
+    currUser: data[0],
+    type: data[3]
+  })
 };
 
 const handleadminlogin = async (req, res) => {
